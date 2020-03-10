@@ -248,7 +248,7 @@ public class ConnectionPoolTest {
     }
 
     @Test
-    public void testShutDownPootestStopClientUsingGlobalPool() {
+    public void testStopClientUsingGlobalPool() {
         BValue[] args = {new BString(DB_NAME1)};
         BValue[] returns = BRunUtil.invokeFunction(result, "testStopClientUsingGlobalPool", args);
         SQLDBUtils.assertNotError(returns[0]);

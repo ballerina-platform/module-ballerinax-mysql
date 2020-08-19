@@ -105,9 +105,12 @@ task ballerinaTest {
             workingDir project.projectDir
             environment "JAVA_OPTS", "-DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true"
             if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                commandLine 'cmd', '/c', "$distributionBinPath/ballerina.bat test --offline --all ${additionalParams}"
+                // todo https://github.com/ballerina-platform/ballerina-lang/issues/25342
+                //  commandLine 'cmd', '/c', "$distributionBinPath/ballerina.bat test --code-coverage --all ${additionalParams}"
+                commandLine 'cmd', '/c', "$distributionBinPath/ballerina.bat test --all ${additionalParams}"
             } else {
-                commandLine 'sh', '-c', "$distributionBinPath/ballerina test --offline --all ${additionalParams}"
+                //   commandLine 'sh', '-c', "$distributionBinPath/ballerina test --code-coverage --all ${additionalParams}"
+                commandLine 'sh', '-c', "$distributionBinPath/ballerina test --all ${additionalParams}"
             }
         }
     }
@@ -131,9 +134,9 @@ task ballerinaBuild {
             workingDir project.projectDir
             environment "JAVA_OPTS", "-DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true"
             if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                commandLine 'cmd', '/c', "$distributionBinPath/ballerina.bat build --offline --skip-tests --code-coverage -c ${moduleName}"
+                commandLine 'cmd', '/c', "$distributionBinPath/ballerina.bat build --skip-tests -c ${moduleName}"
             } else {
-                commandLine 'sh', '-c', "$distributionBinPath/ballerina build --offline --skip-tests --code-coverage -c ${moduleName}"
+                commandLine 'sh', '-c', "$distributionBinPath/ballerina build --skip-tests -c ${moduleName}"
             }
         }
         copy {

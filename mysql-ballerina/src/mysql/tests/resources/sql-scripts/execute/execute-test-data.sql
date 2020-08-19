@@ -1,3 +1,9 @@
+CREATE DATABASE IF NOT EXISTS TEST_SQL_EXECUTE_QUERY;
+
+USE TEST_SQL_EXECUTE_QUERY;
+
+DROP TABLE IF EXISTS NumericTypes;
+
 CREATE TABLE NumericTypes (
    id INT AUTO_INCREMENT,
    int_type INT,
@@ -13,6 +19,8 @@ CREATE TABLE NumericTypes (
 );
 
 INSERT INTO NumericTypes (int_type) VALUES (10);
+
+DROP TABLE IF EXISTS StringTypes;
 
 CREATE TABLE StringTypes (
    id INT,

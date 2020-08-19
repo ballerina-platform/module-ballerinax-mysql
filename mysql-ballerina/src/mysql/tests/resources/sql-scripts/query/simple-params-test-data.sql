@@ -1,3 +1,9 @@
+CREATE DATABASE IF NOT EXISTS TEST_SQL_PARAMS_QUERY;
+
+USE TEST_SQL_PARAMS_QUERY;
+
+DROP TABLE IF EXISTS DataTable;
+
 CREATE TABLE IF NOT EXISTS DataTable(
   row_id       INTEGER,
   int_type     INTEGER,
@@ -17,6 +23,8 @@ INSERT INTO DataTable (row_id) VALUES (2);
 
 INSERT INTO DataTable (row_id, int_type, long_type, float_type, double_type, boolean_type, string_type, decimal_type)
   VALUES(3, 1, 9372036854774807, 124.34, 29095039, false, '1', 25.45);
+
+DROP TABLE IF EXISTS ComplexTypes;
 
 CREATE TABLE IF NOT EXISTS ComplexTypes(
   row_id         INTEGER NOT NULL,
@@ -42,27 +50,22 @@ mediumtext_type, longtext_type, binary_type, var_binary_type) VALUES
 
 INSERT INTO ComplexTypes (row_id, tinyblob_type, blob_type, mediumblob_type, longblob_type, tinytext_type, text_type,
 mediumtext_type, longtext_type, binary_type, var_binary_type) VALUES
-  (2, X'77736F322062616C6C6572696E6120626C6F6220746573742E', X'77736F322062616C6C6572696E6120626C6F6220746573742E',
-  X'77736F322062616C6C6572696E6120626C6F6220746573742E', X'77736F322062616C6C6572696E6120626C6F6220746573742E',
-  'very long text', 'very long text','very long text','very long text',
-  X'77736F322062616C6C6572696E612062696E61727920746573742E', X'77736F322062616C6C6572696E612062696E61727920746573742E');
+  (2, null, null, null, null, null, null, null, null, null, null);
 
-INSERT INTO ComplexTypes (row_id, tinyblob_type, blob_type, mediumblob_type, longblob_type, tinytext_type, text_type,
-mediumtext_type, longtext_type, binary_type, var_binary_type) VALUES
-  (3, null, null, null, null, null, null, null, null, null, null);
+DROP TABLE IF EXISTS NumericTypes;
 
 CREATE TABLE NumericTypes (
    id INT AUTO_INCREMENT,
-   int_type INT ,
-   bigint_type BIGINT,
-   smallint_type SMALLINT ,
-   mediumint_type MEDIUMINT ,
-   tinyint_type TINYINT,
-   bit_type BIT ,
-   decimal_type DECIMAL(10,3) ,
-   numeric_type NUMERIC(10,3) ,
-   float_type FLOAT ,
-   real_type REAL ,
+   int_type INT NOT NULL,
+   bigint_type BIGINT NOT NULL,
+   smallint_type SMALLINT NOT NULL ,
+   mediumint_type MEDIUMINT NOT NULL ,
+   tinyint_type TINYINT NOT NULL ,
+   bit_type BIT NOT NULL ,
+   decimal_type DECIMAL(10,3) NOT NULL ,
+   numeric_type NUMERIC(10,3) NOT NULL ,
+   float_type FLOAT NOT NULL ,
+   real_type REAL NOT NULL ,
    PRIMARY KEY (id)
 );
 
@@ -73,6 +76,8 @@ INSERT INTO NumericTypes (id, int_type, bigint_type, smallint_type, mediumint_ty
 INSERT INTO NumericTypes (id, int_type, bigint_type, smallint_type, mediumint_type, tinyint_type, bit_type, decimal_type, numeric_type,
     float_type, real_type) VALUES (2, 2147483647, 9223372036854774807, 32767, 8388607, 127, 1, 1234, 1234, 1234,
     1234);
+
+DROP TABLE IF EXISTS DateTimeTypes;
 
 CREATE TABLE IF NOT EXISTS DateTimeTypes(
   row_id         INTEGER NOT NULL,
@@ -86,6 +91,8 @@ CREATE TABLE IF NOT EXISTS DateTimeTypes(
 INSERT INTO DateTimeTypes (row_id, date_type, time_type, datetime_type, timestamp_type) VALUES
   (1,'2017-02-03', '11:35:45', '2017-02-03 11:53:00', '2017-02-03 11:53:00');
 
+DROP TABLE IF EXISTS ENUMTable;
+
 CREATE TABLE ENUMTable (
     id integer NOT NULL,
     enum_type ENUM('admin','doctor','housekeeper') DEFAULT NULL,
@@ -94,6 +101,8 @@ CREATE TABLE ENUMTable (
 
 INSERT INTO ENUMTable(id, enum_type) VALUES (1, 'doctor');
 
+DROP TABLE IF EXISTS SetTable;
+
 CREATE TABLE SetTable (
     row_id INTEGER NOT NULL,
     set_type SET('a', 'b', 'c', 'd')
@@ -101,12 +110,16 @@ CREATE TABLE SetTable (
 
 INSERT INTO SetTable (row_id, set_type) VALUES (1, 'a,d'), (2, 'd,a'), (3, 'a,d,a');
 
+DROP TABLE IF EXISTS GEOTable;
+
 CREATE TABLE GEOTable(
     id INTEGER NOT NULL ,
     geom GEOMETRY
 );
 
 INSERT INTO GEOTable (id, geom) values (1, ST_GeomFromText('POINT(7 52)'));
+
+DROP TABLE IF EXISTS JsonTable;
 
 CREATE TABLE JsonTable(
     id INTEGER NOT NULL ,

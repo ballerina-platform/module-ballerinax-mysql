@@ -1,3 +1,9 @@
+CREATE DATABASE IF NOT EXISTS TEST_SQL_CALL_QUERY;
+
+USE TEST_SQL_CALL_QUERY;
+
+DROP TABLE IF EXISTS StringTypes;
+
 CREATE TABLE StringTypes (
                              id INT,
                              varchar_type VARCHAR(255),
@@ -11,6 +17,8 @@ CREATE TABLE StringTypes (
 
 INSERT INTO StringTypes(id, varchar_type, charmax_type, char_type, charactermax_type, character_type, nvarcharmax_type)
                     VALUES (1, 'test0', 'test1', 'a', 'test2', 'b', 'test3');
+
+DROP TABLE IF EXISTS NumericTypes;
 
 CREATE TABLE NumericTypes (
                               id INT,

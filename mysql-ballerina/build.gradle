@@ -79,7 +79,7 @@ task ballerinaBuild {
         newConfig = newConfig.replace("@project.path@", distributionPath)
         ballerinaConfigFile.text = newConfig
 
-        def distributionBinPath = "${distributionPath}/bin"
+        def distributionBinPath = distributionPath + "/bin"
 
         // Build and populate caches
         if (!project.hasProperty("skipBallerinaTests")) {

@@ -88,14 +88,21 @@ task revertTomlFile {
 task ballerinaTest {
     dependsOn(updateTomlFile)
     finalizedBy(revertTomlFile)
+
+    def additionalParams = ""
+    if (project.hasProperty("debug")) {
+        additionalParams = "--debug ${project.findProperty("debug")}"
+    }
+    println "${additionalParams}"
+
     doLast {
         exec {
             workingDir project.projectDir
             environment "JAVA_OPTS", "-DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true"
             if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                commandLine 'cmd', '/c', "$distributionBinPath/ballerina.bat test --offline --all --debug 5005"
+                commandLine 'cmd', '/c', "$distributionBinPath/ballerina.bat test --offline --all ${additionalParams}"
             } else {
-                commandLine 'sh', '-c', "$distributionBinPath/ballerina test --offline --all --debug 5005"
+                commandLine 'sh', '-c', "$distributionBinPath/ballerina test --offline --all ${additionalParams}"
             }
         }
     }
@@ -188,8 +195,12 @@ task ballerinaPush {
     dependsOn(ballerinaBuild)
     doLast {
         // Publish to central
+        if (!project.hasProperty("publishToCentral")) {
+            return;
+        }
+
         if (project.version.endsWith('-SNAPSHOT')) {
-            println("Stdlib not pushed to central for snapshot version '${project.version}'.")
+            throw new GradleException("Stdlib not pushed to central for snapshot version '${project.version}'.")
         } else {
             if (ballerinaCentralAccessToken == null) {
                 throw new GradleException("Central push failed invalid access token.")

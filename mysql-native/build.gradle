@@ -15,15 +15,89 @@
  *
  */
 
-plugins {
-    id 'java'
-}
+apply plugin: "java"
+apply plugin: "com.github.spotbugs"
+apply plugin: "checkstyle"
+apply plugin: "jacoco"
 
-description = 'Ballerina - MySQL Java Utils'
+description = 'Ballerina - MySQL Java Native'
+
+configurations {
+    jacocoRuntime
+}
 
 dependencies {
     compile group: 'org.ballerinalang', name: 'ballerina-lang', version: "${ballerinaLangVersion}"
     compile group: 'org.ballerinalang', name: 'ballerina-runtime', version: "${ballerinaLangVersion}"
     compile group: 'org.ballerinalang', name: 'ballerina-crypto', version: "${ballerinaLangVersion}"
     compile group: 'org.ballerinalang', name: 'ballerina-sql', version: "${ballerinaLangVersion}"
+
+    jacocoRuntime "org.jacoco:org.jacoco.agent:${jacoco.toolVersion}:runtime"
+
+    checkstyle project(":build-config:checkstyle")
+    checkstyle "com.puppycrawl.tools:checkstyle:${puppycrawlCheckstyleVersion}"
 }
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+
+jacoco {
+    toolVersion = "0.8.5"
+}
+
+test {
+    testLogging {
+        showStackTraces = true
+        showStandardStreams = true
+        events "failed"
+        exceptionFormat "full"
+    }
+    jacoco {
+        enabled = true
+        destinationFile = file("$buildDir/coverage-reports/jacoco.exec")
+        includeNoLocationClasses = true
+    }
+}
+
+spotbugsMain {
+    ignoreFailures = true
+    effort = "max"
+    reportLevel = "low"
+    reportsDir = file("$project.buildDir/reports/spotbugs")
+    def excludeFile = file("spotbugs-exclude.xml")
+    if (excludeFile.exists()) {
+        it.excludeFilter = excludeFile
+    }
+    reports {
+        text.enabled = true
+    }
+}
+
+spotbugsTest {
+    enabled = false
+}
+
+task validateSpotbugs() {
+    doLast {
+        if (spotbugsMain.reports.size() > 0 &&
+                spotbugsMain.reports[0].destination.exists() &&
+                spotbugsMain.reports[0].destination.text.readLines().size() > 0) {
+            spotbugsMain.reports[0].destination?.eachLine {
+                println 'Failure: ' + it
+            }
+            throw new GradleException("Spotbugs rule violations were found.");
+        }
+    }
+}
+
+checkstyle {
+    toolVersion '7.8.2'
+    configFile file("${rootDir}/build-config/checkstyle/build/checkstyle.xml")
+    configProperties = ["suppressionFile" : file("${rootDir}/build-config/checkstyle/build/suppressions.xml")]
+}
+
+spotbugsMain.finalizedBy validateSpotbugs
+checkstyleMain.dependsOn(":build-config:checkstyle:downloadMultipleFiles")

@@ -86,6 +86,8 @@ task revertTomlFile {
 }
 
 task ballerinaTest {
+    dependsOn(unpackJballerinaTools)
+    dependsOn(":mysql-native:build")
     dependsOn(updateTomlFile)
     finalizedBy(revertTomlFile)
 

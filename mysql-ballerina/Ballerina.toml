@@ -1,20 +1,20 @@
 [project]
-org-name = "ballerina"
+org-name = "ballerinax"
 version = "@toml.version@"
 
 [platform]
 target = "java8"
 
     [[platform.libraries]]
-    artifactId = "mysql"
+    artifactId = "mysql-native"
     version = "@project.version@"
     path = "../mysql-native/build/libs/mysql-native-@project.version@.jar"
-    groupId = "ballerina"
+    groupId = "org.ballerinalang"
     modules = ["mysql"]
 
     [[platform.libraries]]
-    artifactId = "sql"
+    artifactId = "ballerina-sql"
     version = "0.5.0"
     path = "@project.path@/bre/lib/ballerina-sql-0.5.0-java.jar"
-    groupId = "ballerina"
+    groupId = "org.ballerinalang"
     modules = ["mysql"]

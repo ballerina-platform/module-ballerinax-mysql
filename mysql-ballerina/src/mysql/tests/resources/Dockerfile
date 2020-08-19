@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM mysql:8.0
+FROM mysql:8.0.21
 
 # Connection test case
 COPY sql-scripts/connection/connections-test-data.sql /docker-entrypoint-initdb.d/
@@ -32,5 +32,4 @@ COPY sql-scripts/query/complex-test-data.sql /docker-entrypoint-initdb.d/
 # Procedures test case
 COPY sql-scripts/procedures/stored-procedure-test-data.sql /docker-entrypoint-initdb.d/
 
-ENV MYSQL_DATABASE testdb
 ENV MYSQL_ROOT_PASSWORD Test123#

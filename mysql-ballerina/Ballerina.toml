@@ -18,3 +18,10 @@ target = "java8"
     path = "@project.path@/bre/lib/ballerina-sql-0.5.0-java.jar"
     groupId = "org.ballerinalang"
     modules = ["mysql"]
+
+    [[platform.libraries]]
+    artafactId = "mysql-connector-java"
+    version = "8.0.17"
+    path = "./lib/mysql-connector-java-8.0.21.jar"
+    groupId = "mysql"
+    modules = ["mysql"]

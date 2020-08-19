@@ -14,35 +14,46 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/io;
 import ballerina/system;
 import ballerina/test;
 import ballerina/filepath;
+import ballerina/runtime;
 
 string absolutePath = check filepath:absolute(<@untainted> "src/mysql/tests/resources");
 
+string host = "localhost";
+string user = "root";
+string password = "Test123#";
+int port = 3305;
+
 @test:BeforeSuite
-function beforeSuit() returns @tainted system:Error|error? {
+function beforeSuite() {
     
-    system:Process process = check system:exec("docker", {}, absolutePath, "build", "-t", "ballerina-mysql", ".");
-    int exitCode = check process.waitForExit();
-    test:assertExactEquals(exitCode, 0, msg = "Docker image 'ballerina-mysql' creation failed!");
-
-    process = check system:exec("docker", {}, absolutePath, 
+    system:Process process = checkpanic system:exec("docker", {}, absolutePath, "build", "-t", "ballerina-mysql", ".");
+    int exitCode = checkpanic process.waitForExit();
+    test:assertExactEquals(exitCode, 0, "Docker image 'ballerina-mysql' creation failed!");
+ 
+    process = checkpanic system:exec("docker", {}, absolutePath, 
                     "run", "--rm", "-d", "--name", "ballerina-mysql", "-p", "3305:3306", "-t", "ballerina-mysql");
-    exitCode = check process.waitForExit();
-    test:assertExactEquals(exitCode, 0, msg = "Docker container 'ballerina-mysql' creation failed!");
+    exitCode = checkpanic process.waitForExit();
+    test:assertExactEquals(exitCode, 0, "Docker container 'ballerina-mysql' creation failed!");
+    runtime:sleep(50000);
 
-}
-
-@test:Config {}
-function testDocker() {
-    io:println("Verify docker commands.");
+    int healthCheck = 1;
+    int counter = 0;
+    while(healthCheck > 0 && counter < 12) {
+        runtime:sleep(10000);
+        process = checkpanic system:exec("docker", {}, absolutePath, 
+                    "exec", "ballerina-mysql", "mysqladmin", "ping", "-hlocalhost", "-uroot", "-pTest123#", "--silent");
+        healthCheck = checkpanic process.waitForExit();
+        counter = counter + 1;
+    }
+    test:assertExactEquals(healthCheck, 0, "Docker container 'ballerina-mysql' health test exceeded timeout!");    
 }
 
 @test:AfterSuite {}
-function afterSuite() returns @tainted system:Error|error? {
-    system:Process process = check system:exec("docker", {}, absolutePath, "stop", "ballerina-mysql");
-    int exitCode = check process.waitForExit();
-    test:assertExactEquals(exitCode, 0, msg = "Docker container 'ballerina-mysql' stop failed!");
+function afterSuite() {
+    system:Process process = checkpanic system:exec("docker", {}, absolutePath, "stop", "ballerina-mysql");
+    int exitCode = checkpanic process.waitForExit();
+    test:assertExactEquals(exitCode, 0, "Docker container 'ballerina-mysql' stop failed!");
 }

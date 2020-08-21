@@ -14,6 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerina/io;
 import ballerina/system;
 import ballerina/test;
 import ballerina/filepath;
@@ -49,6 +50,7 @@ function beforeSuite() {
         counter = counter + 1;
     }
     test:assertExactEquals(healthCheck, 0, "Docker container 'ballerina-mysql' health test exceeded timeout!");    
+    io:println("Docker container started.");
 }
 
 @test:AfterSuite {}

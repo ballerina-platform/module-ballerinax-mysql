@@ -13,88 +13,56 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/lang.'int as ints;
-import ballerina/mysql;
+import ballerina/lang.'int;
 import ballerina/runtime;
 import ballerina/sql;
+import ballerina/stringutils;
+import ballerina/test;
+
+string poolDB_1 = "POOL_DB_1";
+string poolDB_2 = "POOL_DB_2";
 
 public type Result record {
     int val;
 };
 
-string host = "localhost";
-string user = "test";
-string password = "test123";
-int port = 3305;
-mysql:Options options = {
+Options options = {
     connectTimeoutInSeconds: 1
 };
 
-function testGlobalConnectionPoolSingleDestination(string database) returns @tainted (int|error)[]|error {
-    return drainGlobalPool(database);
+@test:Config {
+    groups: ["pool"]
+ }
+function testGlobalConnectionPoolSingleDestination() {
+    drainGlobalPool(poolDB_1);
 }
 
-function drainGlobalPool(string database) returns @tainted (int|error)[]|error {
-    mysql:Client dbClient1 = check new (host, user, password, database, port, options);
-    mysql:Client dbClient2 = check new (host, user, password, database, port, options);
-    mysql:Client dbClient3 = check new (host, user, password, database, port, options);
-    mysql:Client dbClient4 = check new (host, user, password, database, port, options);
-    mysql:Client dbClient5 = check new (host, user, password, database, port, options);
-
-    stream<record{}, error>[] resultArray = [];
-
-    resultArray[0] = dbClient1->query("select count(*) as val from Customers where registrationID = 1", Result);
-    resultArray[1] = dbClient1->query("select count(*) as val from Customers where registrationID = 2", Result);
-
-    resultArray[2] = dbClient2->query("select count(*) as val from Customers where registrationID = 1", Result);
-    resultArray[3] = dbClient2->query("select count(*) as val from Customers where registrationID = 1", Result);
-
-    resultArray[4] = dbClient3->query("select count(*) as val from Customers where registrationID = 2", Result);
-    resultArray[5] = dbClient3->query("select count(*) as val from Customers where registrationID = 2", Result);
-
-    resultArray[6] = dbClient4->query("select count(*) as val from Customers where registrationID = 1", Result);
-    resultArray[7] = dbClient4->query("select count(*) as val from Customers where registrationID = 1", Result);
-
-    resultArray[8] = dbClient5->query("select count(*) as val from Customers where registrationID = 1", Result);
-    resultArray[9] = dbClient5->query("select count(*) as val from Customers where registrationID = 1", Result);
-
-    resultArray[10] = dbClient5->query("select count(*) as val from Customers where registrationID = 1", Result);
-
-    (int|error)[] returnArray = [];
-    int i = 0;
-    // Connections will be released here as we fully consume the data in the following conversion function calls
-    foreach var x in resultArray {
-        returnArray[i] = getReturnValue(x);
-        i += 1;
-    }
-    // All 5 clients are supposed to use the same pool. Default maximum no of connections is 10.
-    // Since each select operation hold up one connection each, the last select operation should
-    // return an error
-    return returnArray;
+@test:Config {
+    groups: ["pool"]
+}
+function testGlobalConnectionPoolsMultipleDestinations() {
+    drainGlobalPool(poolDB_1);
+    drainGlobalPool(poolDB_2);
 }
 
-function testGlobalConnectionPoolsMultipleDestinations(string database1, string database2) returns
-    @tainted [(int|error)[], (int|error)[]]|error {
-    var errorFromFristDestination = check drainGlobalPool(database1);
-    var errorFromSecondDestination = check drainGlobalPool(database2);
-    return [errorFromFristDestination, errorFromSecondDestination];
+@test:Config {
+    groups: ["pool"]
 }
-
-function testGlobalConnectionPoolSingleDestinationConcurrent(string database) returns @tainted (int|error)[][]|error {
+function testGlobalConnectionPoolSingleDestinationConcurrent() {
     worker w1 returns [stream<record{}, error>, stream<record{}, error>]|error {
-        return testGlobalConnectionPoolConcurrentHelper1(database);
+        return testGlobalConnectionPoolConcurrentHelper1(poolDB_1);
     }
 
     worker w2 returns [stream<record{}, error>, stream<record{}, error>]|error {
-        return testGlobalConnectionPoolConcurrentHelper1(database);
+        return testGlobalConnectionPoolConcurrentHelper1(poolDB_1);
     }
 
     worker w3 returns [stream<record{}, error>, stream<record{}, error>]|error {
-        return testGlobalConnectionPoolConcurrentHelper1(database);
+        return testGlobalConnectionPoolConcurrentHelper1(poolDB_1);
     }
 
     worker w4 returns [stream<record{}, error>, stream<record{}, error>]|error {
-        return testGlobalConnectionPoolConcurrentHelper1(database);
+        return testGlobalConnectionPoolConcurrentHelper1(poolDB_1);
     }
 
     record {
@@ -104,29 +72,37 @@ function testGlobalConnectionPoolSingleDestinationConcurrent(string database) re
         [stream<record{}, error>, stream<record{}, error>]|error w4;
     } results = wait {w1, w2, w3, w4};
 
-    var result2 = check testGlobalConnectionPoolConcurrentHelper2(database);
+    var result2 = testGlobalConnectionPoolConcurrentHelper2(poolDB_1);
 
     (int|error)[][] returnArray = [];
     // Connections will be released here as we fully consume the data in the following conversion function calls
-    returnArray[0] = check getCombinedReturnValue(results.w1);
-    returnArray[1] = check getCombinedReturnValue(results.w2);
-    returnArray[2] = check getCombinedReturnValue(results.w3);
-    returnArray[3] = check getCombinedReturnValue(results.w4);
+    returnArray[0] = checkpanic getCombinedReturnValue(results.w1);
+    returnArray[1] = checkpanic getCombinedReturnValue(results.w2);
+    returnArray[2] = checkpanic getCombinedReturnValue(results.w3);
+    returnArray[3] = checkpanic getCombinedReturnValue(results.w4);
     returnArray[4] = result2;
 
     // All 5 clients are supposed to use the same pool. Default maximum no of connections is 10.
     // Since each select operation hold up one connection each, the last select operation should
     // return an error
-    return returnArray;
+    int i = 0;
+    while(i < 4) {
+        test:assertEquals(returnArray[i], [1, 1]);
+        i = i + 1;
+    }
+    validateConnectionTimeoutError(returnArray[4][2]);
 }
 
-function testLocalSharedConnectionPoolConfigSingleDestination(string database) returns @tainted (int|error)[]|error {
+@test:Config {
+    groups: ["pool"]
+}
+function testLocalSharedConnectionPoolConfigSingleDestination() {
     sql:ConnectionPool pool = {maxOpenConnections: 5};
-    mysql:Client dbClient1 = check new (host, user, password, database, port, options, pool);
-    mysql:Client dbClient2 = check new (host, user, password, database, port, options, pool);
-    mysql:Client dbClient3 = check new (host, user, password, database, port, options, pool);
-    mysql:Client dbClient4 = check new (host, user, password, database, port, options, pool);
-    mysql:Client dbClient5 = check new (host, user, password, database, port, options, pool);
+    Client dbClient1 = checkpanic new (host, user, password, poolDB_1, port, options, pool);
+    Client dbClient2 = checkpanic new (host, user, password, poolDB_1, port, options, pool);
+    Client dbClient3 = checkpanic new (host, user, password, poolDB_1, port, options, pool);
+    Client dbClient4 = checkpanic new (host, user, password, poolDB_1, port, options, pool);
+    Client dbClient5 = checkpanic new (host, user, password, poolDB_1, port, options, pool);
     
     (stream<record{}, error>)[] resultArray = [];
     resultArray[0] = dbClient1->query("select count(*) as val from Customers where registrationID = 1", Result);
@@ -144,31 +120,39 @@ function testLocalSharedConnectionPoolConfigSingleDestination(string database) r
         i += 1;
     }
 
-    check dbClient1.close();
-    check dbClient2.close();
-    check dbClient3.close();
-    check dbClient4.close();
-    check dbClient5.close();
+    checkpanic dbClient1.close();
+    checkpanic dbClient2.close();
+    checkpanic dbClient3.close();
+    checkpanic dbClient4.close();
+    checkpanic dbClient5.close();
 
     // All 5 clients are supposed to use the same pool created with the configurations given by the
     // custom pool options. Since each select operation holds up one connection each, the last select
     // operation should return an error
-    return returnArray;
+    i = 0;
+    while(i < 5) {
+        test:assertEquals(returnArray[i], 1);
+        i = i + 1;
+    }
+    validateConnectionTimeoutError(returnArray[5]);
 }
 
-function testLocalSharedConnectionPoolConfigDifferentDbOptions(string database) returns @tainted (int|error)[]|error {
+@test:Config {
+    groups: ["pool"]
+}
+function testLocalSharedConnectionPoolConfigDifferentDbOptions() {
     sql:ConnectionPool pool = {maxOpenConnections: 3};
-    mysql:Client dbClient1 = check new (host, user, password, database, port,
+    Client dbClient1 = checkpanic new (host, user, password, poolDB_1, port,
         {connectTimeoutInSeconds: 2, socketTimeoutInSeconds: 10}, pool);
-    mysql:Client dbClient2 = check new (host, user, password, database, port,
+    Client dbClient2 = checkpanic new (host, user, password, poolDB_1, port,
         {socketTimeoutInSeconds: 10, connectTimeoutInSeconds: 2}, pool);
-    mysql:Client dbClient3 = check new (host, user, password, database, port,
+    Client dbClient3 = checkpanic new (host, user, password, poolDB_1, port,
         {connectTimeoutInSeconds: 2, socketTimeoutInSeconds: 10}, pool);
-    mysql:Client dbClient4 = check new (host, user, password, database, port,
+    Client dbClient4 = checkpanic new (host, user, password, poolDB_1, port,
         {connectTimeoutInSeconds: 1}, pool);
-    mysql:Client dbClient5 = check new (host, user, password, database, port,
+    Client dbClient5 = checkpanic new (host, user, password, poolDB_1, port,
         {connectTimeoutInSeconds: 1}, pool);
-    mysql:Client dbClient6 = check new (host, user, password, database, port,
+    Client dbClient6 = checkpanic new (host, user, password, poolDB_1, port,
         {connectTimeoutInSeconds: 1}, pool);
 
     stream<record {} , error>[] resultArray = [];
@@ -190,27 +174,36 @@ function testLocalSharedConnectionPoolConfigDifferentDbOptions(string database) 
         i += 1;
     }
 
-    check dbClient1.close();
-    check dbClient2.close();
-    check dbClient3.close();
-    check dbClient4.close();
-    check dbClient5.close();
-    check dbClient6.close();
+    checkpanic dbClient1.close();
+    checkpanic dbClient2.close();
+    checkpanic dbClient3.close();
+    checkpanic dbClient4.close();
+    checkpanic dbClient5.close();
+    checkpanic dbClient6.close();
 
     // Since max pool size is 3, the last select function call going through each pool should fail.
-    return returnArray;
+    i = 0;
+    while(i < 3) {
+        test:assertEquals(returnArray[i], 1);
+        test:assertEquals(returnArray[i + 4], 1);
+        i = i + 1;
+    }
+    validateConnectionTimeoutError(returnArray[3]);
+    validateConnectionTimeoutError(returnArray[7]);
+    
 }
 
-
-function testLocalSharedConnectionPoolConfigMultipleDestinations(string database1, string database2)
-returns @tainted (int|error)[]|error {
+@test:Config {
+    groups: ["pool"]
+}
+function testLocalSharedConnectionPoolConfigMultipleDestinations() {
     sql:ConnectionPool pool = {maxOpenConnections: 3};
-    mysql:Client dbClient1 = check new (host, user, password, database1, port, options, pool);
-    mysql:Client dbClient2 = check new (host, user, password, database1, port, options, pool);
-    mysql:Client dbClient3 = check new (host, user, password, database1, port, options, pool);
-    mysql:Client dbClient4 = check new (host, user, password, database2, port, options, pool);
-    mysql:Client dbClient5 = check new (host, user, password, database2, port, options, pool);
-    mysql:Client dbClient6 = check new (host, user, password, database2, port, options, pool);
+    Client dbClient1 = checkpanic new (host, user, password, poolDB_1, port, options, pool);
+    Client dbClient2 = checkpanic new (host, user, password, poolDB_1, port, options, pool);
+    Client dbClient3 = checkpanic new (host, user, password, poolDB_1, port, options, pool);
+    Client dbClient4 = checkpanic new (host, user, password, poolDB_2, port, options, pool);
+    Client dbClient5 = checkpanic new (host, user, password, poolDB_2, port, options, pool);
+    Client dbClient6 = checkpanic new (host, user, password, poolDB_2, port, options, pool);
 
     stream<record {} , error>[] resultArray = [];
     resultArray[0] = dbClient1->query("select count(*) as val from Customers where registrationID = 1", Result);
@@ -231,22 +224,31 @@ returns @tainted (int|error)[]|error {
         i += 1;
     }
 
-    check dbClient1.close();
-    check dbClient2.close();
-    check dbClient3.close();
-    check dbClient4.close();
-    check dbClient5.close();
-    check dbClient6.close();
+    checkpanic dbClient1.close();
+    checkpanic dbClient2.close();
+    checkpanic dbClient3.close();
+    checkpanic dbClient4.close();
+    checkpanic dbClient5.close();
+    checkpanic dbClient6.close();
 
     // Since max pool size is 3, the last select function call going through each pool should fail.
-    return returnArray;
+    i = 0;
+    while(i < 3) {
+        test:assertEquals(returnArray[i], 1);
+        test:assertEquals(returnArray[i + 4], 1);
+        i = i + 1;
+    }
+    validateConnectionTimeoutError(returnArray[3]);
+    validateConnectionTimeoutError(returnArray[7]);
 }
 
-function testLocalSharedConnectionPoolCreateClientAfterShutdown(string database) returns
-    @tainted [int|error, int|error, int|error, int|error]|error {
+@test:Config {
+    groups: ["pool"]
+}
+function testLocalSharedConnectionPoolCreateClientAfterShutdown() {
     sql:ConnectionPool pool = {maxOpenConnections: 2};
-    mysql:Client dbClient1 = check new (host, user, password, database, port, options, pool);
-    mysql:Client dbClient2 = check new (host, user, password, database, port, options, pool);
+    Client dbClient1 = checkpanic new (host, user, password, poolDB_1, port, options, pool);
+    Client dbClient2 = checkpanic new (host, user, password, poolDB_1, port, options, pool);
 
     var dt1 = dbClient1->query("SELECT count(*) as val from Customers where registrationID = 1", Result);
     var dt2 = dbClient2->query("SELECT count(*) as val from Customers where registrationID = 1", Result);
@@ -254,43 +256,49 @@ function testLocalSharedConnectionPoolCreateClientAfterShutdown(string database)
     int|error result2 = getReturnValue(dt2);
 
     // Since both clients are stopped the pool is supposed to shutdown.
-    check dbClient1.close();
-    check dbClient2.close();
+    checkpanic dbClient1.close();
+    checkpanic dbClient2.close();
 
     // This call should return an error as pool is shutdown
     var dt3 = dbClient1->query("SELECT count(*) as val from Customers where registrationID = 1", Result);
     int|error result3 = getReturnValue(dt3);
 
     // Now a new pool should be created
-    mysql:Client dbClient3 = check new (host, user, password, database, port, options, pool);
+    Client dbClient3 = checkpanic new (host, user, password, poolDB_1, port, options, pool);
 
     // This call should be successful
     var dt4 = dbClient3->query("SELECT count(*) as val from Customers where registrationID = 1", Result);
     int|error result4 = getReturnValue(dt4);
 
-    check dbClient3.close();
+    checkpanic dbClient3.close();
 
-    return [result1, result2, result3, result4];
+    test:assertEquals(result1, 1);
+    test:assertEquals(result2, 1);
+    validateApplicationError(result3);
+    test:assertEquals(result4, 1);
 }
 
-function testLocalSharedConnectionPoolStopInitInterleave(string database) returns @tainted int|error {
+@test:Config {
+    groups: ["pool"]
+}
+function testLocalSharedConnectionPoolStopInitInterleave() {
     sql:ConnectionPool pool = {maxOpenConnections: 2};
 
     worker w1 returns error? {
-        check testLocalSharedConnectionPoolStopInitInterleaveHelper1(pool, database);
+        check testLocalSharedConnectionPoolStopInitInterleaveHelper1(pool, poolDB_1);
     }
     worker w2 returns int|error {
-        return testLocalSharedConnectionPoolStopInitInterleaveHelper2(pool, database);
+        return testLocalSharedConnectionPoolStopInitInterleaveHelper2(pool, poolDB_1);
     }
 
-    check wait w1;
+    checkpanic wait w1;
     int|error result = wait w2;
-    return result;
+    test:assertEquals(result, 1);
 }
 
 function testLocalSharedConnectionPoolStopInitInterleaveHelper1(sql:ConnectionPool pool, string database)
 returns error? {
-    mysql:Client dbClient = check new (host, user, password, database, port, options, pool);
+    Client dbClient = check new (host, user, password, database, port, options, pool);
     runtime:sleep(10);
     check dbClient.close();
 }
@@ -298,33 +306,40 @@ returns error? {
 function testLocalSharedConnectionPoolStopInitInterleaveHelper2(sql:ConnectionPool pool, string database)
 returns @tainted int|error {
     runtime:sleep(10);
-    mysql:Client dbClient = check new (host, user, password, database, port, options, pool);
+    Client dbClient = check new (host, user, password, database, port, options, pool);
     var dt = dbClient->query("SELECT COUNT(*) as val from Customers where registrationID = 1", Result);
     int|error count = getReturnValue(dt);
     check dbClient.close();
     return count;
 }
 
-function testShutDownUnsharedLocalConnectionPool(string database) returns @tainted [int|error, int|error]|error {
+@test:Config {
+    groups: ["pool"]
+}
+function testShutDownUnsharedLocalConnectionPool() {
     sql:ConnectionPool pool = {maxOpenConnections: 2};
-    mysql:Client dbClient = check new (host, user, password, database, port, options, pool);
+    Client dbClient = checkpanic new (host, user, password, poolDB_1, port, options, pool);
 
     var result = dbClient->query("select count(*) as val from Customers where registrationID = 1", Result);
     int|error retVal1 = getReturnValue(result);
     // Pool should be shutdown as the only client using it is stopped.
-    check dbClient.close();
+    checkpanic dbClient.close();
     // This should result in an error return.
     var resultAfterPoolShutDown = dbClient->query("select count(*) as val from Customers where registrationID = 1",
         Result);
     int|error retVal2 = getReturnValue(resultAfterPoolShutDown);
-    return [retVal1, retVal2];
+
+    test:assertEquals(retVal1, 1);
+    validateApplicationError(retVal2);
 }
 
-function testShutDownSharedConnectionPool(string database) returns
-    @tainted [int|error, int|error, int|error, int|error, int|error]|error {
+@test:Config {
+    groups: ["pool"]
+}
+function testShutDownSharedConnectionPool() {
     sql:ConnectionPool pool = {maxOpenConnections: 1};
-    mysql:Client dbClient1 = check new (host, user, password, database, port, options, pool);
-    mysql:Client dbClient2 = check new (host, user, password, database, port, options, pool);
+    Client dbClient1 = checkpanic new (host, user, password, poolDB_1, port, options, pool);
+    Client dbClient2 = checkpanic new (host, user, password, poolDB_1, port, options, pool);
 
     var result1 = dbClient1->query("select count(*) as val from Customers where registrationID = 1", Result);
     int|error retVal1 = getReturnValue(result1);
@@ -333,7 +348,7 @@ function testShutDownSharedConnectionPool(string database) returns
     int|error retVal2 = getReturnValue(result2);
 
     // Only one client is closed so pool should not shutdown.
-    check dbClient1.close();
+    checkpanic dbClient1.close();
 
     // This should be successful as pool is still up.
     var result3 = dbClient2->query("select count(*) as val from Customers where registrationID = 2", Result);
@@ -344,20 +359,26 @@ function testShutDownSharedConnectionPool(string database) returns
     int|error retVal4 = getReturnValue(result4);
 
     // Now pool should be shutdown as the only remaining client is stopped.
-    check dbClient2.close();
+    checkpanic dbClient2.close();
 
     // This should fail because this client is stopped.
     var result5 = dbClient2->query("select count(*) as val from Customers where registrationID = 2", Result);
     int|error retVal5 = getReturnValue(result4);
 
-    return [retVal1, retVal2, retVal3, retVal4, retVal5];
+    test:assertEquals(retVal1, 1);
+    test:assertEquals(retVal2, 1);
+    test:assertEquals(retVal3, 1);
+    validateApplicationError(retVal4);
+    validateApplicationError(retVal5);
 }
 
-function testShutDownPoolCorrespondingToASharedPoolConfig(string database1, string database2) returns
-    @tainted [int|error, int|error, int|error, int|error]|error {
+@test:Config {
+    groups: ["pool"]
+}
+function testShutDownPoolCorrespondingToASharedPoolConfig() {
     sql:ConnectionPool pool = {maxOpenConnections: 1};
-    mysql:Client dbClient1 = check new (host, user, password, database1, port, options, pool);
-    mysql:Client dbClient2 = check new (host, user, password, database2, port, options, pool);
+    Client dbClient1 = checkpanic new (host, user, password, poolDB_1, port, options, pool);
+    Client dbClient2 = checkpanic new (host, user, password, poolDB_1, port, options, pool);
 
     var result1 = dbClient1->query("select count(*) as val from Customers where registrationID = 1", Result);
     int|error retVal1 = getReturnValue(result1);
@@ -366,7 +387,7 @@ function testShutDownPoolCorrespondingToASharedPoolConfig(string database1, stri
     int|error retVal2 = getReturnValue(result2);
 
     // This should result in stopping the pool used by this client as it was the only client using that pool.
-    check dbClient1.close();
+    checkpanic dbClient1.close();
 
     // This should be successful as the pool belonging to this client is up.
     var result3 = dbClient2->query("select count(*) as val from Customers where registrationID = 2", Result);
@@ -376,33 +397,42 @@ function testShutDownPoolCorrespondingToASharedPoolConfig(string database1, stri
     var result4 = dbClient1->query("select count(*) as val from Customers where registrationID = 2", Result);
     int|error retVal4 = getReturnValue(result4);
 
-    check dbClient2.close();
+    checkpanic dbClient2.close();
 
-    return [retVal1, retVal2, retVal3, retVal4];
+    test:assertEquals(retVal1, 1);
+    test:assertEquals(retVal2, 1);
+    test:assertEquals(retVal3, 1);
+    validateApplicationError(retVal4);
 }
 
-function testStopClientUsingGlobalPool(string database) returns @tainted [int|error, int|error]|error {
+@test:Config {
+    groups: ["pool"]
+}
+function testStopClientUsingGlobalPool() {
     // This client doesn't have pool config specified therefore, global pool will be used.
-    mysql:Client dbClient = check new (host, user, password, database, port, options);
+    Client dbClient = checkpanic new (host, user, password, poolDB_1, port, options);
 
     var result1 = dbClient->query("select count(*) as val from Customers where registrationID = 1", Result);
     int|error retVal1 = getReturnValue(result1);
 
     // This will merely stop this client and will not have any effect on the pool because it is the global pool.
-    check dbClient.close();
+    checkpanic dbClient.close();
 
     // This should fail because this client was stopped, even though the pool is up.
     var result2 = dbClient->query("select count(*) as val from Customers where registrationID = 1", Result);
     int|error retVal2 = getReturnValue(result2);
 
-    return [retVal1, retVal2];
+    test:assertEquals(retVal1, 1);
+    validateApplicationError(retVal2);
 }
 
-function testLocalConnectionPoolShutDown(string database1, string database2) returns
-    @tainted [int|error, int|error]|error {
-    int|error count1 = getOpenConnectionCount(database1);
-    int|error count2 = getOpenConnectionCount(database2);
-    return [count1, count2];
+@test:Config {
+    groups: ["pool"]
+}
+function testLocalConnectionPoolShutDown() {
+    int|error count1 = getOpenConnectionCount(poolDB_1);
+    int|error count2 = getOpenConnectionCount(poolDB_2);
+    test:assertEquals(count1, count2);
 }
 
 public type Variable record {
@@ -411,7 +441,7 @@ public type Variable record {
 };
 
 function getOpenConnectionCount(string database) returns @tainted (int|error) {
-    mysql:Client dbClient = check new (host, user, password, database, port, options, {maxOpenConnections: 1});
+    Client dbClient = check new (host, user, password, database, port, options, {maxOpenConnections: 1});
     var dt = dbClient->query("show status where `variable_name` = 'Threads_connected'", Variable);
     int|error count = getIntVariableValue(dt);
     check dbClient.close();
@@ -420,14 +450,14 @@ function getOpenConnectionCount(string database) returns @tainted (int|error) {
 
 function testGlobalConnectionPoolConcurrentHelper1(string database) returns
     @tainted [stream<record{}, error>, stream<record{}, error>]|error {
-    mysql:Client dbClient = check new (host, user, password, database, port, options);
+    Client dbClient = check new (host, user, password, database, port, options);
     var dt1 = dbClient->query("select count(*) as val from Customers where registrationID = 1", Result);
     var dt2 = dbClient->query("select count(*) as val from Customers where registrationID = 2", Result);
     return [dt1, dt2];
 }
 
-function testGlobalConnectionPoolConcurrentHelper2(string database) returns @tainted (int|error)[]|error {
-    mysql:Client dbClient = check new (host, user, password, database, port, options);
+function testGlobalConnectionPoolConcurrentHelper2(string database) returns @tainted (int|error)[] {
+    Client dbClient = checkpanic new (host, user, password, database, port, options);
     (int|error)[] returnArray = [];
     var dt1 = dbClient->query("select count(*) as val from Customers where registrationID = 1", Result);
     var dt2 = dbClient->query("select count(*) as val from Customers where registrationID = 2", Result);
@@ -455,6 +485,65 @@ function getCombinedReturnValue([stream<record{}, error>, stream<record{}, error
     }
 }
 
+function getIntVariableValue(stream<record{}, error> queryResult) returns int|error {
+    int count = -1;
+    record {|record {} value;|}? data = check queryResult.next();
+    if (data is record {|record {} value;|}) {
+        record {} variable = data.value;
+        if (variable is Variable) {
+            return 'int:fromString(variable.value);
+        }
+    }
+    check queryResult.close();
+    return count;
+}
+
+
+function drainGlobalPool(string database) {
+    Client dbClient1 = checkpanic new (host, user, password, database, port, options);
+    Client dbClient2 = checkpanic new (host, user, password, database, port, options);
+    Client dbClient3 = checkpanic new (host, user, password, database, port, options);
+    Client dbClient4 = checkpanic new (host, user, password, database, port, options);
+    Client dbClient5 = checkpanic new (host, user, password, database, port, options);
+
+    stream<record{}, error>[] resultArray = [];
+
+    resultArray[0] = dbClient1->query("select count(*) as val from Customers where registrationID = 1", Result);
+    resultArray[1] = dbClient1->query("select count(*) as val from Customers where registrationID = 2", Result);
+
+    resultArray[2] = dbClient2->query("select count(*) as val from Customers where registrationID = 1", Result);
+    resultArray[3] = dbClient2->query("select count(*) as val from Customers where registrationID = 1", Result);
+
+    resultArray[4] = dbClient3->query("select count(*) as val from Customers where registrationID = 2", Result);
+    resultArray[5] = dbClient3->query("select count(*) as val from Customers where registrationID = 2", Result);
+
+    resultArray[6] = dbClient4->query("select count(*) as val from Customers where registrationID = 1", Result);
+    resultArray[7] = dbClient4->query("select count(*) as val from Customers where registrationID = 1", Result);
+
+    resultArray[8] = dbClient5->query("select count(*) as val from Customers where registrationID = 1", Result);
+    resultArray[9] = dbClient5->query("select count(*) as val from Customers where registrationID = 1", Result);
+
+    resultArray[10] = dbClient5->query("select count(*) as val from Customers where registrationID = 1", Result);
+
+    (int|error)[] returnArray = [];
+    int i = 0;
+    // Connections will be released here as we fully consume the data in the following conversion function calls
+    foreach var x in resultArray {
+        returnArray[i] = getReturnValue(x);
+
+        i += 1;
+    }
+    // All 5 clients are supposed to use the same pool. Default maximum no of connections is 10.
+    // Since each select operation hold up one connection each, the last select operation should
+    // return an error
+    i = 0;
+    while(i < 10) {
+        test:assertEquals(returnArray[i], 1);
+        i = i + 1;
+    }
+    validateConnectionTimeoutError(returnArray[10]);
+}
+
 function getReturnValue(stream<record{}, error> queryResult) returns int|error {
     int count = -1;
     record {|record {} value;|}? data = check queryResult.next();
@@ -468,15 +557,14 @@ function getReturnValue(stream<record{}, error> queryResult) returns int|error {
     return count;
 }
 
-function getIntVariableValue(stream<record{}, error> queryResult) returns int|error {
-    int count = -1;
-    record {|record {} value;|}? data = check queryResult.next();
-    if (data is record {|record {} value;|}) {
-        record {} variable = data.value;
-        if (variable is Variable) {
-            return ints:fromString(variable.value);
-        }
-    }
-    check queryResult.close();
-    return count;
+function validateApplicationError(int|error dbError) {
+    test:assertTrue(dbError is error);
+    sql:ApplicationError sqlError = <sql:ApplicationError> dbError;
+    test:assertTrue(stringutils:contains(sqlError.message(), "Client is already closed"), sqlError.message());
+}
+
+function validateConnectionTimeoutError(int|error dbError) {
+    test:assertTrue(dbError is error);
+    sql:DatabaseError sqlError = <sql:DatabaseError> dbError;
+    test:assertTrue(stringutils:contains(sqlError.message(), "request timed out after"), sqlError.message());
 }

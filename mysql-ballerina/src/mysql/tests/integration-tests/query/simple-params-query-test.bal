@@ -762,11 +762,6 @@ function validateGeoTable(record{}? returnData) {
 }
 
 function validateJsonTable(record{}? returnData) {
-    json jsonData = {
-        id: 100,
-        name: "Joe",
-        groups: "[2, 5]"
-    };
     if (returnData is ()) {
         test:assertFail("Returned data is nil");
     } else {

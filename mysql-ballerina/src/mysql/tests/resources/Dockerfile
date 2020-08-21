@@ -24,6 +24,9 @@ COPY sql-scripts/pool/connection-pool-test-data.sql /docker-entrypoint-initdb.d/
 COPY sql-scripts/execute/execute-test-data.sql /docker-entrypoint-initdb.d/
 COPY sql-scripts/execute/execute-params-test-data.sql /docker-entrypoint-initdb.d/
 
+# Batch Execute test case
+COPY sql-scripts/batchexecute/batch-execute-test-data.sql /docker-entrypoint-initdb.d/
+
 # Query test case
 COPY sql-scripts/query/simple-params-test-data.sql /docker-entrypoint-initdb.d/
 COPY sql-scripts/query/numerical-test-data.sql /docker-entrypoint-initdb.d/

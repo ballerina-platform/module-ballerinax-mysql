@@ -354,40 +354,6 @@ function executeQueryMysqlClient(sql:ParameterizedQuery sqlQuery) returns sql:Ex
     return result;
 }
 
-function getUntaintedData(record {}|error? value, string fieldName) returns @untainted anydata {
-    if (value is record {}) {
-        return value[fieldName];
-    }
-    return {};
-}
-
-function getByteColumnChannel() returns @untainted io:ReadableByteChannel {
-    io:ReadableByteChannel byteChannel = checkpanic io:openReadableFile("./src/mysql/tests/resources/files/byteValue.txt");
-    return byteChannel;
-}
-
-function getBlobColumnChannel() returns @untainted io:ReadableByteChannel {
-    io:ReadableByteChannel byteChannel = checkpanic io:openReadableFile("./src/mysql/tests/resources/files/blobValue.txt");
-    return byteChannel;
-}
-
-function getClobColumnChannel() returns @untainted io:ReadableCharacterChannel {
-    io:ReadableByteChannel byteChannel = checkpanic io:openReadableFile("./src/mysql/tests/resources/files/clobValue.txt");
-    io:ReadableCharacterChannel sourceChannel = new (byteChannel, "UTF-8");
-    return sourceChannel;
-}
-
-function queryMysqlClient(@untainted string|sql:ParameterizedQuery sqlQuery)
-returns @tainted record {}|error? {
-    Client dbClient = check new (host, user, password, executeParamsDb, port);
-    stream<record{}, error> streamData = dbClient->query(sqlQuery);
-    record {|record {} value;|}? data = check streamData.next();
-    check streamData.close();
-    record {}? value = data?.value;
-    check dbClient.close();
-    return value;
-}
-
 function validateResult(sql:ExecutionResult result, int rowCount, int? lastId = ()) {
     test:assertExactEquals(result.affectedRowCount, rowCount, "Affected row count is different.");
 

@@ -18,27 +18,35 @@ import ballerina/test;
 
 string connectDB = "CONNECT_DB";
 
-@test:Config {}
+@test:Config {
+    groups: ["connection"]
+}
 function testConnectionWithNoFields() {
     Client|sql:Error dbClient = new ();
     test:assertTrue(dbClient is sql:Error, "Initialising connection with no fields should fail.");
 }
 
-@test:Config {}
+@test:Config {
+    groups: ["connection"]
+}
 function testWithURLParams() {
     Client dbClient = checkpanic new (host, user, password, connectDB, port);
     var exitCode = dbClient.close();
     test:assertExactEquals(exitCode, (), "Initialising connection with params fails.");
 }
 
-@test:Config {}
+@test:Config {
+    groups: ["connection"]
+}
 function testWithoutHost() {
     Client dbClient = checkpanic new (user = user, password = password, database = connectDB, port = port);
     var exitCode = dbClient.close();
     test:assertExactEquals(exitCode, (), "Initialising connection without host fails.");
 }
 
-@test:Config {}
+@test:Config {
+    groups: ["connection"]
+}
 function testWithOptions() {
     Options options = {
         ssl: (),
@@ -50,7 +58,9 @@ function testWithOptions() {
     test:assertExactEquals(exitCode, (), "Initialising connection with options fails.");
 }
 
-@test:Config {}
+@test:Config {
+    groups: ["connection"]
+}
 function testWithConnectionPool() {
     sql:ConnectionPool connectionPool = {
         maxOpenConnections: 25
@@ -62,7 +72,9 @@ function testWithConnectionPool() {
     test:assertEquals(connectionPool.maxOpenConnections, 25, "Configured max connection config is wrong.");
 }
 
-@test:Config {}
+@test:Config {
+    groups: ["connection"]
+}
 function testWithConnectionParams() {
     sql:ConnectionPool connectionPool = {
         maxOpenConnections: 25

@@ -94,20 +94,24 @@ task ballerinaTest {
     dependsOn(updateTomlFile)
     finalizedBy(revertTomlFile)
 
-    def additionalParams = ""
-    if (project.hasProperty("debug")) {
-        additionalParams = "--debug ${project.findProperty("debug")}"
+    def groupParams = ""
+    if (project.hasProperty("groups")) {
+        groupParams = "--groups ${project.findProperty("groups")}"
     }
-    println "${additionalParams}"
+
+    def debugParams = ""
+    if (project.hasProperty("debug")) {
+        debugParams = "--debug ${project.findProperty("debug")}"
+    }
 
     doLast {
         exec {
             workingDir project.projectDir
             environment "JAVA_OPTS", "-DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true"
             if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                commandLine 'cmd', '/c', "$distributionBinPath/ballerina.bat test --code-coverage --all ${additionalParams}"
+                commandLine 'cmd', '/c', "$distributionBinPath/ballerina.bat test --code-coverage ${groupParams} --all ${debugParams}"
             } else {
-                commandLine 'sh', '-c', "$distributionBinPath/ballerina test --code-coverage --all ${additionalParams}"
+                commandLine 'sh', '-c', "$distributionBinPath/ballerina test --code-coverage ${groupParams} --all ${debugParams}"
             }
         }
     }

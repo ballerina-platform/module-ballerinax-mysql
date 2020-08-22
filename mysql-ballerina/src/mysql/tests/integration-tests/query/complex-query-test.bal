@@ -15,6 +15,7 @@
 
 import ballerina/sql;
 import ballerina/test;
+import ballerina/time;
 
 string complexQueryDb = "COMPLEX_QUERY_DB";
 
@@ -148,11 +149,26 @@ function testDateTime() {
     record{| record{} value; |}? data =  checkpanic queryResult.next();
     record{}? value = data?.value;
     checkpanic dbClient.close();
+
+    time:Time now = time:currentTime();
+    time:TimeZone systemTimeZone = now.zone;
+
+    time:Time dateTime = checkpanic time:createTime(2017, 5, 23, 0, 0, 0, 0, systemTimeZone.id);
+    string dateType = checkpanic time:format(dateTime, "yyyy-MM-ddXXX");
+
+    time:Time timeType = checkpanic time:createTime(2017, 5, 23, 14, 15, 23, 0, "UTC");
+    time:Time newTime = checkpanic time:toTimeZone(timeType, systemTimeZone.id);
+    string timeTypeString = checkpanic time:format(newTime, "HH:mm:ss.SSSXXX");
+
+    time:Time insertedTimeType = checkpanic time:createTime(2017, 1, 25, 16, 33, 55, 0, "UTC");
+    time:Time insertedOffsetTime = checkpanic time:toTimeZone(insertedTimeType, systemTimeZone.id);
+    string insertedTimeString = checkpanic time:format(insertedOffsetTime, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+
     ResultDates expected = {
-        DATE_TYPE: "2017-05-23+05:30",
-        TIME_TYPE: "19:45:23.000+05:30",
-        TIMESTAMP_TYPE: "2017-01-25T22:03:55.000+05:30",
-        DATETIME_TYPE: "2017-01-25T22:03:55.000+05:30"
+        DATE_TYPE: dateType,
+        TIME_TYPE: timeTypeString,
+        TIMESTAMP_TYPE: insertedTimeString,
+        DATETIME_TYPE: insertedTimeString
     };
     test:assertEquals(value, expected, "Expected record did not match."); 
 }

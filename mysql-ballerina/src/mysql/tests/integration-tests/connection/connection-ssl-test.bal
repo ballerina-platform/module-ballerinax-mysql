@@ -14,23 +14,23 @@
 // under the License.
 
 import ballerina/filepath;
-import ballerina/mysql;
+import ballerina/stringutils;
+import ballerina/sql;
+import ballerina/test;
 
-//TODO:Remove this and pass with functions.
-//After fixing this https://github.com/ballerina-platform/ballerina-lang/issues/21259
-string host = "localhost";
-string user = "test";
-string password = "test123";
-string database = "SSL_CONNECT_DB";
-int port = 3305;
+string sslDB = "SSL_CONNECT_DB";
 
-string clientStorePath = check filepath:absolute("src/test/resources/keystore/client/client-keystore.p12");
-string turstStorePath = check filepath:absolute("src/test/resources/keystore/client/trust-keystore.p12");
+string clientStorePath = checkpanic filepath:absolute("./src/mysql/tests/resources/keystore/client/client-keystore.p12");
+string turstStorePath = checkpanic filepath:absolute("./src/mysql/tests/resources/keystore/client/trust-keystore.p12");
 
-function testSSLVerifyCert() returns error? {
-    mysql:Options options = {
+@test:Config {
+    enable: false,
+    groups: ["ssl"]
+}
+function testSSLVerifyCert() {
+    Options options = {
         ssl: {
-            mode: mysql:SSL_VERIFY_CERT,
+            mode: SSL_VERIFY_CERT,
             clientCertKeystore: {
                 path: clientStorePath,
                 password: "changeit"
@@ -41,15 +41,19 @@ function testSSLVerifyCert() returns error? {
             }
         }
     };
-    mysql:Client dbClient = check new (user = user, password = password, database = database,
+    Client dbClient = checkpanic new (user = user, password = password, database = sslDB,
         port = port, options = options);
-    return dbClient.close();
+    test:assertEquals(dbClient.close(), ());
 }
 
-function testSSLPreferred() returns error? {
-    mysql:Options options = {
+@test:Config {
+    enable: false,
+    groups: ["ssl"]
+}
+function testSSLPreferred() {
+    Options options = {
         ssl: {
-            mode:  mysql:SSL_PREFERRED,
+            mode:  SSL_PREFERRED,
             clientCertKeystore: {
                 path: clientStorePath,
                 password: "changeit"
@@ -60,30 +64,37 @@ function testSSLPreferred() returns error? {
             }
         }
     };
-    mysql:Client dbClient = check new (user = user, password = password, database = database,
+    Client dbClient = checkpanic new (user = user, password = password, database = sslDB,
         port = port, options = options);
-    return dbClient.close();
+    test:assertEquals(dbClient.close(), ());
 }
 
-function testSSLRequiredWithClientCert() returns error? {
-    mysql:Options options = {
+@test:Config {
+    enable: false,
+    groups: ["ssl"]
+}
+function testSSLRequiredWithClientCert() {
+    Options options = {
         ssl: {
-            mode:  mysql:SSL_REQUIRED,
+            mode:  SSL_REQUIRED,
             clientCertKeystore: {
                 path: clientStorePath,
                 password: "changeit"
             }
         }
     };
-    mysql:Client dbClient = check new (user = user, password = password, database = database,
+    Client dbClient = checkpanic new (user = user, password = password, database = sslDB,
         port = port, options = options);
-    return dbClient.close();
+    test:assertEquals(dbClient.close(), ());
 }
 
-function testSSLVerifyIdentity() returns error? {
-    mysql:Options options = {
+@test:Config {
+    groups: ["ssl"]
+}
+function testSSLVerifyIdentity() {
+    Options options = {
         ssl: {
-            mode:  mysql:SSL_VERIFY_IDENTITY,
+            mode:  SSL_VERIFY_IDENTITY,
             clientCertKeystore: {
                 path: clientStorePath,
                 password: "changeit"
@@ -94,7 +105,10 @@ function testSSLVerifyIdentity() returns error? {
             }
         }
     };
-    mysql:Client dbClient = check new (user = user, password = password, database = database,
+    Client|sql:Error dbClient = new (user = user, password = password, database = sslDB,
         port = port, options = options);
-    return dbClient.close();
+    test:assertTrue(dbClient is error);
+    error dbError = <error> dbClient;
+    test:assertTrue(stringutils:contains(dbError.message(),  "The certificate Common Name 'Ballerina MySQL/Connector' " +
+                "does not match with 'localhost'"), dbError.message());
 }

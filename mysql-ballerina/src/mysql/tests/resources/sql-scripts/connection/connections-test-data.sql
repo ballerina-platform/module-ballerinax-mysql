@@ -16,3 +16,5 @@ CREATE TABLE Customers(
 
 INSERT INTO Customers (firstName,lastName,registrationID,creditLimit,country)
                 VALUES ('Peter', 'Stuart', 1, 5000.75, 'USA');
+
+CREATE DATABASE IF NOT EXISTS SSL_CONNECT_DB;

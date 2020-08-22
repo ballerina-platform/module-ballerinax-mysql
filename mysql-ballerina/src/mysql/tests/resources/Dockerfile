@@ -35,4 +35,9 @@ COPY sql-scripts/query/complex-test-data.sql /docker-entrypoint-initdb.d/
 # Procedures test case
 COPY sql-scripts/procedures/stored-procedure-test-data.sql /docker-entrypoint-initdb.d/
 
+RUN mkdir -p /etc/ssl
+COPY keystore/server/ /etc/ssl/
+
+COPY my.cnf /etc/
+
 ENV MYSQL_ROOT_PASSWORD Test123#

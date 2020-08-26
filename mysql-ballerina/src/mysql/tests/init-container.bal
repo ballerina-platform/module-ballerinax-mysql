@@ -20,7 +20,7 @@ import ballerina/test;
 import ballerina/filepath;
 import ballerina/runtime;
 
-string absolutePath = check filepath:absolute(<@untainted> "src/mysql/tests/resources");
+string resourcePath = check filepath:absolute("src/mysql/tests/resources");
 
 string host = "localhost";
 string user = "root";
@@ -30,11 +30,11 @@ int port = 3305;
 @test:BeforeSuite
 function beforeSuite() {
     
-    system:Process process = checkpanic system:exec("docker", {}, absolutePath, "build", "-t", "ballerina-mysql", ".");
+    system:Process process = checkpanic system:exec("docker", {}, resourcePath, "build", "-t", "ballerina-mysql", ".");
     int exitCode = checkpanic process.waitForExit();
     test:assertExactEquals(exitCode, 0, "Docker image 'ballerina-mysql' creation failed!");
  
-    process = checkpanic system:exec("docker", {}, absolutePath, 
+    process = checkpanic system:exec("docker", {}, resourcePath, 
                     "run", "--rm", "-d", "--name", "ballerina-mysql", "-p", "3305:3306", "-t", "ballerina-mysql");
     exitCode = checkpanic process.waitForExit();
     test:assertExactEquals(exitCode, 0, "Docker container 'ballerina-mysql' creation failed!");
@@ -44,7 +44,7 @@ function beforeSuite() {
     int counter = 0;
     while(healthCheck > 0 && counter < 12) {
         runtime:sleep(10000);
-        process = checkpanic system:exec("docker", {}, absolutePath, 
+        process = checkpanic system:exec("docker", {}, resourcePath, 
                     "exec", "ballerina-mysql", "mysqladmin", "ping", "-hlocalhost", "-uroot", "-pTest123#", "--silent");
         healthCheck = checkpanic process.waitForExit();
         counter = counter + 1;
@@ -55,7 +55,7 @@ function beforeSuite() {
 
 @test:AfterSuite {}
 function afterSuite() {
-    system:Process process = checkpanic system:exec("docker", {}, absolutePath, "stop", "ballerina-mysql");
+    system:Process process = checkpanic system:exec("docker", {}, resourcePath, "stop", "ballerina-mysql");
     int exitCode = checkpanic process.waitForExit();
     test:assertExactEquals(exitCode, 0, "Docker container 'ballerina-mysql' stop failed!");
 }

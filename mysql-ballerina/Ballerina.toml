@@ -25,3 +25,4 @@ target = "java8"
     path = "./lib/mysql-connector-java-8.0.21.jar"
     groupId = "mysql"
     modules = ["mysql"]
+    scope = "testOnly"

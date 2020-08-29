@@ -31,7 +31,8 @@ The MySQL library is tested with a docker based integration test framework. The 
 
     * Installing docker on Linux,
 
-      Note:<br>    These commands retrieve content from get.docker.com web in a quiet output-document mode and install.Then we need to stop docker service as it needs to restart docker in daemon mode. After that, we need to export docker daemon host.
+      Note:
+      These commands retrieve content from get.docker.com web in a quiet output-document mode and install.Then we need to stop docker service as it needs to restart docker in daemon mode. After that, we need to export docker daemon host.
 
            wget -qO- https://get.docker.com/ | sh
            sudo service dockerd stop
@@ -54,16 +55,16 @@ The MySQL library is tested with a docker based integration test framework. The 
 
         ./gradlew clean build -Pgroups=<Comma separated groups/test cases>
 
-    The following groups of test cases are available,
-        Groups | Test Cases
-        ---| ---
-        connection | connection-init<br> ssl
-        pool | pool
-        transaction | local-transaction <br> xa-transaction
-        execute | execute-basic <br> execute-params
-        batch-execute | batch-execute 
-        query | query-simple-params<br>query-numerical-params<br>query-complex-params
-        procedures | procedures
+   The following groups of test cases are available,<br>
+   Groups | Test Cases
+   ---| ---
+   connection | connection-init<br> ssl
+   pool | pool
+   transaction | local-transaction <br> xa-transaction
+   execute | execute-basic <br> execute-params
+   batch-execute | batch-execute 
+   query | query-simple-params<br>query-numerical-params<br>query-complex-params
+   procedures | procedures
 
 5. To debug the tests,
 

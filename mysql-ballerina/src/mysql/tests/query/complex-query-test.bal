@@ -18,7 +18,7 @@ import ballerina/stringutils;
 import ballerina/test;
 import ballerina/time;
 
-string complexQueryDb = "COMPLEX_QUERY_DB";
+string complexQueryDb = "QUERY_COMPLEX_PARAMS_DB";
 
 type SelectTestAlias record {
     int INT_TYPE;
@@ -47,7 +47,7 @@ type ResultDates record {
 };
 
 @test:Config {
-    groups: ["query", "complex-query"]
+    groups: ["query","query-complex-params"]
 }
 function testGetPrimitiveTypes() {
     Client dbClient = checkpanic new (host, user, password, complexQueryDb, port);
@@ -72,7 +72,7 @@ function testGetPrimitiveTypes() {
 }
 
 @test:Config {
-    groups: ["query", "complex-query"]
+    groups: ["query","query-complex-params"]
 }
 function testToJson() {
     Client dbClient = checkpanic new (host, user, password, complexQueryDb, port);
@@ -98,7 +98,7 @@ function testToJson() {
 }
 
 @test:Config {
-    groups: ["query", "complex-query"]
+    groups: ["query","query-complex-params"]
 }
 function testToJsonComplexTypes() {
     Client dbClient = checkpanic new (host, user, password, complexQueryDb, port);
@@ -118,7 +118,7 @@ function testToJsonComplexTypes() {
 }
 
 @test:Config {
-    groups: ["query", "complex-query"]
+    groups: ["query","query-complex-params"]
 }
 function testComplexTypesNil() {
     Client dbClient = checkpanic new (host, user, password, complexQueryDb, port);
@@ -138,7 +138,7 @@ function testComplexTypesNil() {
 }
 
 @test:Config {
-    groups: ["query", "complex-query"]
+    groups: ["query","query-complex-params"]
 }
 function testDateTime() {
     Client dbClient = checkpanic new (host, user, password, complexQueryDb, port);
@@ -178,7 +178,7 @@ function testDateTime() {
 }
 
 @test:Config {
-    groups: ["query", "complex-query"]
+    groups: ["query","query-complex-params"]
 }
 function testColumnAlias() {
     Client dbClient = checkpanic new (host, user, password, complexQueryDb, port);

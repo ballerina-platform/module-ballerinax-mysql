@@ -29,17 +29,18 @@ The MySQL library is tested with a docker based integration test framework. The 
 
 1. Install and run docker in daemon mode.
 
-    *  Installing docker on Linux,<br>
-       Note:<br>    These commands retrieve content from get.docker.com web in a quiet output-document mode and install.Then we need to stop docker service as it needs to restart docker in daemon mode. After that, we need to export docker daemon host.
-       
-            wget -qO- https://get.docker.com/ | sh
-            sudo service dockerd stop
-            export DOCKER_HOST=tcp://172.17.0.1:4326
-            docker daemon -H tcp://172.17.0.1:4326
+    * Installing docker on Linux,
 
-    *  On installing docker on Mac, see <a target="_blank" href="https://docs.docker.com/docker-for-mac/">Get started with Docker for Mac</a>
+      Note:<br>    These commands retrieve content from get.docker.com web in a quiet output-document mode and install.Then we need to stop docker service as it needs to restart docker in daemon mode. After that, we need to export docker daemon host.
 
-    *  On installing docker on Windows, see <a target="_blank" href="https://docs.docker.com/docker-for-windows/">Get started with Docker for Windows</a>
+           wget -qO- https://get.docker.com/ | sh
+           sudo service dockerd stop
+           export DOCKER_HOST=tcp://172.17.0.1:4326
+           docker daemon -H tcp://172.17.0.1:4326
+
+    * On installing docker on Mac, see <a target="_blank" href="https://docs.docker.com/docker-for-mac/">Get started with Docker for Mac</a>
+
+    * On installing docker on Windows, see <a target="_blank" href="https://docs.docker.com/docker-for-windows/">Get started with Docker for Windows</a>
 
 2. To run the integration tests, issue the following commands.
 
@@ -49,7 +50,22 @@ The MySQL library is tested with a docker based integration test framework. The 
 
         ./gradlew clean build -x test
 
-4. To debug the tests,
+4. To run only specific tests,
+
+        ./gradlew clean build -Pgroups=<Comma separated groups/test cases>
+
+    The following groups of test cases are available,
+        Groups | Test Cases
+        ---| ---
+        connection | connection-init<br> ssl
+        pool | pool
+        transaction | local-transaction <br> xa-transaction
+        execute | execute-basic <br> execute-params
+        batch-execute | batch-execute 
+        query | query-simple-params<br>query-numerical-params<br>query-complex-params
+        procedures | procedures
+
+5. To debug the tests,
 
         ./gradlew clean build -Pdebug=<port>
 

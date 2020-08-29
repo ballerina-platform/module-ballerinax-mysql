@@ -18,10 +18,10 @@ import ballerina/io;
 import ballerina/sql;
 import ballerina/test;
 
-string simpleParamsDb = "QUERY_PARAMS_DB";
+string simpleParamsDb = "QUERY_SIMPLE_PARAMS_DB";
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function querySingleIntParam() {
     int rowId = 1;
@@ -30,7 +30,7 @@ function querySingleIntParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryDoubleIntParam() {
     int rowId = 1;
@@ -40,7 +40,7 @@ function queryDoubleIntParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryIntAndLongParam() {
     int rowId = 1;
@@ -50,7 +50,7 @@ function queryIntAndLongParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryStringParam() {
     string stringType = "Hello";
@@ -59,7 +59,7 @@ function queryStringParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryIntAndStringParam() {
     string stringType = "Hello";
@@ -69,7 +69,7 @@ function queryIntAndStringParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryDoubleParam() {
     float doubleType = 2139095039.0;
@@ -78,7 +78,7 @@ function queryDoubleParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryFloatParam() {
     float floatType = 123.34;
@@ -87,7 +87,7 @@ function queryFloatParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryDoubleAndFloatParam() {
     float floatType = 123.34;
@@ -98,7 +98,7 @@ function queryDoubleAndFloatParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryDecimalParam() {
     decimal decimalValue = 23.45;
@@ -107,7 +107,7 @@ function queryDecimalParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryDecimalAnFloatParam() {
     decimal decimalValue = 23.45;
@@ -117,7 +117,7 @@ function queryDecimalAnFloatParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeVarcharStringParam() {
     sql:VarcharValue typeVal = new ("Hello");
@@ -126,7 +126,7 @@ function queryTypeVarcharStringParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeCharStringParam() {
     sql:CharValue typeVal = new ("Hello");
@@ -135,7 +135,7 @@ function queryTypeCharStringParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeNCharStringParam() {
     sql:NCharValue typeVal = new ("Hello");
@@ -144,7 +144,7 @@ function queryTypeNCharStringParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeNVarCharStringParam() {
     sql:NVarcharValue typeVal = new ("Hello");
@@ -153,7 +153,7 @@ function queryTypeNVarCharStringParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeVarCharIntegerParam() {
     sql:VarcharValue typeVal = new ("1");
@@ -177,7 +177,7 @@ function queryTypeVarCharIntegerParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypBooleanBooleanParam() {
     sql:BooleanValue typeVal = new (true);
@@ -186,7 +186,7 @@ function queryTypBooleanBooleanParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypBitIntParam() {
     sql:BitValue typeVal = new (1);
@@ -195,7 +195,7 @@ function queryTypBitIntParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypBitStringParam() {
     sql:BitValue typeVal = new (true);
@@ -204,7 +204,7 @@ function queryTypBitStringParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypBitInvalidIntParam() {
     sql:BitValue typeVal = new (12);
@@ -216,7 +216,7 @@ function queryTypBitInvalidIntParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeIntIntParam() {
     sql:IntegerValue typeVal = new (2147483647);
@@ -225,7 +225,7 @@ function queryTypeIntIntParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeTinyIntIntParam() {
     sql:SmallIntValue typeVal = new (127);
@@ -234,7 +234,7 @@ function queryTypeTinyIntIntParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeSmallIntIntParam() {
     sql:SmallIntValue typeVal = new (32767);
@@ -243,7 +243,7 @@ function queryTypeSmallIntIntParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeMediumIntIntParam() {
     sql:IntegerValue typeVal = new (8388607);
@@ -252,7 +252,7 @@ function queryTypeMediumIntIntParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeBigIntIntParam() {
     sql:BigIntValue typeVal = new (9223372036854774807);
@@ -261,7 +261,7 @@ function queryTypeBigIntIntParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeDoubleDoubleParam() {
     sql:DoubleValue typeVal = new (1234.567);
@@ -271,7 +271,7 @@ function queryTypeDoubleDoubleParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeDoubleIntParam() {
     sql:DoubleValue typeVal = new (1234);
@@ -289,7 +289,7 @@ function queryTypeDoubleIntParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeDoubleDecimalParam() {
     decimal decimalVal = 1234.567;
@@ -301,7 +301,7 @@ function queryTypeDoubleDecimalParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeFloatDoubleParam() {
     sql:DoubleValue typeVal1 = new (1234.567);
@@ -311,7 +311,7 @@ function queryTypeFloatDoubleParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeRealDoubleParam() {
     sql:RealValue typeVal = new (1234.567);
@@ -320,7 +320,7 @@ function queryTypeRealDoubleParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeNumericDoubleParam() {
     sql:NumericValue typeVal = new (1234.567);
@@ -329,7 +329,7 @@ function queryTypeNumericDoubleParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeNumericIntParam() {
     sql:NumericValue typeVal = new (1234);
@@ -346,7 +346,7 @@ function queryTypeNumericIntParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeNumericDecimalParam() {
     decimal decimalVal = 1234.567;
@@ -356,7 +356,7 @@ function queryTypeNumericDecimalParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeDecimalDoubleParam() {
     sql:DecimalValue typeVal = new (1234.567);
@@ -365,7 +365,7 @@ function queryTypeDecimalDoubleParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeDecimalDecimalParam() {
     decimal decimalVal = 1234.567;
@@ -375,7 +375,7 @@ function queryTypeDecimalDecimalParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryByteArrayParam() {
     record {}|error? value = queryMysqlClient("Select * from ComplexTypes where row_id = 1");
@@ -386,7 +386,7 @@ function queryByteArrayParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeBinaryByteParam() {
     record {}|error? value = queryMysqlClient("Select * from ComplexTypes where row_id = 1");
@@ -397,7 +397,7 @@ function queryTypeBinaryByteParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeBinaryReadableByteChannelParam() {
     io:ReadableByteChannel byteChannel = getByteColumnChannel();
@@ -407,7 +407,7 @@ function queryTypeBinaryReadableByteChannelParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeVarBinaryReadableByteChannelParam() {
     io:ReadableByteChannel byteChannel = getByteColumnChannel();
@@ -417,7 +417,7 @@ function queryTypeVarBinaryReadableByteChannelParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeTinyBlobByteParam() {
     record {}|error? value = queryMysqlClient("Select * from ComplexTypes where row_id = 1");
@@ -428,7 +428,7 @@ function queryTypeTinyBlobByteParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeBlobByteParam() {
     record {}|error? value = queryMysqlClient("Select * from ComplexTypes where row_id = 1");
@@ -439,7 +439,7 @@ function queryTypeBlobByteParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeMediumBlobByteParam() {
     record {}|error? value = queryMysqlClient("Select * from ComplexTypes where row_id = 1");
@@ -450,7 +450,7 @@ function queryTypeMediumBlobByteParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeLongBlobByteParam() {
     record {}|error? value = queryMysqlClient("Select * from ComplexTypes where row_id = 1");
@@ -461,7 +461,7 @@ function queryTypeLongBlobByteParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeBlobReadableByteChannelParam() {
     io:ReadableByteChannel byteChannel = getBlobColumnChannel();
@@ -471,7 +471,7 @@ function queryTypeBlobReadableByteChannelParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeTinyTextStringParam() {
     sql:TextValue typeVal = new ("very long text");
@@ -480,7 +480,7 @@ function queryTypeTinyTextStringParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeTextStringParam() {
     sql:TextValue typeVal = new ("very long text");
@@ -489,7 +489,7 @@ function queryTypeTextStringParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeMediumTextStringParam() {
     sql:TextValue typeVal = new ("very long text");
@@ -498,7 +498,7 @@ function queryTypeMediumTextStringParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeLongTextStringParam() {
     sql:TextValue typeVal = new ("very long text");
@@ -507,7 +507,7 @@ function queryTypeLongTextStringParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeTextReadableCharChannelParam() {
     io:ReadableCharacterChannel clobChannel = getTextColumnChannel();
@@ -517,7 +517,7 @@ function queryTypeTextReadableCharChannelParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTypeNTextReadableCharChannelParam() {
     io:ReadableCharacterChannel clobChannel = getTextColumnChannel();
@@ -527,7 +527,7 @@ function queryTypeNTextReadableCharChannelParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryDateStringParam() {
     //Setting this as var char since the test database seems not working with date type.
@@ -537,7 +537,7 @@ function queryDateStringParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryDateString2Param() {
     sql:VarcharValue typeVal = new ("2017-2-3");
@@ -546,7 +546,7 @@ function queryDateString2Param() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTimeStringParam() {
     sql:VarcharValue typeVal = new ("11:35:45");
@@ -555,7 +555,7 @@ function queryTimeStringParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTimeStringInvalidParam() {
     sql:TimeValue typeVal = new ("11-35-45");
@@ -568,7 +568,7 @@ function queryTimeStringInvalidParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTimestampStringParam() {
     sql:VarcharValue typeVal = new ("2017-02-03 11:53:00");
@@ -577,7 +577,7 @@ function queryTimestampStringParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryTimestampStringInvalidParam() {
     sql:TimestampValue typeVal = new ("2017/02/03 11:53:00");
@@ -590,7 +590,7 @@ function queryTimestampStringInvalidParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryEnumStringParam() {
     string enumVal = "doctor";
@@ -604,7 +604,7 @@ type EnumResult record {|
 |};
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryEnumStringParam2() {
     string enumVal = "doctor";
@@ -613,7 +613,7 @@ function queryEnumStringParam2() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function querySetStringParam() {
     string setType = "a,d";
@@ -629,7 +629,7 @@ function querySetStringParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryGeoParam() {
     sql:ParameterizedQuery sqlQuery = `SELECT id, ST_AsText(geom) as geomText from GEOTable`;
@@ -637,7 +637,7 @@ function queryGeoParam() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryGeoParam2() {
     string geoPoint = "POINT (7 52)";
@@ -647,7 +647,7 @@ function queryGeoParam2() {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryJsonParam() returns @tainted record {}|error? {
     sql:ParameterizedQuery sqlQuery = `SELECT * from JsonTable`;
@@ -660,7 +660,7 @@ type JsonResult record {|
 |};
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryJsonParam2() returns @tainted record {}|error? {
     sql:ParameterizedQuery sqlQuery = `SELECT * from JsonTable`;
@@ -668,7 +668,7 @@ function queryJsonParam2() returns @tainted record {}|error? {
 }
 
 @test:Config {
-    groups: ["query", "params-query"]
+    groups: ["query","query-simple-params"]
 }
 function queryJsonParam3() returns @tainted record {}|error? {
     int id = 100;

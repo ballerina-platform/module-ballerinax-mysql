@@ -19,7 +19,7 @@ import ballerina/test;
 string connectDB = "CONNECT_DB";
 
 @test:Config {
-    groups: ["connection"]
+    groups: ["connection", "connection-init"]
 }
 function testConnectionWithNoFields() {
     Client|sql:Error dbClient = new ();
@@ -27,7 +27,7 @@ function testConnectionWithNoFields() {
 }
 
 @test:Config {
-    groups: ["connection"]
+    groups: ["connection", "connection-init"]
 }
 function testWithURLParams() {
     Client dbClient = checkpanic new (host, user, password, connectDB, port);
@@ -36,7 +36,7 @@ function testWithURLParams() {
 }
 
 @test:Config {
-    groups: ["connection"]
+    groups: ["connection", "connection-init"]
 }
 function testWithoutHost() {
     Client dbClient = checkpanic new (user = user, password = password, database = connectDB, port = port);
@@ -45,7 +45,7 @@ function testWithoutHost() {
 }
 
 @test:Config {
-    groups: ["connection"]
+    groups: ["connection", "connection-init"]
 }
 function testWithOptions() {
     Options options = {
@@ -59,7 +59,7 @@ function testWithOptions() {
 }
 
 @test:Config {
-    groups: ["connection"]
+    groups: ["connection", "connection-init"]
 }
 function testWithConnectionPool() {
     sql:ConnectionPool connectionPool = {
@@ -73,7 +73,7 @@ function testWithConnectionPool() {
 }
 
 @test:Config {
-    groups: ["connection"]
+    groups: ["connection", "connection-init"]
 }
 function testWithConnectionParams() {
     sql:ConnectionPool connectionPool = {

@@ -24,7 +24,7 @@ string clientStorePath = checkpanic filepath:absolute("./src/mysql/tests/resourc
 string turstStorePath = checkpanic filepath:absolute("./src/mysql/tests/resources/keystore/client/trust-keystore.p12");
 
 @test:Config {
-    groups: ["ssl"]
+    groups: ["connection","ssl"]
 }
 function testSSLVerifyCert() {
     Options options = {
@@ -46,7 +46,7 @@ function testSSLVerifyCert() {
 }
 
 @test:Config {
-    groups: ["ssl"]
+    groups: ["connection","ssl"]
 }
 function testSSLPreferred() {
     Options options = {
@@ -68,7 +68,7 @@ function testSSLPreferred() {
 }
 
 @test:Config {
-    groups: ["ssl"]
+    groups: ["connection","ssl"]
 }
 function testSSLRequiredWithClientCert() {
     Options options = {
@@ -86,7 +86,7 @@ function testSSLRequiredWithClientCert() {
 }
 
 @test:Config {
-    groups: ["ssl"]
+    groups: ["connection","ssl"]
 }
 function testSSLVerifyIdentity() {
     Options options = {

@@ -1,0 +1,29 @@
+[project]
+org-name = "ballerinax"
+version = "@toml.version@"
+
+[platform]
+target = "java8"
+
+    [[platform.libraries]]
+    artifactId = "mysql-native"
+    version = "@project.version@"
+    path = "../mysql-native/build/libs/mysql-native-@project.version@.jar"
+    groupId = "org.ballerinalang"
+    modules = ["mysql"]
+
+    [[platform.libraries]]
+    artifactId = "ballerina-sql"
+    version = "0.5.0"
+    path = "@project.path@/bre/lib/ballerina-sql-0.5.0-java.jar"
+    groupId = "org.ballerinalang"
+    modules = ["mysql"]
+
+    [[platform.libraries]]
+    artafactId = "mysql-connector-java"
+    version = "8.0.17"
+    path = "./lib/mysql-connector-java-8.0.21.jar"
+    groupId = "mysql"
+    modules = ["mysql"]
+    scope = "testOnly"
+    

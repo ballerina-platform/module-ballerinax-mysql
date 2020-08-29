@@ -2,6 +2,7 @@ Ballerina MySQL library
 ===================
 
   [![Build](https://github.com/ballerina-platform/module-ballerinax-mysql/workflows/Build/badge.svg)](https://github.com/ballerina-platform/module-ballerinax-mysql/actions?query=workflow%3ABuild)
+  [![Daily build](https://github.com/ballerina-platform/module-ballerinax-mysql/workflows/Daily%20build/badge.svg)](https://github.com/ballerina-platform/module-ballerina-java.jdbc/actions?query=workflow%3ABuild)
   [![GitHub Release](https://img.shields.io/github/release/ballerina-platform/module-ballerinax-mysql.svg)](https://central.ballerina.io/ballerinax/mysql)
   [![GitHub Release Date](https://img.shields.io/github/release-date/ballerina-platform/module-ballerinax-mysql.svg)](https://central.ballerina.io/ballerinax/mysql)
   [![GitHub Open Issues](https://img.shields.io/github/issues-raw/ballerina-platform/module-ballerinax-mysql.svg)](https://github.com/ballerina-platform/module-ballerinax-mysql/issues)

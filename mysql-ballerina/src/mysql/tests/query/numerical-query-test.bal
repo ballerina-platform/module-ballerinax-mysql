@@ -32,7 +32,7 @@ type NumericTypeForQuery record {
 };
 
 @test:Config {
-    groups: ["query","query-numerical-params"]
+    groups: ["query","query-numeric-params"]
 }
 function testQuery() {
     Client dbClient = checkpanic new (host, user, password, database, port);
@@ -61,7 +61,7 @@ function testQuery() {
 }
 
 @test:Config {
-    groups: ["query","query-numerical-params"]
+    groups: ["query","query-numeric-params"]
 }
 function testQueryNumericTypeRecord() {
     Client dbClient = checkpanic new (host, user, password, database, port);
@@ -99,7 +99,7 @@ type NumericInvalidColumn record {
 };
 
 @test:Config {
-    groups: ["query","query-numerical-params"]
+    groups: ["query","query-numeric-params"]
 }
 function testQueryNumericInvalidColumnRecord() {
     Client dbClient = checkpanic new (host, user, password, database, port);
@@ -128,7 +128,7 @@ type NumericOptionalType record {
 
 
 @test:Config {
-    groups: ["query","query-numerical-params"]
+    groups: ["query","query-numeric-params"]
 }
 function testQueryNumericOptionalTypeRecord() {
     Client dbClient = checkpanic new (host, user, password, database, port);
@@ -165,7 +165,7 @@ type NumericUnionType record {
 };
 
 @test:Config {
-    groups: ["query","query-numerical-params"]
+    groups: ["query","query-numeric-params"]
 }
 function testQueryNumericUnionTypeRecord() {
     Client dbClient = checkpanic new (host, user, password, database, port);
@@ -203,7 +203,7 @@ type NumericStringType record {
 };
 
 @test:Config {
-    groups: ["query","query-numerical-params"]
+    groups: ["query","query-numeric-params"]
 }
 function testQueryNumericStringTypeRecord() {
     Client dbClient = checkpanic new (host, user, password, database, port);
@@ -242,7 +242,7 @@ type NumericCustomType record {
 };
 
 @test:Config {
-    groups: ["query","query-numerical-params"]
+    groups: ["query","query-numeric-params"]
 }
 function testQueryNumericCustomTypeRecord() {
     Client dbClient = checkpanic new (host, user, password, database, port);
@@ -267,7 +267,7 @@ function testQueryNumericCustomTypeRecord() {
 }
 
 @test:Config {
-    groups: ["query","query-numerical-params"]
+    groups: ["query","query-numeric-params"]
 }
 function testQueryFromNullTable() {
     Client dbClient = checkpanic new (host, user, password, database, port);

@@ -64,7 +64,7 @@ The MySQL library is tested with a docker based integration test framework. The 
    transaction | local-transaction <br> xa-transaction
    execute | execute-basic <br> execute-params
    batch-execute | batch-execute 
-   query | query-simple-params<br>query-numerical-params<br>query-complex-params
+   query | query-simple-params<br>query-numeric-params<br>query-complex-params
    procedures | procedures
 
 5. To debug the tests,

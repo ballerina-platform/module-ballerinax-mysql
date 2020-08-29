@@ -42,6 +42,7 @@ COPY sql-scripts/transaction/xa-transaction-test-data-2.sql /docker-entrypoint-i
 
 RUN mkdir -p /etc/ssl
 COPY keystore/server/ /etc/ssl/
+RUN chown -R mysql /etc/ssl
 
 COPY my.cnf /etc/
 

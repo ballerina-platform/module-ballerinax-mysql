@@ -24,7 +24,6 @@ string clientStorePath = checkpanic filepath:absolute("./src/mysql/tests/resourc
 string turstStorePath = checkpanic filepath:absolute("./src/mysql/tests/resources/keystore/client/trust-keystore.p12");
 
 @test:Config {
-    enable: false,
     groups: ["ssl"]
 }
 function testSSLVerifyCert() {
@@ -47,7 +46,6 @@ function testSSLVerifyCert() {
 }
 
 @test:Config {
-    enable: false,
     groups: ["ssl"]
 }
 function testSSLPreferred() {
@@ -70,7 +68,6 @@ function testSSLPreferred() {
 }
 
 @test:Config {
-    enable: false,
     groups: ["ssl"]
 }
 function testSSLRequiredWithClientCert() {
@@ -109,6 +106,6 @@ function testSSLVerifyIdentity() {
         port = port, options = options);
     test:assertTrue(dbClient is error);
     error dbError = <error> dbClient;
-    test:assertTrue(stringutils:contains(dbError.message(),  "The certificate Common Name 'Ballerina MySQL/Connector' " +
-                "does not match with 'localhost'"), dbError.message());
+    test:assertTrue(stringutils:contains(dbError.message(),  "The certificate Common Name 'Server' does not match " +
+    "with 'localhost'."), dbError.message());
 }

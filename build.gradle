@@ -61,8 +61,10 @@ allprojects {
 
 subprojects {
     apply plugin: 'java'
+
     configurations {
         externalJars
+        ballerinaStdLibs
     }
 
     dependencies {

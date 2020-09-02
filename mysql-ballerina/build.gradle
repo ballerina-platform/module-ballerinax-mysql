@@ -51,7 +51,19 @@ task unpackJballerinaTools(type: Copy) {
     dependsOn(copyToLib)
     configurations.jbalTools.resolvedConfiguration.resolvedArtifacts.each { artifact ->
         from zipTree(artifact.getFile())
-        into new File("${buildDir}/target/extracted-distributions")
+        into new File("${buildDir}/target")
+    }
+}
+
+task unpackStdLibs() {
+    dependsOn(unpackJballerinaTools)
+    doLast {
+        configurations.ballerinaStdLibs.resolvedConfiguration.resolvedArtifacts.each { artifact ->
+            copy {
+                from project.zipTree(artifact.getFile())
+                into new File("${buildDir}/target", artifact.name + "-zip")
+            }
+        }
     }
 }
 
@@ -65,9 +77,38 @@ def tomlVersion = project.version.split("-")[0]
 def ballerinaCentralAccessToken = System.getenv('BALLERINA_CENTRAL_ACCESS_TOKEN')
 def targetBallerinaJar = file("$project.projectDir/target/caches/jar_cache/${moduleOrg}/${moduleName}/${tomlVersion}/${moduleOrg}-${moduleName}-${tomlVersion}.jar")
 def targetNativeJar = file("$project.rootDir/${moduleName}-native/build/libs/${moduleName}-native-${project.version}.jar")
-def distributionPath =  project.projectDir.absolutePath + "/build/target/extracted-distributions/jballerina-tools-${ballerinaLangVersion}"
+def distributionPath =  project.projectDir.absolutePath + "/build/target/jballerina-tools-${ballerinaLangVersion}"
 def distributionBinPath = distributionPath + "/bin"
 def originalConfig = ballerinaConfigFile.text
+
+task copyStdlibs(type: Copy) {
+    dependsOn(unpackStdLibs)
+
+    into distributionPath
+    /* Standard Libraries */
+    configurations.ballerinaStdLibs.resolvedConfiguration.resolvedArtifacts.each { artifact ->
+        def artifactExtractedPath = "${buildDir}/target/" + artifact.name + "-zip"
+        into("bir-cache/") {
+            from "${artifactExtractedPath}/caches/bir"
+        }
+        into("bre/lib/") {
+            from "${artifactExtractedPath}/libs"
+        }
+        into("docs/") {
+            from "${artifactExtractedPath}/docs"
+        }
+        // pack to new cache
+        into("cache/bir/") {
+            from "${artifactExtractedPath}/caches/bir"
+        }
+        into("cache/balo/") {
+            from "${artifactExtractedPath}/caches/balo"
+        }
+        into("cache/jar/") {
+            from "${artifactExtractedPath}/caches/jar"
+        }
+    }
+}
 
 task updateTomlFile {
     doLast {
@@ -85,7 +126,7 @@ task revertTomlFile {
 }
 
 task ballerinaTest {
-    dependsOn(unpackJballerinaTools)
+    dependsOn(copyStdlibs)
     dependsOn(":mysql-native:build")
     dependsOn(updateTomlFile)
     finalizedBy(revertTomlFile)
@@ -118,7 +159,7 @@ test {
 }
 
 task ballerinaBuild {
-    dependsOn(unpackJballerinaTools)
+    dependsOn(copyStdlibs)
     dependsOn(":mysql-native:build")
     dependsOn(test)
     dependsOn(updateTomlFile)

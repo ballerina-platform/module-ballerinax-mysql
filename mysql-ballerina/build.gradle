@@ -21,7 +21,6 @@ description = 'Ballerina - MySQL Ballerina Generator'
 
 configurations {
     jbalTools
-    externalJars
 }
 
 dependencies {
@@ -29,9 +28,6 @@ dependencies {
         transitive = false
     }
     compile project(':mysql-native')
-    externalJars (group: 'mysql', name: 'mysql-connector-java', version: "8.0.21") {
-        transitive = false
-    }
  }
 
 clean {

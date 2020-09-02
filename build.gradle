@@ -61,7 +61,19 @@ allprojects {
 
 subprojects {
     apply plugin: 'java'
+    configurations {
+        externalJars
+    }
 
+    dependencies {
+        compile group: 'org.ballerinalang', name: 'ballerina-lang', version: "${ballerinaLangVersion}"
+        compile group: 'org.ballerinalang', name: 'ballerina-runtime', version: "${ballerinaLangVersion}"
+        compile group: 'org.ballerinalang', name: 'ballerina-sql', version: "${ballerinaLangVersion}"
+
+        externalJars (group: 'mysql', name: 'mysql-connector-java', version: "${mySQLDriverVersion}") {
+            transitive = false
+        }
+    }
     release {
         // Disable check snapshots temporarily
         buildTasks = []

@@ -27,10 +27,6 @@ configurations {
 }
 
 dependencies {
-    compile group: 'org.ballerinalang', name: 'ballerina-lang', version: "${ballerinaLangVersion}"
-    compile group: 'org.ballerinalang', name: 'ballerina-runtime', version: "${ballerinaLangVersion}"
-    compile group: 'org.ballerinalang', name: 'ballerina-sql', version: "${ballerinaLangVersion}"
-
     jacocoRuntime "org.jacoco:org.jacoco.agent:${jacoco.toolVersion}:runtime"
 
     checkstyle project(":build-config:checkstyle")

@@ -112,9 +112,35 @@ task copyStdlibs(type: Copy) {
 
 task updateTomlFile {
     doLast {
+        def stdlibDependentSqlVersion = project.stdlibSqlVersion.split('-')[0]
+        def stdlibDependentIoVersion = project.stdlibIoVersion.split('-')[0]
+        def stdlibTimeVersion = project.stdlibTimeVersion.split("-")[0]
+        def stdlibDependentStringUtilsVersion = project.stdlibStringUtilsVersion.split("-")[0]
+        def stdlibFilepathVersion = project.stdlibFilepathVersion.split("-")[0]
+        def stdlibRuntimeVersion = project.stdlibRuntimeVersion.split("-")[0]
+        def stdlibSystemVersion = project.stdlibSystemVersion.split("-")[0]
+        def stdlibCryptoVersion = project.stdlibCryptoVersion.split("-")[0]
+        def stdlibMathVersion = project.stdlibMathVersion.split("-")[0]
+        def stdlibLogVersion = project.stdlibLogVersion.split("-")[0]
+        def stdlibConfigVersion = project.stdlibConfigVersion.split("-")[0]
+
         def newConfig = ballerinaConfigFile.text.replace("@project.version@", project.version)
         newConfig = newConfig.replace("@toml.version@", tomlVersion)
         newConfig = newConfig.replace("@project.path@", distributionPath)
+        newConfig = newConfig.replace("@stdlib.sql.native.version@", project.stdlibSqlVersion)
+
+        newConfig = newConfig.replace("@stdlib.sql.version@", stdlibDependentSqlVersion)
+        newConfig = newConfig.replace("@stdlib.io.version@", stdlibDependentIoVersion)
+        newConfig = newConfig.replace("@stdlib.time.version@", stdlibTimeVersion)
+        newConfig = newConfig.replace("@stdlib.stringutils.version@", stdlibDependentStringUtilsVersion)
+        newConfig = newConfig.replace("@stdlib.runtime.version@", stdlibRuntimeVersion)
+        newConfig = newConfig.replace("@stdlib.filepath.version@", stdlibFilepathVersion)
+        newConfig = newConfig.replace("@stdlib.system.version@", stdlibSystemVersion)
+        newConfig = newConfig.replace("@stdlib.crypto.version@", stdlibCryptoVersion)
+        newConfig = newConfig.replace("@stdlib.math.version@", stdlibMathVersion)
+        newConfig = newConfig.replace("@stdlib.log.version@", stdlibLogVersion)
+        newConfig = newConfig.replace("@stdlib.config.version@", stdlibConfigVersion)
+
         ballerinaConfigFile.text = newConfig
     }
 }
@@ -242,7 +268,7 @@ task ballerinaPush {
     doLast {
         // Publish to central
         if (!project.hasProperty("publishToCentral")) {
-            return;
+            return
         }
 
         if (project.version.endsWith('-SNAPSHOT')) {

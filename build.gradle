@@ -162,6 +162,8 @@ subprojects {
         ballerinaStdLibs "org.ballerinalang:system-ballerina:${stdlibSystemVersion}"
         ballerinaStdLibs "org.ballerinalang:filepath-ballerina:${stdlibFilepathVersion}"
         ballerinaStdLibs "org.ballerinalang:runtime-ballerina:${stdlibRuntimeVersion}"
+        ballerinaStdLibs "org.ballerinalang:crypto-ballerina:${stdlibCryptoVersion}"
+        ballerinaStdLibs "org.ballerinalang:math-ballerina:${stdlibMathVersion}"
         ballerinaStdLibs "org.ballerinalang:log-ballerina:${stdlibLogVersion}"
         ballerinaStdLibs "org.ballerinalang:config-ballerina:${stdlibConfigVersion}"
 

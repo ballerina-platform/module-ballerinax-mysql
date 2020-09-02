@@ -73,9 +73,9 @@ public class Utils {
             if (clientCertKeystore != null) {
                 options.put(Constants.DatabaseProps.CLIENT_KEYSTORE_URL, StringUtils.fromString(
                         Constants.FILE + clientCertKeystore.getStringValue(
-                                org.ballerinalang.stdlib.crypto.Constants.KEY_STORE_RECORD_PATH_FIELD)));
+                                Constants.SSLConfig.CryptoKeyStoreRecord.KEY_STORE_RECORD_PATH_FIELD)));
                 options.put(Constants.DatabaseProps.CLIENT_KEYSTORE_PASSWORD, clientCertKeystore
-                        .getStringValue(org.ballerinalang.stdlib.crypto.Constants.KEY_STORE_RECORD_PASSWORD_FIELD));
+                        .getStringValue(Constants.SSLConfig.CryptoKeyStoreRecord.KEY_STORE_RECORD_PASSWORD_FIELD));
                 options.put(Constants.DatabaseProps.CLIENT_KEYSTORE_TYPE, Constants.DatabaseProps.KEYSTORE_TYPE_PKCS12);
             }
 
@@ -83,9 +83,9 @@ public class Utils {
             if (trustCertKeystore != null) {
                 options.put(Constants.DatabaseProps.TRUST_KEYSTORE_URL, StringUtils.fromString(
                         Constants.FILE + trustCertKeystore.getStringValue(
-                                org.ballerinalang.stdlib.crypto.Constants.KEY_STORE_RECORD_PATH_FIELD)));
+                                Constants.SSLConfig.CryptoKeyStoreRecord.KEY_STORE_RECORD_PATH_FIELD)));
                 options.put(Constants.DatabaseProps.TRUST_KEYSTORE_PASSWORD, trustCertKeystore
-                        .getStringValue(org.ballerinalang.stdlib.crypto.Constants.KEY_STORE_RECORD_PASSWORD_FIELD));
+                        .getStringValue(Constants.SSLConfig.CryptoKeyStoreRecord.KEY_STORE_RECORD_PASSWORD_FIELD));
                 options.put(Constants.DatabaseProps.TRUST_KEYSTORE_TYPE, Constants.DatabaseProps.KEYSTORE_TYPE_PKCS12);
             }
         }

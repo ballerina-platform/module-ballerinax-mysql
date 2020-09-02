@@ -57,6 +57,11 @@ public final class Constants {
         static final String VERIFY_CERT_MODE = "VERIFY_CERT";
         static final BString CLIENT_CERT_KEYSTORE = StringUtils.fromString("clientCertKeystore");
         static final BString TRUST_CERT_KEYSTORE = StringUtils.fromString("trustCertKeystore");
+        // The following constants are used to process ballerina `crypto:KeyStore`
+        static final class CryptoKeyStoreRecord {
+            static final BString KEY_STORE_RECORD_PATH_FIELD = StringUtils.fromString("path");
+            static final BString KEY_STORE_RECORD_PASSWORD_FIELD = StringUtils.fromString("password");
+        }
     }
 
     static final class DatabaseProps {

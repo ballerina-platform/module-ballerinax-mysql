@@ -2,6 +2,19 @@
 org-name = "ballerinax"
 version = "@toml.version@"
 
+[dependencies]
+"ballerina/sql" = "@stdlib.sql.version@"
+"ballerina/io" = "@stdlib.io.version@"
+"ballerina/time" = "@stdlib.time.version@"
+"ballerina/stringutils" = "@stdlib.stringutils.version@"
+"ballerina/filepath" = "@stdlib.filepath.version@"
+"ballerina/runtime" = "@stdlib.runtime.version@"
+"ballerina/system" = "@stdlib.system.version@"
+"ballerina/crypto" = "@stdlib.crypto.version@"
+"ballerina/math" = "@stdlib.math.version@"
+"ballerina/log" = "@stdlib.log.version@"
+"ballerina/config" = "@stdlib.config.version@"
+
 [platform]
 target = "java8"
 
@@ -14,8 +27,8 @@ target = "java8"
 
     [[platform.libraries]]
     artifactId = "ballerina-sql"
-    version = "0.5.0"
-    path = "@project.path@/bre/lib/ballerina-sql-0.5.0-java.jar"
+    version = "@stdlib.sql.native.version@"
+    path = "@project.path@/bre/lib/sql-native-@stdlib.sql.native.version@.jar"
     groupId = "org.ballerinalang"
     modules = ["mysql"]
 

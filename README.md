@@ -1,62 +1,74 @@
-Ballerina MySQL library
+Ballerina MySQL Library
 ===================
 
   [![Build](https://github.com/ballerina-platform/module-ballerinax-mysql/workflows/Build/badge.svg)](https://github.com/ballerina-platform/module-ballerinax-mysql/actions?query=workflow%3ABuild)
-  [![Daily build](https://github.com/ballerina-platform/module-ballerinax-mysql/workflows/Daily%20build/badge.svg)](https://github.com/ballerina-platform/module-ballerina-java.jdbc/actions?query=workflow%3ABuild)
-  [![GitHub Release](https://img.shields.io/github/release/ballerina-platform/module-ballerinax-mysql.svg)](https://central.ballerina.io/ballerinax/mysql)
-  [![GitHub Release Date](https://img.shields.io/github/release-date/ballerina-platform/module-ballerinax-mysql.svg)](https://central.ballerina.io/ballerinax/mysql)
-  [![GitHub Open Issues](https://img.shields.io/github/issues-raw/ballerina-platform/module-ballerinax-mysql.svg)](https://github.com/ballerina-platform/module-ballerinax-mysql/issues)
+  [![Daily build](https://github.com/ballerina-platform/module-ballerinax-mysql/workflows/Daily%20build/badge.svg)](https://github.com/ballerina-platform/module-ballerinax-mysql/actions?query=workflow%3A%22Daily+build%22)
   [![GitHub Last Commit](https://img.shields.io/github/last-commit/ballerina-platform/module-ballerinax-mysql.svg)](https://github.com/ballerina-platform/module-ballerinax-mysql/commits/master)
   [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-MySQL Driver for <a target="_blank" href="https://ballerina.io/">Ballerina</a> language.
+The MySQL library is one of the standard library modules of the<a target="_blank" href="https://ballerina.io/"> Ballerina</a> language.
 
-For more information on all the operations supported by the `mysql:Client`, which includes the below mentioned operations, see [API Docs](https://ballerina.io/swan-lake/learn/api-docs/ballerina/mysql/).
+This provides the functionality required to access and manipulate data stored in a MySQL database.  
 
-1. Connection Pooling
-1. Querying data
-1. Inserting data
-1. Updating data
-1. Deleting data
-1. Batch insert and update data
-1. Execute stored procedures
-1. Closing client
+For more information on the operations supported by the `mysql:Client`, which include the below, go to [The MySQL Module](https://ballerina.io/swan-lake/learn/api-docs/ballerina/mysql/).
 
-For a quick sample on demonstrating the usage see [Ballerina By Example](https://ballerina.io/swan-lake/learn/by-example/)
+- Pooling connections
+- Querying data
+- Inserting data
+- Updating data
+- Deleting data
+- Updating data in batches
+- Executing stored procedures
+- Closing the client
 
-## Building from the source
+For example demonstrations of the usage, go to [Ballerina By Examples](https://ballerina.io/swan-lake/learn/by-example/mysql-init-options.html).
 
-The MySQL library is tested with a docker based integration test framework. The test framework initializes the docker container before executing the test suite.
+## Building from the Source
 
-1. Install and run docker in daemon mode.
+### Setting Up the Prerequisites
 
-    * Installing docker on Linux,
+1. Download and install Java SE Development Kit (JDK) version 8 (from one of the following locations)
 
-      Note:
-      These commands retrieve content from get.docker.com web in a quiet output-document mode and install.Then we need to stop docker service as it needs to restart docker in daemon mode. After that, we need to export docker daemon host.
+   * [Oracle](https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html)
 
-           wget -qO- https://get.docker.com/ | sh
-           sudo service dockerd stop
-           export DOCKER_HOST=tcp://172.17.0.1:4326
-           docker daemon -H tcp://172.17.0.1:4326
+   * [OpenJDK](http://openjdk.java.net/install/index.html)
 
-    * On installing docker on Mac, see <a target="_blank" href="https://docs.docker.com/docker-for-mac/">Get started with Docker for Mac</a>
+        > **Note:** Set the JAVA_HOME environment variable to the path name of the directory into which you installed JDK.
+     
+2. Download and install Docker as follows. (The MySQL library is tested with a docker-based integration test framework. The test framework initializes the docker container before executing the test suite).
 
-    * On installing docker on Windows, see <a target="_blank" href="https://docs.docker.com/docker-for-windows/">Get started with Docker for Windows</a>
+   * Installing Docker on Linux
 
-2. To run the integration tests, issue the following commands.
+        > **Note:** These commands retrieve content from the `get.docker.com` website in a quiet output-document mode and installs it.
+   
+          ```wget -qO- https://get.docker.com/ | sh
+          ```
+
+   * For instructions on installing Docker on Mac, go to <a target="_blank" href="https://docs.docker.com/docker-for-mac/">Get Started with Docker for Mac</a>
+
+   * For information on installing Docker on Windows, goo to <a target="_blank" href="https://docs.docker.com/docker-for-windows/">Get Started with Docker for Windows</a>
+
+### Building the Source
+
+Execute the commands below to build from the source.
+
+1. To build the library:
+
+        ./gradlew clean build
+        
+2. To run the integration tests:
 
         ./gradlew clean test
 
-3. To build the module without tests,
+3. To build the module without tests:
 
         ./gradlew clean build -x test
 
-4. To run only specific tests,
+4. To run only specific tests:
 
         ./gradlew clean build -Pgroups=<Comma separated groups/test cases>
 
-   The following groups of test cases are available,<br>
+   **Tip:** The following groups of test cases are available.<br>
    Groups | Test Cases
    ---| ---
    connection | connection-init<br> ssl
@@ -67,19 +79,25 @@ The MySQL library is tested with a docker based integration test framework. The 
    query | query-simple-params<br>query-numeric-params<br>query-complex-params
    procedures | procedures
 
-5. To debug the tests,
+5. To debug the tests:
 
         ./gradlew clean build -Pdebug=<port>
 
 ## Contributing to Ballerina
 
-As an open source project, Ballerina welcomes contributions from the community. To start contributing, read these [contribution guidelines](https://github.com/ballerina-platform/ballerina-lang/blob/master/CONTRIBUTING.md) for information on how you should go about contributing to our project.
+As an open source project, Ballerina welcomes contributions from the community. 
 
-Check the issue tracker for open issues that interest you. We look forward to receiving your contributions.
+You can also check for [open issues](https://github.com/ballerina-platform/module-ballerina-sql/issues) that interest you. We look forward to receiving your contributions.
 
-## Useful links
+For more information, go to the [contribution guidelines](https://github.com/ballerina-platform/ballerina-lang/blob/master/CONTRIBUTING.md).
 
-* The ballerina-dev@googlegroups.com mailing list is for discussing code changes to the Ballerina project.
-* Chat live with us on our [Slack channel](https://ballerina.io/community/slack/).
-* Technical questions should be posted on Stack Overflow with the [#ballerina](https://stackoverflow.com/questions/tagged/ballerina) tag.
-* Ballerina performance test results are available [here](performance/benchmarks/summary.md).
+## Code of Conduct
+
+All contributors are encouraged to read the [Ballerina Code of Conduct](https://ballerina.io/code-of-conduct).
+
+## Useful Links
+
+* Discuss about code changes of the Ballerina project in [ballerina-dev@googlegroups.com](mailto:ballerina-dev@googlegroups.com).
+* Chat live with us via our [Slack channel](https://ballerina.io/community/slack/).
+* Post all technical questions on Stack Overflow with the [#ballerina](https://stackoverflow.com/questions/tagged/ballerina) tag.
+* View the [Ballerina performance test results](performance/benchmarks/summary.md).

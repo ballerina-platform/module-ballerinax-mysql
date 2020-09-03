@@ -27,7 +27,7 @@ For example demonstrations of the usage, go to [Ballerina By Examples](https://b
 
 ### Setting Up the Prerequisites
 
-1. Download and install Java SE Development Kit (JDK) version 8 (from one of the following locations)
+1. Download and install Java SE Development Kit (JDK) version 8 (from one of the following locations).
 
    * [Oracle](https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html)
 
@@ -41,12 +41,11 @@ For example demonstrations of the usage, go to [Ballerina By Examples](https://b
 
         > **Note:** These commands retrieve content from the `get.docker.com` website in a quiet output-document mode and installs it.
    
-          ```wget -qO- https://get.docker.com/ | sh
-          ```
+          wget -qO- https://get.docker.com/ | sh
 
-   * For instructions on installing Docker on Mac, go to <a target="_blank" href="https://docs.docker.com/docker-for-mac/">Get Started with Docker for Mac</a>
+   * For instructions on installing Docker on Mac, go to <a target="_blank" href="https://docs.docker.com/docker-for-mac/">Get Started with Docker for Mac</a>.
 
-   * For information on installing Docker on Windows, goo to <a target="_blank" href="https://docs.docker.com/docker-for-windows/">Get Started with Docker for Windows</a>
+   * For information on installing Docker on Windows, goo to <a target="_blank" href="https://docs.docker.com/docker-for-windows/">Get Started with Docker for Windows</a>.
 
 ### Building the Source
 

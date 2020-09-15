@@ -13,7 +13,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/lang.'int;
 import ballerina/runtime;
 import ballerina/sql;
 import ballerina/stringutils;

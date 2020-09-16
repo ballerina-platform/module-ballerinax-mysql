@@ -17,11 +17,11 @@
  */
 package org.ballerinalang.mysql;
 
-import org.ballerinalang.jvm.StringUtils;
+import org.ballerinalang.jvm.api.BStringUtils;
+import org.ballerinalang.jvm.api.BValueCreator;
+import org.ballerinalang.jvm.api.values.BMap;
+import org.ballerinalang.jvm.api.values.BString;
 import org.ballerinalang.jvm.values.DecimalValue;
-import org.ballerinalang.jvm.values.MapValue;
-import org.ballerinalang.jvm.values.MapValueImpl;
-import org.ballerinalang.jvm.values.api.BString;
 
 /**
  * This class includes utility functions.
@@ -30,9 +30,9 @@ import org.ballerinalang.jvm.values.api.BString;
  */
 public class Utils {
 
-    static MapValue generateOptionsMap(MapValue mysqlOptions) {
+    static BMap generateOptionsMap(BMap mysqlOptions) {
         if (mysqlOptions != null) {
-            MapValue<BString, Object> options = new MapValueImpl<>();
+            BMap<BString, Object> options = BValueCreator.createMapValue();
             addSSLOptions(mysqlOptions.getMapValue(Constants.Options.SSL), options);
 
             long connectTimeout = getTimeout(mysqlOptions.get(Constants.Options.CONNECT_TIMEOUT_SECONDS));
@@ -59,7 +59,7 @@ public class Utils {
         return -1;
     }
 
-    private static void addSSLOptions(MapValue sslConfig, MapValue<BString, Object> options) {
+    private static void addSSLOptions(BMap sslConfig, BMap<BString, Object> options) {
         if (sslConfig == null) {
             options.put(Constants.DatabaseProps.SSL_MODE, Constants.DatabaseProps.SSL_MODE_DISABLED);
         } else {
@@ -69,9 +69,9 @@ public class Utils {
             }
             options.put(Constants.DatabaseProps.SSL_MODE, mode);
 
-            MapValue clientCertKeystore = sslConfig.getMapValue(Constants.SSLConfig.CLIENT_CERT_KEYSTORE);
+            BMap clientCertKeystore = sslConfig.getMapValue(Constants.SSLConfig.CLIENT_CERT_KEYSTORE);
             if (clientCertKeystore != null) {
-                options.put(Constants.DatabaseProps.CLIENT_KEYSTORE_URL, StringUtils.fromString(
+                options.put(Constants.DatabaseProps.CLIENT_KEYSTORE_URL, BStringUtils.fromString(
                         Constants.FILE + clientCertKeystore.getStringValue(
                                 Constants.SSLConfig.CryptoKeyStoreRecord.KEY_STORE_RECORD_PATH_FIELD)));
                 options.put(Constants.DatabaseProps.CLIENT_KEYSTORE_PASSWORD, clientCertKeystore
@@ -79,9 +79,9 @@ public class Utils {
                 options.put(Constants.DatabaseProps.CLIENT_KEYSTORE_TYPE, Constants.DatabaseProps.KEYSTORE_TYPE_PKCS12);
             }
 
-            MapValue trustCertKeystore = sslConfig.getMapValue(Constants.SSLConfig.TRUST_CERT_KEYSTORE);
+            BMap trustCertKeystore = sslConfig.getMapValue(Constants.SSLConfig.TRUST_CERT_KEYSTORE);
             if (trustCertKeystore != null) {
-                options.put(Constants.DatabaseProps.TRUST_KEYSTORE_URL, StringUtils.fromString(
+                options.put(Constants.DatabaseProps.TRUST_KEYSTORE_URL, BStringUtils.fromString(
                         Constants.FILE + trustCertKeystore.getStringValue(
                                 Constants.SSLConfig.CryptoKeyStoreRecord.KEY_STORE_RECORD_PATH_FIELD)));
                 options.put(Constants.DatabaseProps.TRUST_KEYSTORE_PASSWORD, trustCertKeystore

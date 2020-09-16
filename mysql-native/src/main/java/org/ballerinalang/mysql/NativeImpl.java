@@ -17,9 +17,9 @@
  */
 package org.ballerinalang.mysql;
 
-import org.ballerinalang.jvm.values.MapValue;
-import org.ballerinalang.jvm.values.ObjectValue;
-import org.ballerinalang.jvm.values.api.BString;
+import org.ballerinalang.jvm.api.values.BMap;
+import org.ballerinalang.jvm.api.values.BObject;
+import org.ballerinalang.jvm.api.values.BString;
 import org.ballerinalang.sql.datasource.SQLDatasource;
 import org.ballerinalang.sql.utils.ClientUtils;
 
@@ -32,8 +32,8 @@ import java.util.Properties;
  */
 public class NativeImpl {
 
-    public static Object createClient(ObjectValue client, MapValue<BString, Object> clientConfig,
-                                      MapValue<BString, Object> globalPool) {
+    public static Object createClient(BObject client, BMap<BString, Object> clientConfig,
+                                      BMap<BString, Object> globalPool) {
         String url = "jdbc:mysql://" + clientConfig.getStringValue(Constants.ClientConfiguration.HOST);
         Long portValue = clientConfig.getIntValue(Constants.ClientConfiguration.PORT);
         if (portValue > 0) {
@@ -48,8 +48,8 @@ public class NativeImpl {
         if (database != null && !database.isEmpty()) {
             url += "/" + database;
         }
-        MapValue options = clientConfig.getMapValue(Constants.ClientConfiguration.OPTIONS);
-        MapValue properties = null;
+        BMap options = clientConfig.getMapValue(Constants.ClientConfiguration.OPTIONS);
+        BMap properties = null;
         Properties poolProperties = null;
         if (options != null) {
             properties = Utils.generateOptionsMap(options);
@@ -60,7 +60,7 @@ public class NativeImpl {
             }
         }
 
-        MapValue connectionPool = clientConfig.getMapValue(Constants.ClientConfiguration.CONNECTION_POOL_OPTIONS);
+        BMap connectionPool = clientConfig.getMapValue(Constants.ClientConfiguration.CONNECTION_POOL_OPTIONS);
 
         String datasourceName = Constants.MYSQL_DATASOURCE_NAME;
         if (options != null && options.getBooleanValue(Constants.Options.USE_XA_DATASOURCE)) {
@@ -78,7 +78,7 @@ public class NativeImpl {
         return ClientUtils.createClient(client, sqlDatasourceParams);
     }
 
-    public static Object close(ObjectValue client) {
+    public static Object close(BObject client) {
         return ClientUtils.close(client);
     }
 }

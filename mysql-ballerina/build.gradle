@@ -77,11 +77,9 @@ def tomlVersion = project.version.split("-")[0]
 def ballerinaCentralAccessToken = System.getenv('BALLERINA_CENTRAL_ACCESS_TOKEN')
 def targetBallerinaJar = file("$project.projectDir/target/caches/jar_cache/${moduleOrg}/${moduleName}/${tomlVersion}/${moduleOrg}-${moduleName}-${tomlVersion}.jar")
 def targetNativeJar = file("$project.rootDir/${moduleName}-native/build/libs/${moduleName}-native-${project.version}.jar")
-def distributionPath
+def distributionPath = project.projectDir.absolutePath + "/build/target/jballerina-tools-${ballerinaLangVersion}"
 if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-    distributionPath = project.projectDir.absolutePath + "\\build\\target\\jballerina-tools-${ballerinaLangVersion}"
-} else {
-    distributionPath = project.projectDir.absolutePath + "/build/target/jballerina-tools-${ballerinaLangVersion}"
+    distributionPath.replaceAll("\\\\", "/")
 }
 def distributionBinPath = distributionPath + "/bin"
 def originalConfig = ballerinaConfigFile.text
@@ -129,16 +127,9 @@ task updateTomlFile {
         def stdlibLogVersion = project.stdlibLogVersion.split("-")[0]
         def stdlibConfigVersion = project.stdlibConfigVersion.split("-")[0]
 
-        def sqlNativeJarPath
-        if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-            sqlNativeJarPath = distributionPath + "\\bre\\lib\\"
-        } else {
-            sqlNativeJarPath = distributionPath + "/bre/lib/"
-        }
-
         def newConfig = ballerinaConfigFile.text.replace("@project.version@", project.version)
         newConfig = newConfig.replace("@toml.version@", tomlVersion)
-        newConfig = newConfig.replace("@project.path@", sqlNativeJarPath)
+        newConfig = newConfig.replace("@project.path@", distributionPath)
         newConfig = newConfig.replace("@stdlib.sql.native.version@", project.stdlibSqlVersion)
 
         newConfig = newConfig.replace("@stdlib.sql.version@", stdlibDependentSqlVersion)

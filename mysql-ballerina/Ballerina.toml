@@ -28,7 +28,7 @@ target = "java8"
     [[platform.libraries]]
     artifactId = "ballerina-sql"
     version = "@stdlib.sql.native.version@"
-    path = "@project.path@sql-native-@stdlib.sql.native.version@.jar"
+    path = "@project.path@/bre/lib/sql-native-@stdlib.sql.native.version@.jar"
     groupId = "org.ballerinalang"
     modules = ["mysql"]
 

@@ -77,7 +77,12 @@ def tomlVersion = project.version.split("-")[0]
 def ballerinaCentralAccessToken = System.getenv('BALLERINA_CENTRAL_ACCESS_TOKEN')
 def targetBallerinaJar = file("$project.projectDir/target/caches/jar_cache/${moduleOrg}/${moduleName}/${tomlVersion}/${moduleOrg}-${moduleName}-${tomlVersion}.jar")
 def targetNativeJar = file("$project.rootDir/${moduleName}-native/build/libs/${moduleName}-native-${project.version}.jar")
-def distributionPath =  project.projectDir.absolutePath + "/build/target/jballerina-tools-${ballerinaLangVersion}"
+def distributionPath
+if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+    distributionPath = project.projectDir.absolutePath + "\\build\\target\\jballerina-tools-${ballerinaLangVersion}"
+} else {
+    distributionPath = project.projectDir.absolutePath + "/build/target/jballerina-tools-${ballerinaLangVersion}"
+}
 def distributionBinPath = distributionPath + "/bin"
 def originalConfig = ballerinaConfigFile.text
 
@@ -124,9 +129,16 @@ task updateTomlFile {
         def stdlibLogVersion = project.stdlibLogVersion.split("-")[0]
         def stdlibConfigVersion = project.stdlibConfigVersion.split("-")[0]
 
+        def sqlNativeJarPath
+        if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+            sqlNativeJarPath = distributionPath + "\\bre\\lib\\"
+        } else {
+            sqlNativeJarPath = distributionPath + "/bre/lib/"
+        }
+
         def newConfig = ballerinaConfigFile.text.replace("@project.version@", project.version)
         newConfig = newConfig.replace("@toml.version@", tomlVersion)
-        newConfig = newConfig.replace("@project.path@", distributionPath)
+        newConfig = newConfig.replace("@project.path@", sqlNativeJarPath)
         newConfig = newConfig.replace("@stdlib.sql.native.version@", project.stdlibSqlVersion)
 
         newConfig = newConfig.replace("@stdlib.sql.version@", stdlibDependentSqlVersion)
@@ -157,6 +169,7 @@ assemble {
 }
 
 task ballerinaTest {
+    dependsOn(assemble)
     dependsOn(updateTomlFile)
     finalizedBy(revertTomlFile)
 
@@ -175,7 +188,7 @@ task ballerinaTest {
             workingDir project.projectDir
             environment "JAVA_OPTS", "-DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true"
             if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                commandLine 'cmd', '/c', "$distributionBinPath/ballerina.bat test --code-coverage ${groupParams} --all ${debugParams}"
+                commandLine 'cmd', '/c', "$distributionBinPath/ballerina.bat test --code-coverage ${groupParams} --all ${debugParams} && exit %%ERRORLEVEL%%"
             } else {
                 commandLine 'sh', '-c', "$distributionBinPath/ballerina test --code-coverage ${groupParams} --all ${debugParams}"
             }
@@ -199,7 +212,7 @@ task ballerinaBuild {
             workingDir project.projectDir
             environment "JAVA_OPTS", "-DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true"
             if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                commandLine 'cmd', '/c', "$distributionBinPath/ballerina.bat build --skip-tests -c ${moduleName}"
+                commandLine 'cmd', '/c', "$distributionBinPath/ballerina.bat build --skip-tests -c ${moduleName} && exit %%ERRORLEVEL%%"
             } else {
                 commandLine 'sh', '-c', "$distributionBinPath/ballerina build --skip-tests -c ${moduleName}"
             }
@@ -244,7 +257,7 @@ task ballerinaBuild {
             workingDir project.projectDir
             environment "JAVA_OPTS", "-DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true"
             if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                commandLine 'cmd', '/c', "$distributionBinPath/ballerina.bat doc --offline ${moduleName}"
+                commandLine 'cmd', '/c', "$distributionBinPath/ballerina.bat doc --offline ${moduleName} && exit %%ERRORLEVEL%%"
             } else {
                 commandLine 'sh', '-c', "$distributionBinPath/ballerina doc --offline ${moduleName}"
             }
@@ -284,7 +297,7 @@ task ballerinaPush {
                 workingDir project.projectDir
                 environment "JAVA_OPTS", "-DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true"
                 if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                    commandLine 'cmd', '/c', "$distributionBinPath/ballerina.bat push ${moduleName}"
+                    commandLine 'cmd', '/c', "$distributionBinPath/ballerina.bat push ${moduleName} && exit %%ERRORLEVEL%%"
                 } else {
                     commandLine 'sh', '-c', "$distributionBinPath/ballerina push ${moduleName}"
                 }

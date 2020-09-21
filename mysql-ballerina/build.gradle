@@ -79,7 +79,7 @@ def targetBallerinaJar = file("$project.projectDir/target/caches/jar_cache/${mod
 def targetNativeJar = file("$project.rootDir/${moduleName}-native/build/libs/${moduleName}-native-${project.version}.jar")
 def distributionPath = project.projectDir.absolutePath + "/build/target/jballerina-tools-${ballerinaLangVersion}"
 if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-    distributionPath.replaceAll("\\\\", "/")
+    distributionPath = distributionPath.replaceAll("\\\\", "/")
 }
 def distributionBinPath = distributionPath + "/bin"
 def originalConfig = ballerinaConfigFile.text

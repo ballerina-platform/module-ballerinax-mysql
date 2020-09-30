@@ -72,7 +72,7 @@ You can find more details about each property in the
 [mysql:Client](https://ballerina.io/swan-lake/learn/api-docs/ballerina/mysql/clients/Client.html) constructor. 
 
 The [mysql:Client](https://ballerina.io/swan-lake/learn/api-docs/ballerina/mysql/clients/Client.html) references 
-[sql:Client](https://ballerina.io/swan-lake/learn/api-docs/ballerina/sql/clients/Client.html) and all the operations 
+[sql:Client](https://ballerina.io/swan-lake/learn/api-docs/ballerina/sql/abstractobjects/Client.html) and all the operations 
 defined by the `sql:Client` will be supported by the `mysql:Client` as well. 
 
 For more information on all the operations supported by the `mysql:Client`, which include the below, see the [SQL Module](https://ballerina.io/swan-lake/learn/api-docs/ballerina/sql/index.html).

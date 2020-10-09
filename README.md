@@ -2,7 +2,6 @@ Ballerina MySQL Library
 ===================
 
   [![Build](https://github.com/ballerina-platform/module-ballerinax-mysql/workflows/Build/badge.svg)](https://github.com/ballerina-platform/module-ballerinax-mysql/actions?query=workflow%3ABuild)
-  [![Daily build](https://github.com/ballerina-platform/module-ballerinax-mysql/workflows/Daily%20build/badge.svg)](https://github.com/ballerina-platform/module-ballerinax-mysql/actions?query=workflow%3A%22Daily+build%22)
   [![GitHub Last Commit](https://img.shields.io/github/last-commit/ballerina-platform/module-ballerinax-mysql.svg)](https://github.com/ballerina-platform/module-ballerinax-mysql/commits/master)
   [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 

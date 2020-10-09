@@ -2,7 +2,6 @@ Ballerina MySQL Library
 ===================
 
   [![Build](https://github.com/ballerina-platform/module-ballerinax-mysql/workflows/Build/badge.svg)](https://github.com/ballerina-platform/module-ballerinax-mysql/actions?query=workflow%3ABuild)
-  [![Daily build](https://github.com/ballerina-platform/module-ballerinax-mysql/workflows/Daily%20build/badge.svg)](https://github.com/ballerina-platform/module-ballerinax-mysql/actions?query=workflow%3A%22Daily+build%22)
   [![GitHub Last Commit](https://img.shields.io/github/last-commit/ballerina-platform/module-ballerinax-mysql.svg)](https://github.com/ballerina-platform/module-ballerinax-mysql/commits/master)
   [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
@@ -25,27 +24,18 @@ For example demonstrations of the usage, go to [Ballerina By Examples](https://b
 
 ## Building from the Source
 
-### Setting Up the Prerequisites
+### Prerequisites
 
-1. Download and install Java SE Development Kit (JDK) version 8 (from one of the following locations).
-
-   * [Oracle](https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html)
-
+1. Download and install Java SE Development Kit (JDK) version 11 (from one of the following locations).
+   * [Oracle](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html)
    * [OpenJDK](http://openjdk.java.net/install/index.html)
 
-        > **Note:** Set the JAVA_HOME environment variable to the path name of the directory into which you installed JDK.
-     
-2. Download and install Docker as follows. (The MySQL library is tested with a docker-based integration test framework. The test framework initializes the docker container before executing the test suite).
-
-   * Installing Docker on Linux
-
-        > **Note:** These commands retrieve content from the `get.docker.com` website in a quiet output-document mode and installs it.
+2. Download and install [Docker](https://www.docker.com/get-started)
    
-          wget -qO- https://get.docker.com/ | sh
-
-   * For instructions on installing Docker on Mac, go to <a target="_blank" href="https://docs.docker.com/docker-for-mac/">Get Started with Docker for Mac</a>.
-
-   * For information on installing Docker on Windows, goo to <a target="_blank" href="https://docs.docker.com/docker-for-windows/">Get Started with Docker for Windows</a>.
+3. Export Github Access Tokens with read package permissions.
+        
+        export packageUser=<Your github username>
+        export packagePAT=<Your personnel access token>
 
 ### Building the Source
 

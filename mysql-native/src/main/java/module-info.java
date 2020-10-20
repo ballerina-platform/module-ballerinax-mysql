@@ -17,7 +17,7 @@
  */
 
 module io.ballerina.stdlib.mysql {
-    requires io.ballerina.jvm;
+    requires io.ballerina.runtime;
     requires io.ballerina.stdlib.sql;
     exports org.ballerinalang.mysql;
 }

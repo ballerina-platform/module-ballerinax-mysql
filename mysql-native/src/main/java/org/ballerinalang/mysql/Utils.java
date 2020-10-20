@@ -17,11 +17,11 @@
  */
 package org.ballerinalang.mysql;
 
-import org.ballerinalang.jvm.api.BStringUtils;
-import org.ballerinalang.jvm.api.BValueCreator;
-import org.ballerinalang.jvm.api.values.BMap;
-import org.ballerinalang.jvm.api.values.BString;
-import org.ballerinalang.jvm.values.DecimalValue;
+import io.ballerina.runtime.api.StringUtils;
+import io.ballerina.runtime.api.ValueCreator;
+import io.ballerina.runtime.api.values.BMap;
+import io.ballerina.runtime.api.values.BString;
+import io.ballerina.runtime.values.DecimalValue;
 
 /**
  * This class includes utility functions.
@@ -32,7 +32,7 @@ public class Utils {
 
     static BMap generateOptionsMap(BMap mysqlOptions) {
         if (mysqlOptions != null) {
-            BMap<BString, Object> options = BValueCreator.createMapValue();
+            BMap<BString, Object> options = ValueCreator.createMapValue();
             addSSLOptions(mysqlOptions.getMapValue(Constants.Options.SSL), options);
 
             long connectTimeout = getTimeout(mysqlOptions.get(Constants.Options.CONNECT_TIMEOUT_SECONDS));
@@ -71,7 +71,7 @@ public class Utils {
 
             BMap clientCertKeystore = sslConfig.getMapValue(Constants.SSLConfig.CLIENT_CERT_KEYSTORE);
             if (clientCertKeystore != null) {
-                options.put(Constants.DatabaseProps.CLIENT_KEYSTORE_URL, BStringUtils.fromString(
+                options.put(Constants.DatabaseProps.CLIENT_KEYSTORE_URL, StringUtils.fromString(
                         Constants.FILE + clientCertKeystore.getStringValue(
                                 Constants.SSLConfig.CryptoKeyStoreRecord.KEY_STORE_RECORD_PATH_FIELD)));
                 options.put(Constants.DatabaseProps.CLIENT_KEYSTORE_PASSWORD, clientCertKeystore
@@ -81,7 +81,7 @@ public class Utils {
 
             BMap trustCertKeystore = sslConfig.getMapValue(Constants.SSLConfig.TRUST_CERT_KEYSTORE);
             if (trustCertKeystore != null) {
-                options.put(Constants.DatabaseProps.TRUST_KEYSTORE_URL, BStringUtils.fromString(
+                options.put(Constants.DatabaseProps.TRUST_KEYSTORE_URL, StringUtils.fromString(
                         Constants.FILE + trustCertKeystore.getStringValue(
                                 Constants.SSLConfig.CryptoKeyStoreRecord.KEY_STORE_RECORD_PATH_FIELD)));
                 options.put(Constants.DatabaseProps.TRUST_KEYSTORE_PASSWORD, trustCertKeystore

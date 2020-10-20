@@ -167,12 +167,12 @@ function testCallWithStringTypesOutParams() {
     Client dbClient = checkpanic new (host, user, password, proceduresDb, port);
 
     sql:IntegerValue paraID = new(1);
-    sql:OutParameter paraVarchar = new;
-    sql:OutParameter paraCharmax = new;
-    sql:OutParameter paraChar = new;
-    sql:OutParameter paraCharactermax = new;
-    sql:OutParameter paraCharacter = new;
-    sql:OutParameter paraNvarcharmax = new;
+    sql:VarcharOutParameter paraVarchar = new;
+    sql:CharOutParameter paraCharmax = new;
+    sql:CharOutParameter paraChar = new;
+    sql:CharOutParameter paraCharactermax = new;
+    sql:CharOutParameter paraCharacter = new;
+    sql:NVarcharOutParameter paraNvarcharmax = new;
 
     sql:ProcedureCallResult ret = checkpanic dbClient->call(
         `{call SelectStringDataWithOutParams(${paraID}, ${paraVarchar}, ${paraCharmax}, ${paraChar}, ${paraCharactermax}, ${paraCharacter}, ${paraNvarcharmax})}`);
@@ -195,16 +195,16 @@ function testCallWithNumericTypesOutParams() {
     Client dbClient = checkpanic new (host, user, password, proceduresDb, port);
 
     sql:IntegerValue paraID = new(1);
-    sql:OutParameter paraInt = new;
-    sql:OutParameter paraBigInt = new;
-    sql:OutParameter paraSmallInt = new;
-    sql:OutParameter paraTinyInt = new;
-    sql:OutParameter paraBit = new;
-    sql:OutParameter paraDecimal = new;
-    sql:OutParameter paraNumeric = new;
-    sql:OutParameter paraFloat = new;
-    sql:OutParameter paraReal = new;
-    sql:OutParameter paraDouble = new;
+    sql:IntegerOutParameter paraInt = new;
+    sql:BigIntOutParameter paraBigInt = new;
+    sql:SmallIntOutParameter paraSmallInt = new;
+    sql:SmallIntOutParameter paraTinyInt = new;
+    sql:BitOutParameter paraBit = new;
+    sql:DecimalOutParameter paraDecimal = new;
+    sql:NumericOutParameter paraNumeric = new;
+    sql:FloatOutParameter paraFloat = new;
+    sql:RealOutParameter paraReal = new;
+    sql:DoubleOutParameter paraDouble = new;
 
     var ret = checkpanic dbClient->call(
         `{call SelectNumericDataWithOutParams(${paraID}, ${paraInt}, ${paraBigInt}, ${paraSmallInt}, ${paraTinyInt}, ${paraBit}, ${paraDecimal}, ${paraNumeric}, ${paraFloat}, ${paraReal}, ${paraDouble})}`);

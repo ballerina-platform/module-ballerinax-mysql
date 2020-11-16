@@ -75,7 +75,11 @@ Execute the commands below to build from the source.
    query | query-simple-params<br>query-numeric-params<br>query-complex-params
    procedures | procedures
 
-5. To debug the tests:
+5. To disable some specific groups during test,
+
+        ./gradlew clean build -Pdisable-groups=<Comma separated groups/test cases>
+
+6. To debug the tests:
 
         ./gradlew clean build -Pdebug=<port>
 

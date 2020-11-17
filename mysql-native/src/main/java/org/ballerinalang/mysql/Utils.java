@@ -17,11 +17,11 @@
  */
 package org.ballerinalang.mysql;
 
-import io.ballerina.runtime.api.StringUtils;
-import io.ballerina.runtime.api.ValueCreator;
+import io.ballerina.runtime.api.creators.ValueCreator;
+import io.ballerina.runtime.api.utils.StringUtils;
+import io.ballerina.runtime.api.values.BDecimal;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BString;
-import io.ballerina.runtime.values.DecimalValue;
 
 /**
  * This class includes utility functions.
@@ -50,8 +50,8 @@ public class Utils {
     }
 
     public static long getTimeout(Object secondsDecimal) {
-        if (secondsDecimal instanceof DecimalValue) {
-            DecimalValue timeoutSec = (DecimalValue) secondsDecimal;
+        if (secondsDecimal instanceof BDecimal) {
+            BDecimal timeoutSec = (BDecimal) secondsDecimal;
             if (timeoutSec.floatValue() > 0) {
                 return Double.valueOf(timeoutSec.floatValue() * 1000).longValue();
             }

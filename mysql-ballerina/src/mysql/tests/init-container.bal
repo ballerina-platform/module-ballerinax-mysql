@@ -17,10 +17,10 @@
 import ballerina/io;
 import ballerina/system;
 import ballerina/test;
-import ballerina/filepath;
+import ballerina/file;
 import ballerina/runtime;
 
-string resourcePath = check filepath:absolute("src/mysql/tests/resources");
+string resourcePath = check file:getAbsolutePath("src/mysql/tests/resources");
 
 string host = "localhost";
 string user = "root";

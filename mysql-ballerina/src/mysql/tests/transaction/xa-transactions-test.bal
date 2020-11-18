@@ -84,7 +84,7 @@ function getSalaryCount(Client dbClient, string id) returns @tainted int|error{
     return getResult(streamData);
 }
 
-function getResult(stream<XAResultCount, error> streamData) returns int{
+isolated function getResult(stream<XAResultCount, error> streamData) returns int{
     record {|XAResultCount value;|}? data = checkpanic streamData.next();
     checkpanic streamData.close();
     XAResultCount? value = data?.value;

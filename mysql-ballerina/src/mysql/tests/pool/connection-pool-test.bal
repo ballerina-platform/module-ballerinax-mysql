@@ -469,7 +469,7 @@ function testGlobalConnectionPoolConcurrentHelper2(string database) returns @tai
     return returnArray;
 }
 
-function getCombinedReturnValue([stream<record{}, error>, stream<record{}, error>]|error queryResult) returns
+isolated function getCombinedReturnValue([stream<record{}, error>, stream<record{}, error>]|error queryResult) returns
  (int|error)[]|error {
     if (queryResult is error) {
         return queryResult;
@@ -484,7 +484,7 @@ function getCombinedReturnValue([stream<record{}, error>, stream<record{}, error
     }
 }
 
-function getIntVariableValue(stream<record{}, error> queryResult) returns int|error {
+isolated function getIntVariableValue(stream<record{}, error> queryResult) returns int|error {
     int count = -1;
     record {|record {} value;|}? data = check queryResult.next();
     if (data is record {|record {} value;|}) {
@@ -543,7 +543,7 @@ function drainGlobalPool(string database) {
     validateConnectionTimeoutError(returnArray[10]);
 }
 
-function getReturnValue(stream<record{}, error> queryResult) returns int|error {
+isolated function getReturnValue(stream<record{}, error> queryResult) returns int|error {
     int count = -1;
     record {|record {} value;|}? data = check queryResult.next();
     if (data is record {|record {} value;|}) {

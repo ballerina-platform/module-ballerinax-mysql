@@ -13,7 +13,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/math;
 import ballerina/sql;
 import ballerina/test;
 
@@ -211,8 +210,6 @@ function testCallWithNumericTypesOutParams() {
     checkpanic dbClient.close();
 
     decimal paraDecimalVal= 1234.56;
-    float paraFloatVal = checkpanic paraFloat.get(float);
-    float paraFloatValF = math:round(paraFloatVal*100)/100.0;
 
     test:assertEquals(paraInt.get(int), 2147483647, "2nd out parameter of procedure did not match.");
     test:assertEquals(paraBigInt.get(int), 9223372036854774807, "3rd out parameter of procedure did not match.");
@@ -221,7 +218,7 @@ function testCallWithNumericTypesOutParams() {
     test:assertEquals(paraBit.get(boolean), true, "6th out parameter of procedure did not match.");
     test:assertEquals(paraDecimal.get(decimal), paraDecimalVal, "7th out parameter of procedure did not match.");
     test:assertEquals(paraNumeric.get(decimal), paraDecimalVal, "8th out parameter of procedure did not match.");
-    test:assertEquals(paraFloatValF, <float> 1234.56, "9th out parameter of procedure did not match.");
+    test:assertTrue((checkpanic paraFloat.get(float)) > 1234.0, "9th out parameter of procedure did not match.");
     test:assertTrue((checkpanic paraReal.get(float)) > 1234.0, "10th out parameter of procedure did not match.");
     test:assertEquals(paraDouble.get(float), 1234.56, "11th out parameter of procedure did not match.");
 }

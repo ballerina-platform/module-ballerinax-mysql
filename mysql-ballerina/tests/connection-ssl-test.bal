@@ -20,8 +20,8 @@ import ballerina/test;
 
 string sslDB = "SSL_CONNECT_DB";
 
-string clientStorePath = checkpanic file:getAbsolutePath("./src/mysql/tests/resources/keystore/client/client-keystore.p12");
-string turstStorePath = checkpanic file:getAbsolutePath("./src/mysql/tests/resources/keystore/client/trust-keystore.p12");
+string clientStorePath = checkpanic file:getAbsolutePath("./tests/resources/keystore/client/client-keystore.p12");
+string turstStorePath = checkpanic file:getAbsolutePath("./tests/resources/keystore/client/trust-keystore.p12");
 
 @test:Config {
     groups: ["connection","ssl"]

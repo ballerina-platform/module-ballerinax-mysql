@@ -20,7 +20,7 @@ import ballerina/test;
 import ballerina/file;
 import ballerina/runtime;
 
-string resourcePath = check file:getAbsolutePath("src/mysql/tests/resources");
+string resourcePath = check file:getAbsolutePath("tests/resources");
 
 string host = "localhost";
 string user = "root";

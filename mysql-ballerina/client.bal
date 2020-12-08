@@ -55,7 +55,7 @@ public client class Client {
     # + rowType - The `typedesc` of the record that should be returned as a result. If this is not provided the default
     #             column names of the query result set be used for the record attributes.
     # + return - Stream of records in the type of `rowType`
-    public remote function query(@untainted string|sql:ParameterizedQuery sqlQuery, typedesc<record {}>? rowType = ())
+    remote function query(@untainted string|sql:ParameterizedQuery sqlQuery, typedesc<record {}>? rowType = ())
     returns @tainted stream <record {}, sql:Error> {
         if (self.clientActive) {
             return nativeQuery(self, sqlQuery, rowType);
@@ -71,7 +71,7 @@ public client class Client {
     #              when the query has params to be passed in
     # + return - Summary of the sql update query as `ExecutionResult` or returns `Error`
     #           if any error occurred when executing the query
-    public remote function execute(@untainted string|sql:ParameterizedQuery sqlQuery) returns sql:ExecutionResult|sql:Error {
+    remote function execute(@untainted string|sql:ParameterizedQuery sqlQuery) returns sql:ExecutionResult|sql:Error {
         if (self.clientActive) {
             return nativeExecute(self, sqlQuery);
         } else {
@@ -89,7 +89,7 @@ public client class Client {
     #            will return `BatchExecuteError`, however the JDBC driver may or may not continue to process the
     #            remaining commands in the batch after a failure. The summary of the executed queries in case of error
     #            can be accessed as `(<sql:BatchExecuteError> result).detail()?.executionResults`.
-    public remote function batchExecute(@untainted sql:ParameterizedQuery[] sqlQueries) returns sql:ExecutionResult[]|sql:Error {
+    remote function batchExecute(@untainted sql:ParameterizedQuery[] sqlQueries) returns sql:ExecutionResult[]|sql:Error {
         if (sqlQueries.length() == 0) {
             return sql:ApplicationError(" Parameter 'sqlQueries' cannot be empty array");
         }
@@ -106,7 +106,7 @@ public client class Client {
     # + rowTypes - The array of `typedesc` of the records that should be returned as a result. If this is not provided
     #               the default column names of the query result set be used for the record attributes.
     # + return - Summary of the execution is returned in `ProcedureCallResult` or `sql:Error`
-    public remote function call(@untainted string|sql:ParameterizedCallQuery sqlQuery, typedesc<record {}>[] rowTypes = [])
+    remote function call(@untainted string|sql:ParameterizedCallQuery sqlQuery, typedesc<record {}>[] rowTypes = [])
     returns sql:ProcedureCallResult|sql:Error {
         if (self.clientActive) {
             return nativeCall(self, sqlQuery, rowTypes);

@@ -25,6 +25,21 @@ type TransactionResultCount record {
     int COUNTVAL;
 };
 
+public class SQLDefaultRetryManager {
+    private int count;
+    public function init(int count = 2) {
+        self.count = count;
+    }
+    public function shouldRetry(error? e) returns boolean {
+        if e is error && self.count >  0 {
+            self.count -= 1;
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
+
 @test:Config {
     groups: ["transaction", "local-transaction"]
 }
@@ -33,7 +48,7 @@ function testLocalTransaction() {
     int retryVal = -1;
     boolean committedBlockExecuted = false;
     transactions:Info transInfo;
-    retry(1) transaction {
+    retry<SQLDefaultRetryManager>(1) transaction {
         var res = dbClient->execute("Insert into Customers (firstName,lastName,registrationID,creditLimit,country) " +
                                 "values ('James', 'Clerk', 200, 5000.75, 'USA')");
         res = dbClient->execute("Insert into Customers (firstName,lastName,registrationID,creditLimit,country) " +
@@ -73,7 +88,7 @@ function testTransactionRollbackWithCheck() {
 
 function testTransactionRollbackWithCheckHelper(Client dbClient) returns error?{
     transactions:Info transInfo;
-    retry(1) transaction {
+    retry<SQLDefaultRetryManager>(1) transaction {
         transInfo = transactions:info();
         retryValRWC = transInfo.retryNumber;
         var e1 = check dbClient->execute("Insert into Customers (firstName,lastName,registrationID," +
@@ -94,7 +109,7 @@ function testTransactionRollbackWithRollback() {
     int retryVal = -1;
     boolean stmtAfterFailureExecuted = false;
     transactions:Info transInfo;
-    retry(1) transaction {
+    retry<SQLDefaultRetryManager>(1) transaction {
         transInfo = transactions:info();
         var e1 = dbClient->execute("Insert into Customers (firstName,lastName,registrationID," +
                 "creditLimit,country) values ('James', 'Clerk', 211, 5000.75, 'USA')");
@@ -129,7 +144,7 @@ function testLocalTransactionUpdateWithGeneratedKeys() {
     Client dbClient = checkpanic new (host, user, password, localTransactionDB, port);
     int returnVal = 0;
     transactions:Info transInfo;
-    retry (1) transaction {
+    retry<SQLDefaultRetryManager>(1) transaction {
         transInfo = transactions:info();
         var e1 = checkpanic dbClient->execute("Insert into Customers " +
          "(firstName,lastName,registrationID,creditLimit,country) values ('James', 'Clerk', 615, 5000.75, 'USA')");
@@ -163,7 +178,7 @@ function testLocalTransactionRollbackWithGeneratedKeys() {
 
 function testLocalTransactionRollbackWithGeneratedKeysHelper(Client dbClient) returns error? {
     transactions:Info transInfo;
-    retry(1) transaction {
+    retry<SQLDefaultRetryManager>(1) transaction {
         transInfo = transactions:info();
         returnValRGK = transInfo.retryNumber;
         var e1 = check dbClient->execute("Insert into Customers " +
@@ -187,7 +202,7 @@ function testTransactionAbort() {
         abortVal = -1;
     };
 
-    retry(1) transaction {
+    retry<SQLDefaultRetryManager>(1) transaction {
         transInfo = transactions:info();
         transactions:onRollback(abortFunc);
         var e1 = dbClient->execute("Insert into Customers " +
@@ -236,7 +251,7 @@ function testTransactionErrorPanic() {
 function testTransactionErrorPanicHelper(Client dbClient) {
     int returnVal = 0;
     transactions:Info transInfo;
-    retry(1) transaction {
+    retry<SQLDefaultRetryManager>(1) transaction {
         transInfo = transactions:info();
         var e1 = dbClient->execute("Insert into Customers (firstName,lastName," +
                               "registrationID,creditLimit,country) values ('James', 'Clerk', 260, 5000.75, 'USA')");
@@ -261,7 +276,7 @@ function testTransactionErrorPanicAndTrap() {
 
     int catchValue = 0;
     transactions:Info transInfo;
-    retry (1) transaction {
+    retry<SQLDefaultRetryManager>(1) transaction {
         transInfo = transactions:info();
         var e1 = dbClient->execute("Insert into Customers (firstName,lastName,registrationID," +
                  "creditLimit,country) values ('James', 'Clerk', 250, 5000.75, 'USA')");
@@ -296,7 +311,7 @@ function testTwoTransactions() {
 
      transactions:Info transInfo1;
      transactions:Info transInfo2;
-     retry (1) transaction {
+     retry<SQLDefaultRetryManager>(1) transaction {
          transInfo1 = transactions:info();
          var e1 = checkpanic dbClient->execute("Insert into Customers (firstName,lastName,registrationID,creditLimit,country) " +
                              "values ('James', 'Clerk', 400, 5000.75, 'USA')");
@@ -306,7 +321,7 @@ function testTwoTransactions() {
      }
      int returnVal1 = transInfo1.retryNumber;
 
-     retry(1) transaction {
+     retry<SQLDefaultRetryManager>(1) transaction {
          transInfo2 = transactions:info();
          var e1 = dbClient->execute("Insert into Customers (firstName,lastName,registrationID,creditLimit,country) " +
                              "values ('James', 'Clerk', 400, 5000.75, 'USA')");
@@ -374,7 +389,7 @@ function testLocalTransactionFailedHelper(string status,Client dbClient) returns
         a = a + " trxAborted";
     };
 
-    retry(2) transaction {
+    retry<SQLDefaultRetryManager>(2) transaction {
         a = a + " inTrx";
         transInfo = transactions:info();
         transactions:onRollback(onRollbackFunc);
@@ -418,7 +433,7 @@ function testLocalTransactionSuccessWithFailed() {
 function testLocalTransactionSuccessWithFailedHelper(string status,Client dbClient) returns string|error {
     int i = 0;
     string a = status;
-    retry (3) transaction {
+    retry<SQLDefaultRetryManager>(3) transaction {
         i = i + 1;
         a = a + " inTrx";
         var e1 = check dbClient->execute("Insert into Customers (firstName,lastName,registrationID,creditLimit,country)" +

@@ -5,29 +5,23 @@ This module provides the functionality required to access and manipulate data st
 **Prerequisite:** Add the MySQL driver JAR as a native library dependency in your Ballerina project. 
 This module uses database properties from the MySQL version 8.0.x onwards. Therefore, it is recommended to use a 
 MySQL driver version greater than 8.0.x. Then, once you build the project by executing the `ballerina build`
-command, you should be able to run the resultant JAR by executing the `java -jar` command.
+command, you should be able to run the resultant by executing the `ballerina run` command.
 
 E.g., The `Ballerina.toml` content.
 Change the path to the JDBC driver appropriately.
 
 ```toml
-[project]
-org-name= "sample"
+[package]
+org = "sample"
+name = "mysql"
 version= "0.1.0"
 
-[platform]
-target = "java8"
-
-    [[platform.libraries]]
-    artafactId = "mysql-connector-java"
-    version = "8.0.17"
-    path = "/path/to/mysql-connector-java-8.0.17.jar"
-    groupId = "mysql"
-    modules = ["samplemodule"]
+[[platform.java11.dependency]]
+artafactId = "mysql-connector-java"
+version = "8.0.17"
+path = "/path/to/mysql-connector-java-8.0.17.jar"
+groupId = "mysql"
 ``` 
-
-Else, if you're trying to run a single BAL file, you can copy the JDBC driver into the `<BALLERINA_HOME>/bre/lib/distributions/jballerina-<VERSION>` directory and 
-run the BAL file by executing the `ballerina run` command.
 
 ### Client
 To access a database, you must first create a 

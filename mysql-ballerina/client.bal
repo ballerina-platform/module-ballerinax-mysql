@@ -75,7 +75,7 @@ public client class Client {
         if (self.clientActive) {
             return nativeExecute(self, sqlQuery);
         } else {
-            return sql:ApplicationError("MySQL Client is already closed, hence further operations are not allowed");
+            return error sql:ApplicationError("MySQL Client is already closed, hence further operations are not allowed");
         }
     }
 
@@ -91,12 +91,12 @@ public client class Client {
     #            can be accessed as `(<sql:BatchExecuteError> result).detail()?.executionResults`.
     remote function batchExecute(@untainted sql:ParameterizedQuery[] sqlQueries) returns sql:ExecutionResult[]|sql:Error {
         if (sqlQueries.length() == 0) {
-            return sql:ApplicationError(" Parameter 'sqlQueries' cannot be empty array");
+            return error sql:ApplicationError(" Parameter 'sqlQueries' cannot be empty array");
         }
         if (self.clientActive) {
             return nativeBatchExecute(self, sqlQueries);
         } else {
-            return sql:ApplicationError("JDBC Client is already closed, hence further operations are not allowed");
+            return error sql:ApplicationError("JDBC Client is already closed, hence further operations are not allowed");
         }
     }
 
@@ -111,7 +111,7 @@ public client class Client {
         if (self.clientActive) {
             return nativeCall(self, sqlQuery, rowTypes);
         } else {
-            return sql:ApplicationError("JDBC Client is already closed, hence further operations are not allowed");
+            return error sql:ApplicationError("JDBC Client is already closed, hence further operations are not allowed");
         }
     }
 

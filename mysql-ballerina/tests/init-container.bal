@@ -18,7 +18,7 @@ import ballerina/io;
 import ballerina/os;
 import ballerina/test;
 import ballerina/file;
-import ballerina/runtime;
+import ballerina/lang.runtime as runtime;
 
 string resourcePath = check file:getAbsolutePath("tests/resources");
 
@@ -38,12 +38,12 @@ function beforeSuite() {
                     "run", "--rm", "-d", "--name", "ballerina-mysql", "-p", "3305:3306", "-t", "ballerina-mysql");
     exitCode = checkpanic process.waitForExit();
     test:assertExactEquals(exitCode, 0, "Docker container 'ballerina-mysql' creation failed!");
-    runtime:sleep(50000);
+    runtime:sleep(50);
 
     int healthCheck = 1;
     int counter = 0;
     while(healthCheck > 0 && counter < 12) {
-        runtime:sleep(10000);
+        runtime:sleep(10);
         process = checkpanic os:exec("docker", {}, resourcePath,
                     "exec", "ballerina-mysql", "mysqladmin", "ping", "-hlocalhost", "-uroot", "-pTest123#", "--silent");
         healthCheck = checkpanic process.waitForExit();

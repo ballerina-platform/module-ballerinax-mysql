@@ -54,7 +54,7 @@ function testCallWithStringTypes() returns @tainted record {}|error? {
 
 @test:Config {
     groups: ["procedures"],
-    dependsOn: ["testCallWithStringTypes"]
+    dependsOn: [testCallWithStringTypes]
 }
 function testCallWithStringTypesInParams() {
     Client dbClient = checkpanic new (host, user, password, proceduresDb, port);
@@ -84,7 +84,7 @@ function testCallWithStringTypesInParams() {
 
 @test:Config {
     groups: ["procedures"],
-    dependsOn: ["testCallWithStringTypesInParams"]
+    dependsOn: [testCallWithStringTypesInParams]
 }
 function testCallWithStringTypesReturnsData() {
     Client dbClient = checkpanic new (host, user, password, proceduresDb, port);
@@ -113,7 +113,7 @@ function testCallWithStringTypesReturnsData() {
 
 @test:Config {
     groups: ["procedures"],
-    dependsOn: ["testCallWithStringTypesReturnsData"]
+    dependsOn: [testCallWithStringTypesReturnsData]
 }
 function testCallWithStringTypesReturnsDataMultiple() {
     Client dbClient = checkpanic new (host, user, password, proceduresDb, port);
@@ -160,7 +160,7 @@ function testCallWithStringTypesReturnsDataMultiple() {
 
 @test:Config {
     groups: ["procedures"],
-    dependsOn: ["testCallWithStringTypesReturnsDataMultiple"]
+    dependsOn: [testCallWithStringTypesReturnsDataMultiple]
 }
 function testCallWithStringTypesOutParams() {
     Client dbClient = checkpanic new (host, user, password, proceduresDb, port);
@@ -188,7 +188,7 @@ function testCallWithStringTypesOutParams() {
 
 @test:Config {
     groups: ["procedures"],
-    dependsOn: ["testCallWithStringTypesOutParams"]
+    dependsOn: [testCallWithStringTypesOutParams]
 }
 function testCallWithNumericTypesOutParams() {
     Client dbClient = checkpanic new (host, user, password, proceduresDb, port);

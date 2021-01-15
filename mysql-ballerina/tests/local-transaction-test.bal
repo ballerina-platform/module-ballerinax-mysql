@@ -73,7 +73,7 @@ boolean stmtAfterFailureExecutedRWC = false;
 int retryValRWC = -1;
 @test:Config {
     groups: ["transaction", "local-transaction"],
-    dependsOn: ["testLocalTransaction"]
+    dependsOn: [testLocalTransaction]
 }
 function testTransactionRollbackWithCheck() {
     Client dbClient = checkpanic new (host, user, password, localTransactionDB, port);
@@ -102,7 +102,7 @@ function testTransactionRollbackWithCheckHelper(Client dbClient) returns error?{
 
 @test:Config {
     groups: ["transaction", "local-transaction"],
-    dependsOn: ["testTransactionRollbackWithCheck"]
+    dependsOn: [testTransactionRollbackWithCheck]
 }
 function testTransactionRollbackWithRollback() {
     Client dbClient = checkpanic new (host, user, password, localTransactionDB, port);
@@ -138,7 +138,7 @@ function testTransactionRollbackWithRollback() {
 
 @test:Config {
     groups: ["transaction", "local-transaction"],
-    dependsOn: ["testTransactionRollbackWithRollback"]
+    dependsOn: [testTransactionRollbackWithRollback]
 }
 function testLocalTransactionUpdateWithGeneratedKeys() {
     Client dbClient = checkpanic new (host, user, password, localTransactionDB, port);
@@ -164,7 +164,7 @@ function testLocalTransactionUpdateWithGeneratedKeys() {
 int returnValRGK = 0;
 @test:Config {
     groups: ["transaction", "local-transaction"],
-    dependsOn: ["testLocalTransactionUpdateWithGeneratedKeys"]
+    dependsOn: [testLocalTransactionUpdateWithGeneratedKeys]
 }
 function testLocalTransactionRollbackWithGeneratedKeys() {
     Client dbClient = checkpanic new (host, user, password, localTransactionDB, port);
@@ -191,7 +191,7 @@ function testLocalTransactionRollbackWithGeneratedKeysHelper(Client dbClient) re
 
 @test:Config {
     groups: ["transaction", "local-transaction"],
-    dependsOn: ["testLocalTransactionRollbackWithGeneratedKeys"]
+    dependsOn: [testLocalTransactionRollbackWithGeneratedKeys]
 }
 function testTransactionAbort() {
     Client dbClient = checkpanic new (host, user, password, localTransactionDB, port);
@@ -269,7 +269,7 @@ function testTransactionErrorPanicHelper(Client dbClient) {
 
 @test:Config {
     groups: ["transaction", "local-transaction"],
-    dependsOn: ["testTransactionAbort"]
+    dependsOn: [testTransactionAbort]
 }
 function testTransactionErrorPanicAndTrap() {
     Client dbClient = checkpanic new (host, user, password, localTransactionDB, port);
@@ -304,7 +304,7 @@ isolated function testTransactionErrorPanicAndTrapHelper(int i) {
 
 @test:Config {
     groups: ["transaction", "local-transaction"],
-    dependsOn: ["testTransactionErrorPanicAndTrap"]
+    dependsOn: [testTransactionErrorPanicAndTrap]
 }
 function testTwoTransactions() {
     Client dbClient = checkpanic new (host, user, password, localTransactionDB, port);
@@ -341,7 +341,7 @@ function testTwoTransactions() {
 
 @test:Config {
     groups: ["transaction", "local-transaction"],
-    dependsOn: ["testTwoTransactions"]
+    dependsOn: [testTwoTransactions]
 }
 function testTransactionWithoutHandlers() {
     Client dbClient = checkpanic new (host, user, password, localTransactionDB, port);
@@ -360,7 +360,7 @@ function testTransactionWithoutHandlers() {
 
 @test:Config {
     groups: ["transaction", "local-transaction"],
-    dependsOn: ["testTransactionWithoutHandlers"]
+    dependsOn: [testTransactionWithoutHandlers]
 }
 function testLocalTransactionFailed() {
     Client dbClient = checkpanic new (host, user, password, localTransactionDB, port);
@@ -411,7 +411,7 @@ isolated function getError(string message) returns error? {
 
 @test:Config {
     groups: ["transaction", "local-transaction"],
-    dependsOn: ["testLocalTransactionFailed"]
+    dependsOn: [testLocalTransactionFailed]
 }
 function testLocalTransactionSuccessWithFailed() {
     Client dbClient = checkpanic new (host, user, password, localTransactionDB, port);

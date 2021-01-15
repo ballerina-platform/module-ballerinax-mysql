@@ -32,7 +32,7 @@ function testCreateTable() {
 
 @test:Config {
     groups: ["execute", "execute-basic"],
-    dependsOn: ["testCreateTable"]
+    dependsOn: [testCreateTable]
 }
 function testInsertTable() {
     Client dbClient = checkpanic new (host, user, password, executeDb, port);
@@ -50,7 +50,7 @@ function testInsertTable() {
 
 @test:Config {
     groups: ["execute", "execute-basic"],
-    dependsOn: ["testInsertTable"]
+    dependsOn: [testInsertTable]
 }
 function testInsertTableWithoutGeneratedKeys() {
     Client dbClient = checkpanic new (host, user, password, executeDb, port);
@@ -63,7 +63,7 @@ function testInsertTableWithoutGeneratedKeys() {
 
 @test:Config {
     groups: ["execute", "execute-basic"],
-    dependsOn: ["testInsertTableWithoutGeneratedKeys"]
+    dependsOn: [testInsertTableWithoutGeneratedKeys]
 }
 function testInsertTableWithGeneratedKeys() {
     Client dbClient = checkpanic new (host, user, password, executeDb, port);
@@ -93,7 +93,7 @@ type NumericType record {
 
 @test:Config {
     groups: ["execute", "execute-basic"],
-    dependsOn: ["testInsertTableWithGeneratedKeys"]
+    dependsOn: [testInsertTableWithGeneratedKeys]
 }
 function testInsertAndSelectTableWithGeneratedKeys() {
     Client dbClient = checkpanic new (host, user, password, executeDb, port);
@@ -118,7 +118,7 @@ function testInsertAndSelectTableWithGeneratedKeys() {
 
 @test:Config {
     groups: ["execute", "execute-basic"],
-    dependsOn: ["testInsertAndSelectTableWithGeneratedKeys"]
+    dependsOn: [testInsertAndSelectTableWithGeneratedKeys]
 }
 function testInsertWithAllNilAndSelectTableWithGeneratedKeys() {
     Client dbClient = checkpanic new (host, user, password, executeDb, port);
@@ -156,7 +156,7 @@ type StringData record {
 
 @test:Config {
     groups: ["execute", "execute-basic"],
-    dependsOn: ["testInsertWithAllNilAndSelectTableWithGeneratedKeys"]
+    dependsOn: [testInsertWithAllNilAndSelectTableWithGeneratedKeys]
 }
 function testInsertWithStringAndSelectTable() {
     Client dbClient = checkpanic new (host, user, password, executeDb, port);
@@ -192,7 +192,7 @@ function testInsertWithStringAndSelectTable() {
 
 @test:Config {
     groups: ["execute", "execute-basic"],
-    dependsOn: ["testInsertWithStringAndSelectTable"]
+    dependsOn: [testInsertWithStringAndSelectTable]
 }
 function testInsertWithEmptyStringAndSelectTable() {
     Client dbClient = checkpanic new (host, user, password, executeDb, port);
@@ -239,7 +239,7 @@ type StringNilData record {
 
 @test:Config {
     groups: ["execute", "execute-basic"],
-    dependsOn: ["testInsertWithEmptyStringAndSelectTable"]
+    dependsOn: [testInsertWithEmptyStringAndSelectTable]
 }
 function testInsertWithNilStringAndSelectTable() {
     Client dbClient = checkpanic new (host, user, password, executeDb, port);
@@ -273,7 +273,7 @@ function testInsertWithNilStringAndSelectTable() {
 
 @test:Config {
     groups: ["execute", "execute-basic"],
-    dependsOn: ["testInsertWithNilStringAndSelectTable"]
+    dependsOn: [testInsertWithNilStringAndSelectTable]
 }
 function testInsertTableWithDatabaseError() {
     Client dbClient = checkpanic new (host, user, password, executeDb, port);
@@ -295,7 +295,7 @@ function testInsertTableWithDatabaseError() {
 
 @test:Config {
     groups: ["execute", "execute-basic"],
-    dependsOn: ["testInsertTableWithDatabaseError"]
+    dependsOn: [testInsertTableWithDatabaseError]
 }
 function testInsertTableWithDataTypeError() {
     Client dbClient = checkpanic new (host, user, password, executeDb, port);
@@ -322,7 +322,7 @@ type ResultCount record {
 
 @test:Config {
     groups: ["execute", "execute-basic"],
-    dependsOn: ["testInsertTableWithDataTypeError"]
+    dependsOn: [testInsertTableWithDataTypeError]
 }
 function testUpdateData() {
     Client dbClient = checkpanic new (host, user, password, executeDb, port);

@@ -197,9 +197,8 @@ function testTransactionAbort() {
     Client dbClient = checkpanic new (host, user, password, localTransactionDB, port);
     transactions:Info transInfo;
 
-    int abortVal = 0;
-    var abortFunc = function(transactions:Info? info, error? cause, boolean willTry) {
-        abortVal = -1;
+    var abortFunc = isolated function(transactions:Info? info, error? cause, boolean willTry) {
+        io:println("Transaction aborted !");
     };
 
     retry<SQLDefaultRetryManager>(1) transaction {
@@ -222,7 +221,6 @@ function testTransactionAbort() {
     checkpanic dbClient.close();
 
     test:assertEquals(returnVal, 0);
-    test:assertEquals(abortVal, -1);
     test:assertEquals(count, 0);
 }
 
@@ -376,7 +374,7 @@ function testLocalTransactionFailed() {
     a = a + " afterTrx";
     int count = getCount(dbClient, "111");
     checkpanic dbClient.close();
-    test:assertEquals(a, "beforetx inTrx trxAborted inTrx trxAborted inTrx trapped afterTrx");
+    test:assertEquals(a, "beforetx inTrx inTrx inTrx trapped afterTrx");
     test:assertEquals(count, 0);
 }
 
@@ -385,8 +383,8 @@ function testLocalTransactionFailedHelper(string status,Client dbClient) returns
     transactions:Info transInfo;
     int i = 0;
 
-    var onRollbackFunc = function(transactions:Info? info, error? cause, boolean willTry) {
-        a = a + " trxAborted";
+    var onRollbackFunc = isolated function(transactions:Info? info, error? cause, boolean willTry) {
+        io:println("trxAborted");
     };
 
     retry<SQLDefaultRetryManager>(2) transaction {

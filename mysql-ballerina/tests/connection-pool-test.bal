@@ -15,7 +15,7 @@
 
 import ballerina/lang.runtime as runtime;
 import ballerina/sql;
-import ballerina/stringutils;
+import ballerina/lang.'string as strings;
 import ballerina/test;
 
 string poolDB_1 = "POOL_DB_1";
@@ -559,11 +559,11 @@ isolated function getReturnValue(stream<record{}, error> queryResult) returns in
 function validateApplicationError(int|error dbError) {
     test:assertTrue(dbError is error);
     sql:ApplicationError sqlError = <sql:ApplicationError> dbError;
-    test:assertTrue(stringutils:contains(sqlError.message(), "Client is already closed"), sqlError.message());
+    test:assertTrue(strings:includes(sqlError.message(), "Client is already closed"), sqlError.message());
 }
 
 function validateConnectionTimeoutError(int|error dbError) {
     test:assertTrue(dbError is error);
     sql:DatabaseError sqlError = <sql:DatabaseError> dbError;
-    test:assertTrue(stringutils:contains(sqlError.message(), "request timed out after"), sqlError.message());
+    test:assertTrue(strings:includes(sqlError.message(), "request timed out after"), sqlError.message());
 }

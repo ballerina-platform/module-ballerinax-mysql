@@ -14,7 +14,7 @@
 // under the License.
 
 import ballerina/file;
-import ballerina/stringutils;
+import ballerina/lang.'string as strings;
 import ballerina/sql;
 import ballerina/test;
 
@@ -106,6 +106,6 @@ function testSSLVerifyIdentity() {
         port = port, options = options);
     test:assertTrue(dbClient is error);
     error dbError = <error> dbClient;
-    test:assertTrue(stringutils:contains(dbError.message(),  "The certificate Common Name 'Server' does not match " +
+    test:assertTrue(strings:includes(dbError.message(),  "The certificate Common Name 'Server' does not match " +
     "with 'localhost'."), dbError.message());
 }

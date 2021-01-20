@@ -16,7 +16,7 @@
 # under the License.
 #
 
-[b7a.sql.pool]
+[sql]
 maxOpenConnections=10
 maxConnectionLifeTimeInSeconds=2000.5
 minIdleConnections=5

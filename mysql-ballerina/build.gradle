@@ -107,7 +107,8 @@ task updateTomlFile {
         newConfig = newConfig.replace("@toml.version@", tomlVersion)
         newConfig = newConfig.replace("@project.path@", distributionPath)
         newConfig = newConfig.replace("@stdlib.sql.native.version@", project.stdlibSqlVersion.toString())
-
+        newConfig = newConfig.replace("@stdlib.sql.version@", stdlibDependentSqlVersion)
+        
         ballerinaConfigFile.text = newConfig
 
         def newDependencyConfig = ballerinaDependencyFile.text.replace("@stdlib.sql.version@", stdlibDependentSqlVersion)

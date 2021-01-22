@@ -69,6 +69,7 @@ task unpackStdLibs() {
 def packageName = "mysql"
 def packageOrg = "ballerinax"
 def ballerinaConfigFile = new File("$project.projectDir/Ballerina.toml")
+def ballerinaDependencyFile = new File("$project.projectDir/Dependencies.toml")
 def artifactBallerinaDocs = file("$project.projectDir/build/docs_parent/")
 def artifactCacheParent = file("$project.projectDir/build/cache_parent/")
 def artifactLibParent = file("$project.projectDir/build/lib_parent/")
@@ -106,11 +107,13 @@ task updateTomlFile {
         newConfig = newConfig.replace("@toml.version@", tomlVersion)
         newConfig = newConfig.replace("@project.path@", distributionPath)
         newConfig = newConfig.replace("@stdlib.sql.native.version@", project.stdlibSqlVersion.toString())
-
         newConfig = newConfig.replace("@stdlib.sql.version@", stdlibDependentSqlVersion)
-        newConfig = newConfig.replace("@stdlib.crypto.version@", stdlibCryptoVersion)
-
+        
         ballerinaConfigFile.text = newConfig
+
+        def newDependencyConfig = ballerinaDependencyFile.text.replace("@stdlib.sql.version@", stdlibDependentSqlVersion)
+        newDependencyConfig = newDependencyConfig.replace("@stdlib.crypto.version@", stdlibCryptoVersion)
+        ballerinaDependencyFile.text = newDependencyConfig
     }
 }
 

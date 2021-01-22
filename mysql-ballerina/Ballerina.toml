@@ -3,16 +3,6 @@ org = "ballerinax"
 name = "mysql"
 version = "@toml.version@"
 
-[[dependency]]
-org = "ballerina"
-name = "sql"
-version = "@stdlib.sql.version@"
-
-[[dependency]]
-org = "ballerina"
-name = "crypto"
-version = "@stdlib.crypto.version@"
-
 [[platform.java11.dependency]]
 path = "../mysql-native/build/libs/mysql-native-@project.version@.jar"
 groupId = "org.ballerinalang"

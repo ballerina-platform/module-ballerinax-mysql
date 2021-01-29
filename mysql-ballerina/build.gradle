@@ -81,6 +81,7 @@ if (Os.isFamily(Os.FAMILY_WINDOWS)) {
 }
 def distributionBinPath = distributionPath + "/bin"
 def originalConfig = ballerinaConfigFile.text
+def originalDependencies = ballerinaDependencyFile.text
 
 task copyStdlibs(type: Copy) {
     dependsOn(unpackStdLibs)
@@ -120,6 +121,7 @@ task updateTomlFile {
 task revertTomlFile {
     doLast {
         ballerinaConfigFile.text = originalConfig
+        ballerinaDependencyFile.text = originalDependencies
     }
 }
 

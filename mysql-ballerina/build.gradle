@@ -188,7 +188,7 @@ task ballerinaBuild {
         if (graph.hasTask(':mysql-ballerina:build')) {
             ballerinaTest.enabled = false
         }
-        if (graph.hasTask(':sql-ballerina:test')) {
+        if (graph.hasTask(':mysql-ballerina:test')) {
             testParams = "--code-coverage --includes=*"
         }
     }

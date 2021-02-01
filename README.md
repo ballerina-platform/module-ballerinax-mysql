@@ -83,6 +83,10 @@ Execute the commands below to build from the source.
 
         ./gradlew clean build -Pdebug=<port>
 
+7. To debug the module with Ballerina language:
+
+        ./gradlew clean build -PbalJavaDebug=<port>     
+
 ## Contributing to Ballerina
 
 As an open source project, Ballerina welcomes contributions from the community. 

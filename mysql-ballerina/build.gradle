@@ -185,7 +185,7 @@ task ballerinaBuild {
 
     def testParams = "--skip-tests"
     gradle.taskGraph.whenReady { graph ->
-        if (graph.hasTask(':sql-ballerina:build')) {
+        if (graph.hasTask(':mysql-ballerina:build')) {
             ballerinaTest.enabled = false
         }
         if (graph.hasTask(':sql-ballerina:test')) {

@@ -10,7 +10,7 @@ The MySQL library is one of the standard library modules of the<a target="_blank
 
 This provides the functionality required to access and manipulate data stored in a MySQL database.  
 
-For more information on the operations supported by the `mysql:Client`, which include the below, go to [The MySQL Module](https://ballerina.io/swan-lake/learn/api-docs/ballerina/mysql/).
+For more information on the operations supported by the `mysql:Client`, which include the below, go to [The MySQL Module](https://ballerina.io/learn/api-docs/ballerina/mysql/).
 
 - Pooling connections
 - Querying data
@@ -21,7 +21,7 @@ For more information on the operations supported by the `mysql:Client`, which in
 - Executing stored procedures
 - Closing the client
 
-For example demonstrations of the usage, go to [Ballerina By Examples](https://ballerina.io/swan-lake/learn/by-example/mysql-init-options.html).
+For example demonstrations of the usage, go to [Ballerina By Examples](https://ballerina.io/learn/by-example/mysql-init-options.html).
 
 ## Issues and Projects 
 

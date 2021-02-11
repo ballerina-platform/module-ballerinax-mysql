@@ -19,7 +19,7 @@ version = "@stdlib.sql.native.version@"
 
 [[platform.java11.dependency]]
 path = "./lib/mysql-connector-java-8.0.21.jar"
-artafactId = "mysql-connector-java"
+artifactId = "mysql-connector-java"
 groupId = "mysql"
 scope = "testOnly"
 version = "8.0.17"

@@ -19,6 +19,25 @@ import org.apache.tools.ant.taskdefs.condition.Os
 
 description = 'Ballerina - MySQL Ballerina Generator'
 
+def packageName = "mysql"
+def packageOrg = "ballerinax"
+def snapshotVersion = "-SNAPSHOT"
+def tomlVersion = project.version.replace("${snapshotVersion}", "")
+def ballerinaConfigFile = new File("$project.projectDir/Ballerina.toml")
+def ballerinaDependencyFile = new File("$project.projectDir/Dependencies.toml")
+def artifactBallerinaDocs = file("$project.projectDir/build/docs_parent/")
+def artifactCacheParent = file("$project.projectDir/build/cache_parent/")
+def artifactLibParent = file("$project.projectDir/build/lib_parent/")
+def artifactCodeCoverageReport = file("$project.projectDir/target/cache/tests_cache/coverage/ballerina.exec")
+def ballerinaCentralAccessToken = System.getenv('BALLERINA_CENTRAL_ACCESS_TOKEN')
+def distributionPath = project.projectDir.absolutePath + "/build/target/jballerina-tools-${ballerinaLangVersion}"
+if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+    distributionPath = distributionPath.replaceAll("\\\\", "/")
+}
+def distributionBinPath = distributionPath + "/bin"
+def originalConfig = ballerinaConfigFile.text
+def originalDependencies = ballerinaDependencyFile.text
+
 configurations {
     jbalTools
 }
@@ -27,7 +46,7 @@ dependencies {
     jbalTools("org.ballerinalang:jballerina-tools:${ballerinaLangVersion}") {
         transitive = false
     }
-    compile project(':mysql-native')
+    compile project(":${packageName}-native")
  }
 
 clean {
@@ -52,24 +71,6 @@ task unpackJballerinaTools(type: Copy) {
         into new File("${buildDir}/target")
     }
 }
-
-def packageName = "mysql"
-def packageOrg = "ballerinax"
-def ballerinaConfigFile = new File("$project.projectDir/Ballerina.toml")
-def ballerinaDependencyFile = new File("$project.projectDir/Dependencies.toml")
-def artifactBallerinaDocs = file("$project.projectDir/build/docs_parent/")
-def artifactCacheParent = file("$project.projectDir/build/cache_parent/")
-def artifactLibParent = file("$project.projectDir/build/lib_parent/")
-def artifactCodeCoverageReport = file("$project.projectDir/target/cache/tests_cache/coverage/ballerina.exec")
-def tomlVersion = project.version.split("-")[0].toString()
-def ballerinaCentralAccessToken = System.getenv('BALLERINA_CENTRAL_ACCESS_TOKEN')
-def distributionPath = project.projectDir.absolutePath + "/build/target/jballerina-tools-${ballerinaLangVersion}"
-if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-    distributionPath = distributionPath.replaceAll("\\\\", "/")
-}
-def distributionBinPath = distributionPath + "/bin"
-def originalConfig = ballerinaConfigFile.text
-def originalDependencies = ballerinaDependencyFile.text
 
 task unpackStdLibs() {
     dependsOn(unpackJballerinaTools)
@@ -101,8 +102,8 @@ task copyStdlibs(type: Copy) {
 
 task updateTomlFile {
     doLast {
-        def stdlibDependentSqlVersion = project.stdlibSqlVersion.split('-')[0].toString()
-        def stdlibCryptoVersion = project.stdlibCryptoVersion.split("-")[0].toString()
+        def stdlibDependentSqlVersion = project.stdlibSqlVersion.replace("${snapshotVersion}", "")
+        def stdlibCryptoVersion = project.stdlibCryptoVersion.replace("${snapshotVersion}", "")
 
         def newConfig = ballerinaConfigFile.text.replace("@project.version@", project.version.toString())
         newConfig = newConfig.replace("@toml.version@", tomlVersion)
@@ -126,7 +127,7 @@ task revertTomlFile {
 }
 
 assemble {
-    dependsOn(":mysql-native:build")
+    dependsOn(":${packageName}-native:build")
     dependsOn(copyStdlibs)
 }
 
@@ -134,6 +135,7 @@ def groupParams = ""
 def disableGroups = ""
 def debugParams = ""
 def balJavaDebugParam = ""
+def testParams = ""
 
 task initializeVariables {
     if (project.hasProperty("groups")) {
@@ -147,6 +149,24 @@ task initializeVariables {
     }
     if (project.hasProperty("balJavaDebug")) {
         balJavaDebugParam = "BAL_JAVA_DEBUG=${project.findProperty("balJavaDebug")}"
+    }
+
+    gradle.taskGraph.whenReady { graph ->
+        if (graph.hasTask(':${packageName}-ballerina:build') || graph.hasTask(':${packageName}-ballerina:publish')) {
+            ballerinaTest.enabled = false
+        }
+
+        if (graph.hasTask(":${packageName}-ballerina:test")) {
+            testParams = "--code-coverage --includes=*"
+        } else {
+            testParams = "--skip-tests"
+        }
+
+        if (graph.hasTask(":${packageName}-ballerina:publish")) {
+            ballerinaPublish.enabled = true
+        } else {
+            ballerinaPublish.enabled = false
+        }
     }
 }
 
@@ -182,16 +202,6 @@ task ballerinaBuild {
     finalizedBy(revertTomlFile)
 
     inputs.dir file(project.projectDir)
-
-    def testParams = "--skip-tests"
-    gradle.taskGraph.whenReady { graph ->
-        if (graph.hasTask(':mysql-ballerina:build')) {
-            ballerinaTest.enabled = false
-        }
-        if (graph.hasTask(':mysql-ballerina:test')) {
-            testParams = "--code-coverage --includes=*"
-        }
-    }
 
     doLast {
         // Build and populate caches
@@ -241,7 +251,7 @@ build {
     dependsOn(ballerinaBuild)
 }
 
-task ballerinaPush {
+task ballerinaPublish {
     dependsOn(build)
     doLast {
         // Publish to central
@@ -261,9 +271,9 @@ task ballerinaPush {
                 workingDir project.projectDir
                 environment "JAVA_OPTS", "-DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true"
                 if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                    commandLine 'cmd', '/c', "$distributionBinPath/bal.bat push && exit %%ERRORLEVEL%%"
+                    commandLine 'cmd', '/c', "$distributionBinPath/bal.bat push ${packageName} && exit %%ERRORLEVEL%%"
                 } else {
-                    commandLine 'sh', '-c', "$distributionBinPath/bal push "
+                    commandLine 'sh', '-c', "$distributionBinPath/bal push ${packageName}"
                 }
             }
         }
@@ -271,7 +281,7 @@ task ballerinaPush {
 }
 
 publish {
-    dependsOn(ballerinaPush)
+    dependsOn(ballerinaPublish)
 }
 
 task createArtifactZip(type: Zip) {
@@ -293,7 +303,7 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/ballerina-platform/module-ballerinax-mysql")
+            url = uri("https://maven.pkg.github.com/ballerina-platform/module-${packageOrg}-${packageName}")
             credentials {
                 username = System.getenv("packageUser")
                 password = System.getenv("packagePAT")

@@ -25,7 +25,6 @@ plugins {
 description = 'Ballerina - MySQL'
 
 def packageName = "mysql"
-def snapshotVersion = "-SNAPSHOT"
 
 ext.ballerinaLangVersion = project.ballerinaLangVersion
 
@@ -251,10 +250,7 @@ subprojects {
     }
 }
 
-def moduleVersion = project.version
-if (moduleVersion.indexOf('-') != -1) {
-    moduleVersion = moduleVersion.replace("${snapshotVersion}", "")
-}
+def moduleVersion = project.version.replace("-SNAPSHOT", "")
 
 release {
     failOnPublishNeeded = false

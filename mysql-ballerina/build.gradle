@@ -230,17 +230,7 @@ task ballerinaBuild {
 task ballerinaPublish {
     doLast {
         // Publish to central
-        if (!project.hasProperty("publishToCentral")) {
-            return
-        }
-
-        if (project.version.endsWith('-SNAPSHOT')) {
-            throw new GradleException("Stdlib not pushed to central for snapshot version '${project.version}'.")
-        } else {
-            if (ballerinaCentralAccessToken == null) {
-                throw new GradleException("Central push failed invalid access token.")
-            }
-
+        if (ballerinaCentralAccessToken != null) {
             println("Publishing to the ballerina central..")
             exec {
                 workingDir project.projectDir
@@ -251,6 +241,8 @@ task ballerinaPublish {
                     commandLine 'sh', '-c', "$distributionBinPath/bal push ${packageName}"
                 }
             }
+        } else {
+            println("Central Access Token is Not Present")
         }
     }
 }

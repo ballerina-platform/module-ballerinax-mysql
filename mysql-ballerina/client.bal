@@ -185,22 +185,22 @@ function createClient(Client mysqlClient, ClientConfiguration clientConf,
 
 function nativeQuery(Client sqlClient, string|sql:ParameterizedQuery sqlQuery, typedesc<record {}>? rowType)
 returns stream <record {}, sql:Error> = @java:Method {
-    'class: "org.ballerinalang.sql.utils.QueryUtils"
+    'class: "org.ballerinalang.mysql.nativeimpl.QueryProcessor"
 } external;
 
 function nativeExecute(Client sqlClient, string|sql:ParameterizedQuery sqlQuery)
 returns sql:ExecutionResult|sql:Error = @java:Method {
-    'class: "org.ballerinalang.sql.utils.ExecuteUtils"
+    'class: "org.ballerinalang.mysql.nativeimpl.ExecuteProcessor"
 } external;
 
 function nativeBatchExecute(Client sqlClient, sql:ParameterizedQuery[] sqlQueries)
 returns sql:ExecutionResult[]|sql:Error = @java:Method {
-    'class: "org.ballerinalang.sql.utils.ExecuteUtils"
+    'class: "org.ballerinalang.mysql.nativeimpl.ExecuteProcessor"
 } external;
 
 function nativeCall(Client sqlClient, string|sql:ParameterizedCallQuery sqlQuery, typedesc<record {}>[] rowTypes)
 returns sql:ProcedureCallResult|sql:Error = @java:Method {
-    'class: "org.ballerinalang.sql.utils.CallUtils"
+    'class: "org.ballerinalang.mysql.nativeimpl.CallProcessor"
 } external;
 
 function close(Client mysqlClient) returns sql:Error? = @java:Method {

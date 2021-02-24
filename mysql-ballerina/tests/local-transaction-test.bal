@@ -366,6 +366,7 @@ function testTransactionWithoutHandlers() {
 isolated string rollbackOut = "";
 
 @test:Config {
+    enable: false,
     groups: ["transaction", "local-transaction"],
     dependsOn: [testTransactionWithoutHandlers]
 }
@@ -425,7 +426,7 @@ function getError() returns error? {
 
 @test:Config {
     groups: ["transaction", "local-transaction"],
-    dependsOn: [testLocalTransactionFailed]
+    dependsOn: [testTransactionWithoutHandlers]
 }
 function testLocalTransactionSuccessWithFailed() {
     Client dbClient = checkpanic new (host, user, password, localTransactionDB, port);

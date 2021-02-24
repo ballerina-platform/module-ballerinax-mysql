@@ -6,11 +6,11 @@ Ballerina MySQL Library
     [![Github issues](https://img.shields.io/github/issues/ballerina-platform/ballerina-standard-library/module/mysql.svg?label=Open%20Issues)](https://github.com/ballerina-platform/ballerina-standard-library/labels/module%2Fmysql)
   [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-The MySQL library is one of the standard library modules of the<a target="_blank" href="https://ballerina.io/"> Ballerina</a> language.
+The MySQL library is one of the standard library packages of the<a target="_blank" href="https://ballerina.io/"> Ballerina</a> language.
 
 This provides the functionality required to access and manipulate data stored in a MySQL database.  
 
-For more information on the operations supported by the `mysql:Client`, which include the below, go to [The MySQL Module](https://ballerina.io/swan-lake/learn/api-docs/ballerina/mysql/).
+For more information on the operations supported by the `mysql:Client`, which include the below, go to [The MySQL Package](https://ballerina.io/learn/api-docs/ballerina/mysql/).
 
 - Pooling connections
 - Querying data
@@ -21,13 +21,13 @@ For more information on the operations supported by the `mysql:Client`, which in
 - Executing stored procedures
 - Closing the client
 
-For example demonstrations of the usage, go to [Ballerina By Examples](https://ballerina.io/swan-lake/learn/by-example/mysql-init-options.html).
+For example demonstrations of the usage, go to [Ballerina By Examples](https://ballerina.io/learn/by-example/mysql-init-options.html).
 
 ## Issues and Projects 
 
 Issues and Projects tabs are disabled for this repository as this is part of the Ballerina Standard Library. To report bugs, request new features, start new discussions, view project boards, etc. please visit Ballerina Standard Library [parent repository](https://github.com/ballerina-platform/ballerina-standard-library). 
 
-This repository only contains the source code for the module.
+This repository only contains the source code for the package.
 
 ## Building from the Source
 
@@ -56,7 +56,7 @@ Execute the commands below to build from the source.
 
         ./gradlew clean test
 
-3. To build the module without tests:
+3. To build the package without tests:
 
         ./gradlew clean build -x test
 
@@ -83,7 +83,7 @@ Execute the commands below to build from the source.
 
         ./gradlew clean build -Pdebug=<port>
 
-7. To debug the module with Ballerina language:
+7. To debug the package with Ballerina language:
 
         ./gradlew clean build -PbalJavaDebug=<port>     
 

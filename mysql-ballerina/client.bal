@@ -180,7 +180,7 @@ public type SSLConfig record {|
 
 function createClient(Client mysqlClient, ClientConfiguration clientConf,
     sql:ConnectionPool globalConnPool) returns sql:Error? = @java:Method {
-    'class: "org.ballerinalang.mysql.NativeImpl"
+    'class: "org.ballerinalang.mysql.nativeimpl.ClientProcessor"
 } external;
 
 function nativeQuery(Client sqlClient, string|sql:ParameterizedQuery sqlQuery, typedesc<record {}>? rowType)
@@ -204,5 +204,5 @@ returns sql:ProcedureCallResult|sql:Error = @java:Method {
 } external;
 
 function close(Client mysqlClient) returns sql:Error? = @java:Method {
-    'class: "org.ballerinalang.mysql.NativeImpl"
+    'class: "org.ballerinalang.mysql.nativeimpl.ClientProcessor"
 } external;

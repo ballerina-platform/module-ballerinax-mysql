@@ -31,6 +31,7 @@ COPY sql-scripts/batchexecute/batch-execute-test-data.sql /docker-entrypoint-ini
 COPY sql-scripts/query/simple-params-test-data.sql /docker-entrypoint-initdb.d/
 COPY sql-scripts/query/numerical-test-data.sql /docker-entrypoint-initdb.d/
 COPY sql-scripts/query/complex-test-data.sql /docker-entrypoint-initdb.d/
+COPY sql-scripts/query/json-type-test-data.sql /docker-entrypoint-initdb.d/
 
 # Procedures test case
 COPY sql-scripts/procedures/stored-procedure-test-data.sql /docker-entrypoint-initdb.d/

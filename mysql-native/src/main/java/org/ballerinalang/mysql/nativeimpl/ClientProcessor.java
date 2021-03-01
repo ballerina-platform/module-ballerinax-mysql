@@ -15,22 +15,24 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package org.ballerinalang.mysql;
+
+package org.ballerinalang.mysql.nativeimpl;
 
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
+import org.ballerinalang.mysql.Constants;
+import org.ballerinalang.mysql.Utils;
 import org.ballerinalang.sql.datasource.SQLDatasource;
-import org.ballerinalang.sql.utils.ClientUtils;
 
 import java.util.Properties;
 
 /**
- * Native implementation for the mysql client methods.
+ * This class contains the utility methods for the mysql clients.
  *
  * @since 1.2.0
  */
-public class NativeImpl {
+public class ClientProcessor {
 
     public static Object createClient(BObject client, BMap<BString, Object> clientConfig,
                                       BMap<BString, Object> globalPool) {
@@ -75,10 +77,10 @@ public class NativeImpl {
                 .setConnectionPool(connectionPool, globalPool)
                 .setPoolProperties(poolProperties);
 
-        return ClientUtils.createClient(client, sqlDatasourceParams);
+        return org.ballerinalang.sql.nativeimpl.ClientProcessor.createClient(client, sqlDatasourceParams);
     }
 
     public static Object close(BObject client) {
-        return ClientUtils.close(client);
+        return org.ballerinalang.sql.nativeimpl.ClientProcessor.close(client);
     }
 }

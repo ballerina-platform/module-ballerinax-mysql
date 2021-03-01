@@ -30,7 +30,7 @@ import io.ballerina.runtime.api.values.BString;
  */
 public class Utils {
 
-    static BMap generateOptionsMap(BMap mysqlOptions) {
+    public static BMap generateOptionsMap(BMap mysqlOptions) {
         if (mysqlOptions != null) {
             BMap<BString, Object> options = ValueCreator.createMapValue();
             addSSLOptions(mysqlOptions.getMapValue(Constants.Options.SSL), options);
@@ -59,7 +59,7 @@ public class Utils {
         return -1;
     }
 
-    private static void addSSLOptions(BMap sslConfig, BMap<BString, Object> options) {
+    public static void addSSLOptions(BMap sslConfig, BMap<BString, Object> options) {
         if (sslConfig == null) {
             options.put(Constants.DatabaseProps.SSL_MODE, Constants.DatabaseProps.SSL_MODE_DISABLED);
         } else {

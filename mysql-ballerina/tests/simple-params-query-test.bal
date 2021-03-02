@@ -651,7 +651,7 @@ function queryGeoParam2() {
 }
 function queryJsonParam() returns @tainted record {}|error? {
     sql:ParameterizedQuery sqlQuery = `SELECT * from JsonTable`;
-    validateJsonTable(queryMysqlClient(sqlQuery));
+    validateJsonTableWithoutRequestType(queryMysqlClient(sqlQuery));
 }
 
 type JsonResult record {|
@@ -767,6 +767,23 @@ isolated function validateJsonTable(record{}? returnData) {
     } else {
         test:assertEquals(returnData.length(), 2);
         test:assertEquals(returnData["id"], 1);
-        test:assertEquals(returnData["json_type"], "{\"id\": 100, \"name\": \"Joe\", \"groups\": \"[2,5]\"}");
+
+        json expected = {
+            id: 100,
+            name: "Joe",
+            groups: [2,5]
+        };
+
+        test:assertEquals(returnData["json_type"], expected);
+    }
+}
+
+isolated function validateJsonTableWithoutRequestType(record{}? returnData) {
+    if (returnData is ()) {
+        test:assertFail("Returned data is nil");
+    } else {
+         test:assertEquals(returnData.length(), 2);
+        test:assertEquals(returnData["id"], 1);
+        test:assertEquals(returnData["json_type"],"{\"id\": 100, \"name\": \"Joe\", \"groups\": [2, 5]}" );
     }
 }

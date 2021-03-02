@@ -147,14 +147,14 @@ type ClientConfiguration record {|
 #
 # + ssl - SSL Configuration to be used
 # + useXADatasource - Boolean value to enable XADatasource
-# + connectTimeoutInSeconds - Timeout to be used when connecting to the mysql server
-# + socketTimeoutInSeconds - Socket timeout during the read/write operations with mysql server,
+# + connectTimeout - Timeout (in seconds) to be used when connecting to the mysql server
+# + socketTimeout - Socket timeout (in seconds) during the read/write operations with mysql server,
 #                            0 means no socket timeout
 public type Options record {|
     SSLConfig? ssl = {};
     boolean useXADatasource = false;
-    decimal connectTimeoutInSeconds = 30;
-    decimal socketTimeoutInSeconds = 0;
+    decimal connectTimeout = 30;
+    decimal socketTimeout = 0;
 |};
 
 # Possible options for SSL Mode.

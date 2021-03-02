@@ -55,7 +55,7 @@ mysql:Options mysqlOptions = {
   ssl: {
     mode: mysql:SSL_PREFERRED
   },
-  connectTimeoutInSeconds: 10
+  connectTimeout: 10
 };
 mysql:Client|sql:Error dbClient3 = new (user = "rootUser", password = "rootPass",
                               options = mysqlOptions);

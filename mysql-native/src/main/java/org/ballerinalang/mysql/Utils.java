@@ -35,12 +35,12 @@ public class Utils {
             BMap<BString, Object> options = ValueCreator.createMapValue();
             addSSLOptions(mysqlOptions.getMapValue(Constants.Options.SSL), options);
 
-            long connectTimeout = getTimeout(mysqlOptions.get(Constants.Options.CONNECT_TIMEOUT_SECONDS));
+            long connectTimeout = getTimeout(mysqlOptions.get(Constants.Options.CONNECT_TIMEOUT));
             if (connectTimeout > 0) {
                 options.put(Constants.DatabaseProps.CONNECT_TIMEOUT, connectTimeout);
             }
 
-            long socketTimeout = getTimeout(mysqlOptions.get(Constants.Options.SOCKET_TIMEOUT_SECONDS));
+            long socketTimeout = getTimeout(mysqlOptions.get(Constants.Options.SOCKET_TIMEOUT));
             if (socketTimeout > 0) {
                 options.put(Constants.DatabaseProps.SOCKET_TIMEOUT, socketTimeout);
             }

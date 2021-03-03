@@ -57,6 +57,9 @@ public final class Constants {
         public static final String VERIFY_CERT_MODE = "VERIFY_CERT";
         public static final BString CLIENT_CERT_KEYSTORE = StringUtils.fromString("clientCertKeystore");
         public static final BString TRUST_CERT_KEYSTORE = StringUtils.fromString("trustCertKeystore");
+        public static final BString CERT_FILE = StringUtils.fromString("certFile");
+        public static final BString KEY_FILE = StringUtils.fromString("keyFile");
+        public static final BString CA_FILE = StringUtils.fromString("caFile");
 
         /**
         * Constants for processing ballerina `crypto:KeyStore`.
@@ -64,6 +67,14 @@ public final class Constants {
         public static final class CryptoKeyStoreRecord {
             public static final BString KEY_STORE_RECORD_PATH_FIELD = StringUtils.fromString("path");
             public static final BString KEY_STORE_RECORD_PASSWORD_FIELD = StringUtils.fromString("password");
+        }
+
+        /**
+        * Constants for processing ballerina `crypto:TrustStore`.
+        */
+        public static final class CryptoTrustStoreRecord {
+            public static final BString TRUST_STORE_RECORD_PATH_FIELD = StringUtils.fromString("path");
+            public static final BString TRUST_STORE_RECORD_PASSWORD_FIELD = StringUtils.fromString("password");
         }
     }
 
@@ -84,6 +95,10 @@ public final class Constants {
         public static final BString TRUST_KEYSTORE_PASSWORD = StringUtils.fromString(
             "trustCertificateKeyStorePassword");
         public static final BString TRUST_KEYSTORE_TYPE = StringUtils.fromString("trustCertificateKeyStoreType");
+
+        public static final BString CERT_FILE = StringUtils.fromString("ssl-cert");
+        public static final BString KEY_FILE = StringUtils.fromString("ssl-key");
+        public static final BString CA_FILE = StringUtils.fromString("ssl-ca");
 
         public static final BString CONNECT_TIMEOUT = StringUtils.fromString("connectTimeout");
         public static final BString SOCKET_TIMEOUT = StringUtils.fromString("socketTimeout");

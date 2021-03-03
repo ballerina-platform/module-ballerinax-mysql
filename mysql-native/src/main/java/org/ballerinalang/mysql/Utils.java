@@ -83,10 +83,25 @@ public class Utils {
             if (trustCertKeystore != null) {
                 options.put(Constants.DatabaseProps.TRUST_KEYSTORE_URL, StringUtils.fromString(
                         Constants.FILE + trustCertKeystore.getStringValue(
-                                Constants.SSLConfig.CryptoKeyStoreRecord.KEY_STORE_RECORD_PATH_FIELD)));
+                                Constants.SSLConfig.CryptoTrustStoreRecord.TRUST_STORE_RECORD_PATH_FIELD)));
                 options.put(Constants.DatabaseProps.TRUST_KEYSTORE_PASSWORD, trustCertKeystore
-                        .getStringValue(Constants.SSLConfig.CryptoKeyStoreRecord.KEY_STORE_RECORD_PASSWORD_FIELD));
+                        .getStringValue(Constants.SSLConfig.CryptoTrustStoreRecord.TRUST_STORE_RECORD_PASSWORD_FIELD));
                 options.put(Constants.DatabaseProps.TRUST_KEYSTORE_TYPE, Constants.DatabaseProps.KEYSTORE_TYPE_PKCS12);
+            }
+
+            BString certFile = sslConfig.getStringValue(Constants.SSLConfig.CERT_FILE);
+            if (certFile != null) {
+                options.put(Constants.DatabaseProps.CERT_FILE, certFile);
+            }
+
+            BString keyFile = sslConfig.getStringValue(Constants.SSLConfig.KEY_FILE);
+            if (keyFile != null) {
+                options.put(Constants.DatabaseProps.KEY_FILE, keyFile);
+            }
+
+            BString caFile = sslConfig.getStringValue(Constants.SSLConfig.CERT_FILE);
+            if (caFile != null) {
+                options.put(Constants.DatabaseProps.CA_FILE, caFile);
             }
         }
     }

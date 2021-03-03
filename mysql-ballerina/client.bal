@@ -171,11 +171,17 @@ public type SSLMode SSL_PREFERRED|SSL_REQUIRED|SSL_VERIFY_CERT|SSL_VERIFY_IDENTI
 # + mode - `SSLMode` to be used during the connection
 # + clientCertKeystore - Keystore configuration of the client certificates
 # + trustCertKeystore - Keystore configuration of the trust certificates
-#
+# + certFile - The path name of the client public key certificate file
+# + keyFile - The path name of the client private key file
+# + caFile - The path name of the Certificate Authority (CA) certificate file.
+#            This option, if used, must specify the same certificate used by the server
 public type SSLConfig record {|
     SSLMode mode = SSL_PREFERRED;
     crypto:KeyStore clientCertKeystore?;
-    crypto:KeyStore trustCertKeystore?;
+    crypto:TrustStore trustCertKeystore?;
+    string certFile?;
+    string keyFile?;
+    string caFile?;
 |};
 
 function createClient(Client mysqlClient, ClientConfiguration clientConf,

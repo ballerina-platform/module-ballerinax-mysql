@@ -26,7 +26,7 @@ public type Result record {
 };
 
 Options options = {
-    connectTimeoutInSeconds: 1
+    connectTimeout: 1
 };
 
 @test:Config {
@@ -151,17 +151,17 @@ function testLocalSharedConnectionPoolConfigSingleDestination() {
 function testLocalSharedConnectionPoolConfigDifferentDbOptions() {
     sql:ConnectionPool pool = {maxOpenConnections: 3};
     Client dbClient1 = checkpanic new (host, user, password, poolDB_1, port,
-        {connectTimeoutInSeconds: 2, socketTimeoutInSeconds: 10}, pool);
+        {connectTimeout: 2, socketTimeout: 10}, pool);
     Client dbClient2 = checkpanic new (host, user, password, poolDB_1, port,
-        {socketTimeoutInSeconds: 10, connectTimeoutInSeconds: 2}, pool);
+        {socketTimeout: 10, connectTimeout: 2}, pool);
     Client dbClient3 = checkpanic new (host, user, password, poolDB_1, port,
-        {connectTimeoutInSeconds: 2, socketTimeoutInSeconds: 10}, pool);
+        {connectTimeout: 2, socketTimeout: 10}, pool);
     Client dbClient4 = checkpanic new (host, user, password, poolDB_1, port,
-        {connectTimeoutInSeconds: 1}, pool);
+        {connectTimeout: 1}, pool);
     Client dbClient5 = checkpanic new (host, user, password, poolDB_1, port,
-        {connectTimeoutInSeconds: 1}, pool);
+        {connectTimeout: 1}, pool);
     Client dbClient6 = checkpanic new (host, user, password, poolDB_1, port,
-        {connectTimeoutInSeconds: 1}, pool);
+        {connectTimeout: 1}, pool);
 
     stream<record {} , error>[] resultArray = [];
     resultArray[0] = dbClient1->query("select count(*) as val from Customers where registrationID = 1", Result);

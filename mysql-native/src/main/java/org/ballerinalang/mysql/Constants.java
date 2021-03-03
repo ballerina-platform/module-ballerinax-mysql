@@ -45,8 +45,8 @@ public final class Constants {
     public static final class Options {
         public static final BString SSL = StringUtils.fromString("ssl");
         public static final BString USE_XA_DATASOURCE = StringUtils.fromString("useXADatasource");
-        public static final BString CONNECT_TIMEOUT_SECONDS = StringUtils.fromString("connectTimeoutInSeconds");
-        public static final BString SOCKET_TIMEOUT_SECONDS = StringUtils.fromString("socketTimeoutInSeconds");
+        public static final BString CONNECT_TIMEOUT = StringUtils.fromString("connectTimeout");
+        public static final BString SOCKET_TIMEOUT = StringUtils.fromString("socketTimeout");
     }
 
     /**

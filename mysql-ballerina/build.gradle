@@ -303,25 +303,50 @@ task createTestDockerImage(type: Exec) {
     }
 }
 
+def checkTestDockerContainerStatus() {
+    if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
+        try {
+            return exec {
+                commandLine 'sh', '-c',
+                        "docker exec ballerina-mysql mysqladmin ping -hlocalhost -uroot -pTest123# --silent"
+            }.exitValue
+        } catch (all) {
+            return 1;
+        }
+    }
+}
 
 task startTestDockerContainer(type: Exec) {
-     if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
-         def standardOutput = new ByteArrayOutputStream()
-         commandLine 'sh', '-c', "docker run --rm -d --name ballerina-mysql -p 3305:3306 -t ballerina-mysql"
-         doLast {
-             checkExecResult(execResult, 'Error', standardOutput)
-             sleep(20 * 1000)
-         }
+    if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
+        def standardOutput = new ByteArrayOutputStream()
+        commandLine 'sh', '-c', "docker run --rm -d --name ballerina-mysql -p 3305:3306 -t ballerina-mysql"
+        def healthCheck = 1;
+        def counter = 0;
+        doLast {
+            checkExecResult(execResult, 'Error', standardOutput)
+            while (healthCheck != 0 && counter < 12) {
+                sleep(5 * 1000)
+                healthCheck = checkTestDockerContainerStatus()
+                counter = counter + 1;
+            }
+            if (healthCheck != 0) {
+                throw new GradleException("Docker container 'ballerina-mysql' health test exceeded timeout!")
+            }
+        }
     }
 }
 
 task stopTestDockerContainer() {
     doLast {
         if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
-            def stdOut = new ByteArrayOutputStream()
-            exec {
-                commandLine 'sh', '-c', "docker stop ballerina-mysql"
-                standardOutput = stdOut
+            try {
+                def stdOut = new ByteArrayOutputStream()
+                exec {
+                    commandLine 'sh', '-c', "docker stop ballerina-mysql"
+                    standardOutput = stdOut
+                }
+            } catch (all) {
+                println("Process can safely ignore stopTestDockerContainer task")
             }
         }
     }

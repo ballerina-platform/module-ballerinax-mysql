@@ -278,15 +278,92 @@ publishing {
     }
 }
 
+def checkExecResult(execResult, failText, standardOutput){
+    if (execResult) {
+        if (execResult.getExitValue() != 0) {
+            throw new GradleException('Non-zero exit value: ' + execResult.getExitValue())
+        }
+        if (standardOutput.toString().contains(failText)){
+            throw new GradleException('"' + failText + '" string in output: ' + standardOutput.toString())
+        }
+    } else {
+        throw new GradleException('Returned a null execResult object')
+    }
+}
+
+task createTestDockerImage(type: Exec) {
+    if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
+        def standardOutput = new ByteArrayOutputStream()
+        commandLine 'sh', '-c', "docker build -f $project.projectDir/tests/resources/Dockerfile -t ballerina-mysql" +
+                " -q $project.projectDir/tests/resources/"
+        doLast {
+            checkExecResult(execResult, 'Error', standardOutput)
+            sleep(10 * 1000)
+        }
+    }
+}
+
+def checkTestDockerContainerStatus() {
+    if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
+        try {
+            return exec {
+                commandLine 'sh', '-c',
+                        "docker exec ballerina-mysql mysqladmin ping -hlocalhost -uroot -pTest123# --silent"
+            }.exitValue
+        } catch (all) {
+            return 1;
+        }
+    }
+}
+
+task startTestDockerContainer(type: Exec) {
+    if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
+        def standardOutput = new ByteArrayOutputStream()
+        commandLine 'sh', '-c', "docker run --rm -d --name ballerina-mysql -p 3305:3306 -t ballerina-mysql"
+        def healthCheck = 1;
+        def counter = 0;
+        doLast {
+            checkExecResult(execResult, 'Error', standardOutput)
+            while (healthCheck != 0 && counter < 12) {
+                sleep(5 * 1000)
+                healthCheck = checkTestDockerContainerStatus()
+                counter = counter + 1;
+            }
+            if (healthCheck != 0) {
+                throw new GradleException("Docker container 'ballerina-mysql' health test exceeded timeout!")
+            }
+        }
+    }
+}
+
+task stopTestDockerContainer() {
+    doLast {
+        if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
+            try {
+                def stdOut = new ByteArrayOutputStream()
+                exec {
+                    commandLine 'sh', '-c', "docker stop ballerina-mysql"
+                    standardOutput = stdOut
+                }
+            } catch (all) {
+                println("Process can safely ignore stopTestDockerContainer task")
+            }
+        }
+    }
+}
+
 unpackJballerinaTools.dependsOn copyToLib
 unpackStdLibs.dependsOn unpackJballerinaTools
 copyStdlibs.dependsOn unpackStdLibs
 updateTomlFile.dependsOn copyStdlibs
+startTestDockerContainer.dependsOn createTestDockerImage
 
 ballerinaTest.dependsOn updateTomlFile
 ballerinaTest.dependsOn initializeVariables
 ballerinaTest.dependsOn ":${packageName}-native:build"
+ballerinaTest.dependsOn startTestDockerContainer
 ballerinaTest.finalizedBy revertTomlFile
+ballerinaTest.finalizedBy stopTestDockerContainer
 test.dependsOn ballerinaTest
 
 ballerinaBuild.dependsOn test
@@ -294,6 +371,7 @@ ballerinaBuild.dependsOn updateTomlFile
 ballerinaBuild.dependsOn initializeVariables
 ballerinaBuild.dependsOn ":${packageName}-native:build"
 ballerinaBuild.finalizedBy revertTomlFile
+ballerinaBuild.finalizedBy stopTestDockerContainer
 build.dependsOn ballerinaBuild
 
 ballerinaPublish.finalizedBy revertTomlFile

@@ -147,14 +147,14 @@ type ClientConfiguration record {|
 #
 # + ssl - SSL Configuration to be used
 # + useXADatasource - Boolean value to enable XADatasource
-# + connectTimeoutInSeconds - Timeout to be used when connecting to the mysql server
-# + socketTimeoutInSeconds - Socket timeout during the read/write operations with mysql server,
+# + connectTimeout - Timeout (in seconds) to be used when connecting to the mysql server
+# + socketTimeout - Socket timeout (in seconds) during the read/write operations with mysql server,
 #                            0 means no socket timeout
 public type Options record {|
     SSLConfig? ssl = {};
     boolean useXADatasource = false;
-    decimal connectTimeoutInSeconds = 30;
-    decimal socketTimeoutInSeconds = 0;
+    decimal connectTimeout = 30;
+    decimal socketTimeout = 0;
 |};
 
 # Possible options for SSL Mode.
@@ -180,29 +180,29 @@ public type SSLConfig record {|
 
 function createClient(Client mysqlClient, ClientConfiguration clientConf,
     sql:ConnectionPool globalConnPool) returns sql:Error? = @java:Method {
-    'class: "org.ballerinalang.mysql.NativeImpl"
+    'class: "org.ballerinalang.mysql.nativeimpl.ClientProcessor"
 } external;
 
 function nativeQuery(Client sqlClient, string|sql:ParameterizedQuery sqlQuery, typedesc<record {}>? rowType)
 returns stream <record {}, sql:Error> = @java:Method {
-    'class: "org.ballerinalang.sql.utils.QueryUtils"
+    'class: "org.ballerinalang.mysql.nativeimpl.QueryProcessor"
 } external;
 
 function nativeExecute(Client sqlClient, string|sql:ParameterizedQuery sqlQuery)
 returns sql:ExecutionResult|sql:Error = @java:Method {
-    'class: "org.ballerinalang.sql.utils.ExecuteUtils"
+    'class: "org.ballerinalang.mysql.nativeimpl.ExecuteProcessor"
 } external;
 
 function nativeBatchExecute(Client sqlClient, sql:ParameterizedQuery[] sqlQueries)
 returns sql:ExecutionResult[]|sql:Error = @java:Method {
-    'class: "org.ballerinalang.sql.utils.ExecuteUtils"
+    'class: "org.ballerinalang.mysql.nativeimpl.ExecuteProcessor"
 } external;
 
 function nativeCall(Client sqlClient, string|sql:ParameterizedCallQuery sqlQuery, typedesc<record {}>[] rowTypes)
 returns sql:ProcedureCallResult|sql:Error = @java:Method {
-    'class: "org.ballerinalang.sql.utils.CallUtils"
+    'class: "org.ballerinalang.mysql.nativeimpl.CallProcessor"
 } external;
 
 function close(Client mysqlClient) returns sql:Error? = @java:Method {
-    'class: "org.ballerinalang.mysql.NativeImpl"
+    'class: "org.ballerinalang.mysql.nativeimpl.ClientProcessor"
 } external;

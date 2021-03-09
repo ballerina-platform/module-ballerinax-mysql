@@ -126,4 +126,4 @@ CREATE TABLE JsonTable(
     json_type JSON
 );
 
-INSERT INTO JsonTable (id, json_type) values (1, JSON_OBJECT('id', 100, 'name', 'Joe', 'groups', '[2,5]'));
+INSERT INTO JsonTable (id, json_type) values (1, JSON_OBJECT('id', 100, 'name', 'Joe', 'groups', JSON_ARRAY(2,5)));

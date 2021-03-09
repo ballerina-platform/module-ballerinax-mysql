@@ -1,0 +1,6 @@
+fixes:
+  - "ballerinax/mysql/*/::mysql-ballerina/"
+
+ignore:
+  - "**/tests"
+

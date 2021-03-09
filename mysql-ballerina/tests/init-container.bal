@@ -15,10 +15,8 @@
 // under the License.
 
 import ballerina/io;
-import ballerina/os;
 import ballerina/test;
 import ballerina/file;
-import ballerina/lang.runtime as runtime;
 
 string resourcePath = check file:getAbsolutePath("tests/resources");
 
@@ -29,33 +27,10 @@ int port = 3305;
 
 @test:BeforeSuite
 function beforeSuite() {
-    
-    os:Process process = checkpanic os:exec("docker", {}, resourcePath, "build", "-t", "ballerina-mysql", ".");
-    int exitCode = checkpanic process.waitForExit();
-    test:assertExactEquals(exitCode, 0, "Docker image 'ballerina-mysql' creation failed!");
- 
-    process = checkpanic os:exec("docker", {}, resourcePath,
-                    "run", "--rm", "-d", "--name", "ballerina-mysql", "-p", "3305:3306", "-t", "ballerina-mysql");
-    exitCode = checkpanic process.waitForExit();
-    test:assertExactEquals(exitCode, 0, "Docker container 'ballerina-mysql' creation failed!");
-    runtime:sleep(50);
-
-    int healthCheck = 1;
-    int counter = 0;
-    while(healthCheck > 0 && counter < 12) {
-        runtime:sleep(10);
-        process = checkpanic os:exec("docker", {}, resourcePath,
-                    "exec", "ballerina-mysql", "mysqladmin", "ping", "-hlocalhost", "-uroot", "-pTest123#", "--silent");
-        healthCheck = checkpanic process.waitForExit();
-        counter = counter + 1;
-    }
-    test:assertExactEquals(healthCheck, 0, "Docker container 'ballerina-mysql' health test exceeded timeout!");    
-    io:println("Docker container started.");
+    io:println("Test suite initiated");
 }
 
 @test:AfterSuite {}
 function afterSuite() {
-    os:Process process = checkpanic os:exec("docker", {}, resourcePath, "stop", "ballerina-mysql");
-    int exitCode = checkpanic process.waitForExit();
-    test:assertExactEquals(exitCode, 0, "Docker container 'ballerina-mysql' stop failed!");
+    io:println("Test suite finished");
 }

@@ -52,14 +52,11 @@ public final class Constants {
     /**
      * Constants for ssl configuration.
      */
-    public static final class SSLConfig {
+    public static final class SecureSocket {
         public static final BString MODE = StringUtils.fromString("mode");
         public static final String VERIFY_CERT_MODE = "VERIFY_CERT";
-        public static final BString CLIENT_CERT_KEYSTORE = StringUtils.fromString("clientCertKeystore");
-        public static final BString TRUST_CERT_KEYSTORE = StringUtils.fromString("trustCertKeystore");
-        public static final BString CERT_FILE = StringUtils.fromString("certFile");
-        public static final BString KEY_FILE = StringUtils.fromString("keyFile");
-        public static final BString CA_FILE = StringUtils.fromString("caFile");
+        public static final BString CLIENT_KEY = StringUtils.fromString("key");
+        public static final BString CLIENT_CERT = StringUtils.fromString("cert");
 
         /**
         * Constants for processing ballerina `crypto:KeyStore`.
@@ -95,10 +92,6 @@ public final class Constants {
         public static final BString TRUST_KEYSTORE_PASSWORD = StringUtils.fromString(
             "trustCertificateKeyStorePassword");
         public static final BString TRUST_KEYSTORE_TYPE = StringUtils.fromString("trustCertificateKeyStoreType");
-
-        public static final BString CERT_FILE = StringUtils.fromString("ssl-cert");
-        public static final BString KEY_FILE = StringUtils.fromString("ssl-key");
-        public static final BString CA_FILE = StringUtils.fromString("ssl-ca");
 
         public static final BString CONNECT_TIMEOUT = StringUtils.fromString("connectTimeout");
         public static final BString SOCKET_TIMEOUT = StringUtils.fromString("socketTimeout");

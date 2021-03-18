@@ -30,11 +30,11 @@ function testSSLVerifyCert() {
     Options options = {
         ssl: {
             mode: SSL_VERIFY_CERT,
-            clientCertKeystore: {
+            key: {
                 path: clientStorePath,
                 password: "changeit"
             },
-            trustCertKeystore: {
+            cert: {
                 path: turstStorePath,
                 password: "changeit"
             }
@@ -52,11 +52,11 @@ function testSSLPreferred() {
     Options options = {
         ssl: {
             mode:  SSL_PREFERRED,
-            clientCertKeystore: {
+            key: {
                 path: clientStorePath,
                 password: "changeit"
             },
-            trustCertKeystore: {
+            cert: {
                 path: turstStorePath,
                 password: "changeit"
             }
@@ -74,7 +74,7 @@ function testSSLRequiredWithClientCert() {
     Options options = {
         ssl: {
             mode:  SSL_REQUIRED,
-            clientCertKeystore: {
+            key: {
                 path: clientStorePath,
                 password: "changeit"
             }
@@ -92,11 +92,11 @@ function testSSLVerifyIdentity() {
     Options options = {
         ssl: {
             mode:  SSL_VERIFY_IDENTITY,
-            clientCertKeystore: {
+            key: {
                 path: clientStorePath,
                 password: "changeit"
             },
-            trustCertKeystore: {
+            cert: {
                 path: turstStorePath,
                 password: "changeit"
             }

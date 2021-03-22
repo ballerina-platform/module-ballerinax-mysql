@@ -17,7 +17,7 @@ name = "mysql"
 version= "0.1.0"
 
 [[platform.java11.dependency]]
-artafactId = "mysql-connector-java"
+artifactId = "mysql-connector-java"
 version = "8.0.17"
 path = "/path/to/mysql-connector-java-8.0.17.jar"
 groupId = "mysql"

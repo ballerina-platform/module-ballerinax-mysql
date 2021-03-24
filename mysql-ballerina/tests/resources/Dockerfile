@@ -16,6 +16,7 @@ FROM mysql:8.0.21
 
 # Connection test case
 COPY sql-scripts/connection/connections-test-data.sql /docker-entrypoint-initdb.d/
+COPY sql-scripts/connection/secureSocket-test-data.sql /docker-entrypoint-initdb.d/
 
 # Pool test case
 COPY sql-scripts/pool/connection-pool-test-data.sql /docker-entrypoint-initdb.d/

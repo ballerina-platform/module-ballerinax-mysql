@@ -52,11 +52,10 @@ public final class Constants {
     /**
      * Constants for ssl configuration.
      */
-    public static final class SSLConfig {
+    public static final class SecureSocket {
         public static final BString MODE = StringUtils.fromString("mode");
-        public static final String VERIFY_CERT_MODE = "VERIFY_CERT";
-        public static final BString CLIENT_CERT_KEYSTORE = StringUtils.fromString("clientCertKeystore");
-        public static final BString TRUST_CERT_KEYSTORE = StringUtils.fromString("trustCertKeystore");
+        public static final BString CLIENT_KEY = StringUtils.fromString("key");
+        public static final BString CLIENT_CERT = StringUtils.fromString("cert");
 
         /**
         * Constants for processing ballerina `crypto:KeyStore`.
@@ -64,6 +63,14 @@ public final class Constants {
         public static final class CryptoKeyStoreRecord {
             public static final BString KEY_STORE_RECORD_PATH_FIELD = StringUtils.fromString("path");
             public static final BString KEY_STORE_RECORD_PASSWORD_FIELD = StringUtils.fromString("password");
+        }
+
+        /**
+        * Constants for processing ballerina `crypto:TrustStore`.
+        */
+        public static final class CryptoTrustStoreRecord {
+            public static final BString TRUST_STORE_RECORD_PATH_FIELD = StringUtils.fromString("path");
+            public static final BString TRUST_STORE_RECORD_PASSWORD_FIELD = StringUtils.fromString("password");
         }
     }
 
@@ -73,7 +80,6 @@ public final class Constants {
     public static final class DatabaseProps {
         public static final BString SSL_MODE = StringUtils.fromString("sslMode");
         public static final BString SSL_MODE_DISABLED = StringUtils.fromString("DISABLED");
-        public static final BString SSL_MODE_VERIFY_CA = StringUtils.fromString("VERIFY_CA");
 
         public static final BString KEYSTORE_TYPE_PKCS12 = StringUtils.fromString("PKCS12");
         public static final BString CLIENT_KEYSTORE_URL = StringUtils.fromString("clientCertificateKeyStoreUrl");

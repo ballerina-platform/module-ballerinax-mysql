@@ -151,7 +151,7 @@ type ClientConfiguration record {|
 # + socketTimeout - Socket timeout (in seconds) during the read/write operations with mysql server,
 #                            0 means no socket timeout
 public type Options record {|
-    SSLConfig? ssl = {};
+    SecureSocket ssl?;
     boolean useXADatasource = false;
     decimal connectTimeout = 30;
     decimal socketTimeout = 0;
@@ -160,22 +160,21 @@ public type Options record {|
 # Possible options for SSL Mode.
 public const SSL_PREFERRED = "PREFERRED";
 public const SSL_REQUIRED = "REQUIRED";
-public const SSL_VERIFY_CERT = "VERIFY_CERT";
+public const SSL_VERIFY_CA = "VERIFY_CA";
 public const SSL_VERIFY_IDENTITY = "VERIFY_IDENTITY";
 
 # SSLMode as a union of available ssl modes.
-public type SSLMode SSL_PREFERRED|SSL_REQUIRED|SSL_VERIFY_CERT|SSL_VERIFY_IDENTITY;
+public type SSLMode SSL_PREFERRED|SSL_REQUIRED|SSL_VERIFY_CA|SSL_VERIFY_IDENTITY;
 
 # SSL Configuration to be used when connecting to mysql server.
 #
 # + mode - `SSLMode` to be used during the connection
-# + clientCertKeystore - Keystore configuration of the client certificates
-# + trustCertKeystore - Keystore configuration of the trust certificates
-#
-public type SSLConfig record {|
+# + key - Keystore configuration of the client certificates
+# + cert - Keystore configuration of the trust certificates
+public type SecureSocket record {|
     SSLMode mode = SSL_PREFERRED;
-    crypto:KeyStore clientCertKeystore?;
-    crypto:KeyStore trustCertKeystore?;
+    crypto:KeyStore key?;
+    crypto:TrustStore cert?;
 |};
 
 isolated function createClient(Client mysqlClient, ClientConfiguration clientConf,

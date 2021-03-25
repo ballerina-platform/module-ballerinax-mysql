@@ -49,7 +49,6 @@ function testWithoutHost() {
 }
 function testWithOptions() {
     Options options = {
-        ssl: (),
         connectTimeout: 60
     };
     Client dbClient = checkpanic new (user = user, password = password, database = connectDB,
@@ -80,7 +79,6 @@ function testWithConnectionParams() {
         maxOpenConnections: 25
     };
     Options options = {
-        ssl: (),
         connectTimeout: 60
     };
     Client dbClient = checkpanic new (host, user, password, connectDB, port, options, connectionPool);

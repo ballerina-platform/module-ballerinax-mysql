@@ -1,0 +1,10 @@
+[mysqld]
+ssl-cipher=DHE-RSA-AES256-SHA
+ssl_ca=/etc/ssl/ca.pem
+ssl_cert=/etc/ssl/server-cert.pem
+ssl_key=/etc/ssl/server-key.pem
+
+[client]
+ssl-mode=PREFERRED
+ssl_cert=/etc/ssl/client-cert.pem
+ssl_key=/etc/ssl/client-key.pem

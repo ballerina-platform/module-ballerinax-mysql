@@ -64,9 +64,6 @@ public class Utils {
             options.put(Constants.DatabaseProps.SSL_MODE, Constants.DatabaseProps.SSL_MODE_DISABLED);
         } else {
             BString mode = secureSocket.getStringValue(Constants.SecureSocket.MODE);
-            if (mode.getValue().equalsIgnoreCase(Constants.SecureSocket.VERIFY_CERT_MODE)) {
-                mode = Constants.DatabaseProps.SSL_MODE_VERIFY_CA;
-            }
             options.put(Constants.DatabaseProps.SSL_MODE, mode);
 
             BMap clientCertKeystore = secureSocket.getMapValue(Constants.SecureSocket.CLIENT_KEY);

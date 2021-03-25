@@ -30,7 +30,7 @@ string turstStorePath = checkpanic file:getAbsolutePath("./tests/resources/keyst
 function testSSLVerifyCert() {
     Options options = {
         ssl: {
-            mode: SSL_VERIFY_CERT,
+            mode: SSL_VERIFY_CA,
             key: {
                 path: clientStorePath,
                 password: "password"

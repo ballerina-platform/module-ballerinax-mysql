@@ -66,7 +66,7 @@ function testGetPrimitiveTypes() {
         STRING_TYPE: "Hello"
     };
     test:assertEquals(value, expectedData, "Expected data did not match.");
-    
+
 }
 
 @test:Config {
@@ -117,7 +117,7 @@ function testToJsonComplexTypes() {
         clobType: "very long text",
         binaryType: "wso2 ballerina binary test.".toBytes()
     };
-    test:assertEquals(value, complexStringType, "Expected record did not match."); 
+    test:assertEquals(value, complexStringType, "Expected record did not match.");
 }
 
 @test:Config {
@@ -137,7 +137,7 @@ function testComplexTypesNil() {
         CLOB_TYPE: (),
         BINARY_TYPE: ()
     };
-    test:assertEquals(value, complexStringType, "Expected record did not match."); 
+    test:assertEquals(value, complexStringType, "Expected record did not match.");
 }
 
 @test:Config {
@@ -185,10 +185,10 @@ function testColumnAlias() {
         STRING_TYPE: "Hello",
         DT2INT_TYPE: 100
     };
-    int counter = 0; 
+    int counter = 0;
     error? e = queryResult.forEach(function (record{} value) {
         if (value is ResultSetTestAlias) {
-            test:assertEquals(value, expectedData, "Expected record did not match."); 
+            test:assertEquals(value, expectedData, "Expected record did not match.");
             counter = counter + 1;
         } else{
             test:assertFail("Expected data type is ResultSetTestAlias");
@@ -197,6 +197,6 @@ function testColumnAlias() {
     if(e is error) {
         test:assertFail("Query failed");
     }
-    test:assertEquals(counter, 1, "Expected only one data row."); 
+    test:assertEquals(counter, 1, "Expected only one data row.");
     checkpanic dbClient.close();
 }

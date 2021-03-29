@@ -10,6 +10,12 @@ artifactId = "mysql-native"
 version = "@project.version@"
 
 [[platform.java11.dependency]]
+path = "./lib/sql-native-@sql.native.version@.jar"
+groupId = "org.ballerinalang"
+artifactId = "sql-native"
+version = "@sql.native.version@"
+
+[[platform.java11.dependency]]
 path = "./lib/mysql-connector-java-8.0.21.jar"
 artifactId = "mysql-connector-java"
 groupId = "mysql"

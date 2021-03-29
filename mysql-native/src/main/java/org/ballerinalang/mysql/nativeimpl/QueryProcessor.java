@@ -36,8 +36,7 @@ public class QueryProcessor {
                                       Object recordType) {
         DefaultStatementParameterProcessor statementParametersProcessor = DefaultStatementParameterProcessor
                 .getInstance();
-        MysqlResultParameterProcessor resultParametersProcessor = MysqlResultParameterProcessor
-                .getInstance();
+        MysqlResultParameterProcessor resultParametersProcessor = MysqlResultParameterProcessor.getInstance();
         return org.ballerinalang.sql.nativeimpl.QueryProcessor.nativeQuery(client, paramSQLString, recordType,
                 statementParametersProcessor, resultParametersProcessor);
     }

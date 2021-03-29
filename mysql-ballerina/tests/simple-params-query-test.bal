@@ -560,11 +560,7 @@ function queryTimeStringParam() {
 function queryTimeStringInvalidParam() {
     sql:TimeValue typeVal = new ("11-35-45");
     sql:ParameterizedQuery sqlQuery = `SELECT * from DateTimeTypes WHERE time_type = ${typeVal}`;
-    record{}|error? returnVal = trap queryMysqlClient(sqlQuery);
-    test:assertTrue(returnVal is error);
-    error dbError = <error> returnVal;
-    test:assertEquals(dbError.message(), 
-        "Error while executing SQL query: SELECT * from DateTimeTypes WHERE time_type =  ? . java.lang.IllegalArgumentException");
+    validateDateTimeTypesTableResult(queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
@@ -582,12 +578,8 @@ function queryTimestampStringParam() {
 function queryTimestampStringInvalidParam() {
     sql:TimestampValue typeVal = new ("2017/02/03 11:53:00");
     sql:ParameterizedQuery sqlQuery = `SELECT * from DateTimeTypes WHERE timestamp_type = ${typeVal}`;
-    record{}|error? returnVal = trap queryMysqlClient(sqlQuery);
-    test:assertTrue(returnVal is error);
-    error dbError = <error> returnVal;
-    test:assertEquals(dbError.message(), 
-        "Error while executing SQL query: SELECT * from DateTimeTypes WHERE timestamp_type =  ? . Timestamp format must be yyyy-mm-dd hh:mm:ss[.fffffffff]");
-}
+    validateDateTimeTypesTableResult(queryMysqlClient(sqlQuery));
+    }
 
 @test:Config {
     groups: ["query","query-simple-params"]

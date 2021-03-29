@@ -26,11 +26,11 @@ string password = "Test123#";
 int port = 3305;
 
 @test:BeforeSuite
-function beforeSuite() {
+isolated function beforeSuite() {
     io:println("Test suite initiated");
 }
 
 @test:AfterSuite {}
-function afterSuite() {
+isolated function afterSuite() {
     io:println("Test suite finished");
 }

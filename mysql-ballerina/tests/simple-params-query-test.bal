@@ -555,10 +555,11 @@ function queryTimeStringParam() {
 }
 
 @test:Config {
-    groups: ["query","query-simple-params"]
+    groups: ["query","query-simple-params"],
+    enable: false
 }
 function queryTimeStringInvalidParam() {
-    sql:TimeValue typeVal = new ("11-35-45");
+    sql:TimeValue typeVal = new ("xx:xx:xx");
     sql:ParameterizedQuery sqlQuery = `SELECT * from DateTimeTypes WHERE time_type = ${typeVal}`;
     validateDateTimeTypesTableResult(queryMysqlClient(sqlQuery));
 }
@@ -579,7 +580,7 @@ function queryTimestampStringInvalidParam() {
     sql:TimestampValue typeVal = new ("2017/02/03 11:53:00");
     sql:ParameterizedQuery sqlQuery = `SELECT * from DateTimeTypes WHERE timestamp_type = ${typeVal}`;
     validateDateTimeTypesTableResult(queryMysqlClient(sqlQuery));
-    }
+}
 
 @test:Config {
     groups: ["query","query-simple-params"]

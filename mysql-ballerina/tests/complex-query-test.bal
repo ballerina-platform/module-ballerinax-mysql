@@ -155,8 +155,8 @@ function testDateTime() {
     checkpanic dbClient.close();
 
     string dateType = "2017-05-23";
-    string timeTypeString = "19:45:23";
-    string insertedTimeString = "2017-01-25 22:03:55.0";
+    string timeTypeString = "14:15:23";
+    string insertedTimeString = "2017-01-25 16:33:55.0";
 
     ResultDates expected = {
         DATE_TYPE: dateType,

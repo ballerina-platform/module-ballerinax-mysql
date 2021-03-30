@@ -30,6 +30,7 @@ import org.ballerinalang.sql.exception.ApplicationError;
 import org.ballerinalang.sql.parameterprocessor.DefaultResultParameterProcessor;
 import org.ballerinalang.sql.utils.ColumnDefinition;
 import org.ballerinalang.sql.utils.ErrorGenerator;
+import org.ballerinalang.sql.utils.RecordIteratorUtils;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -51,9 +52,9 @@ import static io.ballerina.runtime.api.utils.StringUtils.fromString;
 import static org.ballerinalang.sql.utils.Utils.getString;
 
 /**
- * This class provides functionality for the `RecordIterator` to iterate through the PostgreSQL result set.
+ * This class provides functionality for the `RecordIterator` to iterate through the MySQL result set.
  */
-public class MysqlRecordIteratorUtils extends org.ballerinalang.sql.utils.RecordIteratorUtils {
+public class MysqlRecordIteratorUtils extends RecordIteratorUtils {
     private static final Calendar calendar = Calendar
             .getInstance(TimeZone.getDefault());
 

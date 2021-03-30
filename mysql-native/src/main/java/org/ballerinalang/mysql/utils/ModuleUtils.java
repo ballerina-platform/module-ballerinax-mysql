@@ -24,7 +24,7 @@ import io.ballerina.runtime.api.Module;
 /**
  * Utility functions relevant to module operations.
  *
- * @since 2.0.0
+ * @since 0.7.0
  */
 public class ModuleUtils {
     private static Module mysqlModule;

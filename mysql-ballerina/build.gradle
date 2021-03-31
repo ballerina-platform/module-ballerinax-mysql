@@ -231,24 +231,40 @@ task ballerinaBuild {
 }
 
 task ballerinaPublish {
-    doLast {
-        // Publish to central
-        if (project.version.endsWith('-SNAPSHOT')) {
-            return
-        }
-        if (ballerinaCentralAccessToken != null) {
-            println("Publishing to the ballerina central..")
-            exec {
-                workingDir project.projectDir
-                environment "JAVA_OPTS", "-DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true"
-                if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                    commandLine 'cmd', '/c', "$distributionBinPath/bal.bat push && exit %%ERRORLEVEL%%"
-                } else {
-                    commandLine 'sh', '-c', "$distributionBinPath/bal push"
-                }
+
+    ext.balPush = { additionalParams ->
+        exec {
+            workingDir project.projectDir
+            environment "JAVA_OPTS", "-DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true"
+            if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+                commandLine 'cmd', '/c', "$distributionBinPath/bal.bat push ${additionalParams} && exit %%ERRORLEVEL%%"
+            } else {
+                commandLine 'sh', '-c', "$distributionBinPath/bal push ${additionalParams} "
             }
+        }
+    }
+
+    doLast {
+        // Publish to local repository
+        def repository = "central"
+        if (project.hasProperty("repository")) {
+            repository = project.findProperty("repository")
+        }
+
+        if (repository == "local") {
+            println("Publishing to the ballerina local repository...")
+            balPush("--repository=local")
         } else {
-            throw new InvalidUserDataException("Central Access Token is Not Present")
+            // Publish to central
+            println("Publishing to the ballerina central..")
+            if (project.version.endsWith('-SNAPSHOT')) {
+                throw new InvalidUserDataException("Cannot push SNAPSHOT version to central")
+            }
+            if (ballerinaCentralAccessToken != null) {
+                balPush("")
+            } else {
+                throw new InvalidUserDataException("Central Access Token is Not Present")
+            }
         }
     }
 }

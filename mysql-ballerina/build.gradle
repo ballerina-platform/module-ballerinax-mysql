@@ -246,7 +246,7 @@ task ballerinaPublish {
 
     doLast {
         // Publish to local repository
-        def repository = "central"
+        def repository = ""
         if (project.hasProperty("repository")) {
             repository = project.findProperty("repository")
         }
@@ -254,7 +254,7 @@ task ballerinaPublish {
         if (repository == "local") {
             println("Publishing to the ballerina local repository...")
             balPush("--repository=local")
-        } else {
+        } else if (repository == "central") {
             // Publish to central
             println("Publishing to the ballerina central..")
             if (project.version.endsWith('-SNAPSHOT')) {
@@ -265,6 +265,8 @@ task ballerinaPublish {
             } else {
                 throw new InvalidUserDataException("Central Access Token is Not Present")
             }
+        } else {
+            println("Publish task does not publish to ballerina repository")
         }
     }
 }

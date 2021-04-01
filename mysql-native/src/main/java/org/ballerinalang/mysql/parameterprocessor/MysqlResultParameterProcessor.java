@@ -17,22 +17,37 @@
  */
 package org.ballerinalang.mysql.parameterprocessor;
 
+import io.ballerina.runtime.api.TypeTags;
 import io.ballerina.runtime.api.creators.ValueCreator;
 import io.ballerina.runtime.api.types.StructureType;
+import io.ballerina.runtime.api.types.Type;
+import io.ballerina.runtime.api.utils.StringUtils;
+import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
+import io.ballerina.runtime.api.values.BString;
 import org.ballerinalang.mysql.utils.ModuleUtils;
 import org.ballerinalang.sql.Constants;
+import org.ballerinalang.sql.exception.ApplicationError;
 import org.ballerinalang.sql.parameterprocessor.DefaultResultParameterProcessor;
 import org.ballerinalang.sql.utils.ColumnDefinition;
+import org.ballerinalang.sql.utils.Utils;
 
-import java.sql.CallableStatement;
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
+
+import static io.ballerina.runtime.api.utils.StringUtils.fromString;
+import static org.ballerinalang.stdlib.time.util.Constants.ANALOG_GIGA;
 
 /**
  * This class implements methods required convert mysql specific SQL types into ballerina types and
@@ -44,15 +59,107 @@ public class MysqlResultParameterProcessor extends DefaultResultParameterProcess
     private static final MysqlResultParameterProcessor instance = new MysqlResultParameterProcessor();
     private static volatile BObject iteratorObject = ValueCreator.createObjectValue(
             ModuleUtils.getModule(), "CustomResultIterator", new Object[0]);
-    private static final Calendar calendar = Calendar
-            .getInstance(TimeZone.getDefault());
 
     private MysqlResultParameterProcessor(){
-
     }
 
     public static MysqlResultParameterProcessor getInstance() {
         return instance;
+    }
+
+    private Time adjustTime(java.util.Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.setTimeZone(TimeZone.getTimeZone(Constants.TIMEZONE_UTC.getValue()));
+        LocalTime localTime = LocalTime.of(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
+                calendar.get(Calendar.SECOND), calendar.get(Calendar.MILLISECOND));
+        return Time.valueOf(localTime);
+    }
+
+    @Override
+    public Object convertTime(java.util.Date time, int sqlType, Type type) throws ApplicationError {
+        Utils.validatedInvalidFieldAssignment(sqlType, type, "SQL Date/Time");
+        if (time != null && time instanceof Time) {
+            Time sqlTime = adjustTime(time);
+            switch (type.getTag()) {
+                case TypeTags.STRING_TAG:
+                    return fromString(sqlTime.toString());
+                case TypeTags.OBJECT_TYPE_TAG:
+                case TypeTags.RECORD_TYPE_TAG:
+                    LocalTime timeObj = ((Time) sqlTime).toLocalTime();
+                    BMap<BString, Object> timeMap = ValueCreator.createRecordValue(
+                            org.ballerinalang.stdlib.time.util.ModuleUtils.getModule(),
+                            org.ballerinalang.stdlib.time.util.Constants.TIME_OF_DAY_RECORD);
+                    timeMap.put(StringUtils.fromString(org.ballerinalang.stdlib.time.util.Constants
+                            .TIME_OF_DAY_RECORD_HOUR), timeObj.getHour());
+                    timeMap.put(StringUtils.fromString(org.ballerinalang.stdlib.time.util.Constants
+                            .TIME_OF_DAY_RECORD_MINUTE) , timeObj.getMinute());
+                    BigDecimal second = new BigDecimal(timeObj.getSecond());
+                    second = second.add(new BigDecimal(timeObj.getNano())
+                            .divide(ANALOG_GIGA, MathContext.DECIMAL128));
+                    timeMap.put(StringUtils.fromString(org.ballerinalang.stdlib.time.util.Constants
+                            .TIME_OF_DAY_RECORD_SECOND), ValueCreator.createDecimalValue(second));
+                    return timeMap;
+                case TypeTags.INT_TAG:
+                    return sqlTime.getTime();
+            }
+        }
+        return null;
+    }
+
+    private Timestamp adjustTimestamp(java.util.Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.setTimeZone(TimeZone.getTimeZone(Constants.TIMEZONE_UTC.getValue()));
+        LocalDate localDate = LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1,
+                calendar.get(Calendar.DAY_OF_MONTH));
+        LocalTime localTime = LocalTime.of(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
+                calendar.get(Calendar.SECOND), calendar.get(Calendar.MILLISECOND));
+        return Timestamp.valueOf(LocalDateTime.of(localDate, localTime));
+    }
+    @Override
+    public Object convertTimeStamp(java.util.Date timestamp, int sqlType, Type type) throws ApplicationError {
+        Utils.validatedInvalidFieldAssignment(sqlType, type, "SQL Date/Time");
+        if (timestamp != null && timestamp instanceof Timestamp) {
+            Timestamp sqlTimestamp = adjustTimestamp(timestamp);
+            switch (type.getTag()) {
+                case TypeTags.STRING_TAG:
+                    return fromString(sqlTimestamp.toString());
+                case TypeTags.OBJECT_TYPE_TAG:
+                case TypeTags.RECORD_TYPE_TAG:
+                    if (type.getName().equalsIgnoreCase(org.ballerinalang.stdlib.time.util.Constants.CIVIL_RECORD)) {
+                        LocalDateTime dateTimeObj = sqlTimestamp.toLocalDateTime();
+                        BMap<BString, Object> civilMap = ValueCreator.createRecordValue(
+                                org.ballerinalang.stdlib.time.util.ModuleUtils.getModule(),
+                                org.ballerinalang.stdlib.time.util.Constants.CIVIL_RECORD);
+                        civilMap.put(StringUtils.fromString(
+                                org.ballerinalang.stdlib.time.util.Constants.DATE_RECORD_YEAR), dateTimeObj.getYear());
+                        civilMap.put(StringUtils.fromString(
+                                org.ballerinalang.stdlib.time.util.Constants.DATE_RECORD_MONTH),
+                                dateTimeObj.getMonthValue());
+                        civilMap.put(StringUtils.fromString(
+                                org.ballerinalang.stdlib.time.util.Constants.DATE_RECORD_DAY),
+                                dateTimeObj.getDayOfMonth());
+                        civilMap.put(StringUtils.fromString(org.ballerinalang.stdlib.time.util.Constants
+                                .TIME_OF_DAY_RECORD_HOUR), dateTimeObj.getHour());
+                        civilMap.put(StringUtils.fromString(org.ballerinalang.stdlib.time.util.Constants
+                                .TIME_OF_DAY_RECORD_MINUTE), dateTimeObj.getMinute());
+                        BigDecimal second = new BigDecimal(dateTimeObj.getSecond());
+                        second = second.add(new BigDecimal(dateTimeObj.getNano())
+                                .divide(ANALOG_GIGA, MathContext.DECIMAL128));
+                        civilMap.put(StringUtils.fromString(org.ballerinalang.stdlib.time.util.Constants
+                                .TIME_OF_DAY_RECORD_SECOND), ValueCreator.createDecimalValue(second));
+                        return civilMap;
+                    } else {
+                        return Utils.createTimeStruct(sqlTimestamp.getTime());
+                    }
+                case TypeTags.INT_TAG:
+                    return sqlTimestamp.getTime();
+                case TypeTags.INTERSECTION_TAG:
+                    return Utils.createTimeStruct(sqlTimestamp.getTime());
+            }
+        }
+        return null;
     }
 
     @Override
@@ -67,22 +174,6 @@ public class MysqlResultParameterProcessor extends DefaultResultParameterProcess
         resultIterator.addNativeData(org.ballerinalang.sql.Constants.COLUMN_DEFINITIONS_DATA_FIELD, columnDefinitions);
         resultIterator.addNativeData(org.ballerinalang.sql.Constants.RECORD_TYPE_DATA_FIELD, streamConstraint);
         return resultIterator;
-    }
-
-    @Override
-    public void populateDate(CallableStatement statement, BObject parameter, int paramIndex) throws SQLException {
-        parameter.addNativeData(Constants.ParameterObject.VALUE_NATIVE_DATA, statement.getDate(paramIndex, calendar));
-    }
-
-    @Override
-    public void populateTime(CallableStatement statement, BObject parameter, int paramIndex) throws SQLException {
-        parameter.addNativeData(Constants.ParameterObject.VALUE_NATIVE_DATA, statement.getTime(paramIndex, calendar));
-    }
-
-    @Override
-    public void populateTimestamp(CallableStatement statement, BObject parameter, int paramIndex) throws SQLException {
-        parameter.addNativeData(Constants.ParameterObject.VALUE_NATIVE_DATA,
-                statement.getTimestamp(paramIndex, calendar));
     }
 
     @Override

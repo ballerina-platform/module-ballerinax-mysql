@@ -146,7 +146,7 @@ function testComplexTypesNil() {
 function testDateTime() {
     Client dbClient = checkpanic new (host, user, password, complexQueryDb, port);
     string insertQuery = string `Insert into DateTimeTypes (ROW_ID, DATE_TYPE, TIME_TYPE, TIMESTAMP_TYPE, DATETIME_TYPE)
-     values (1,'2017-05-23','14:15:23','2017-01-25 16:33:55','2017-01-25 16:33:55')`;
+     values (1,'2017-05-23','14:15:23','2017-01-25 16:33:55','2017-01-25 22:33:55')`;
     sql:ExecutionResult? result = checkpanic dbClient->execute(insertQuery);
     stream<record{}, error> queryResult = dbClient->query("SELECT DATE_TYPE, TIME_TYPE, TIMESTAMP_TYPE, DATETIME_TYPE"
        + " from DateTimeTypes where ROW_ID = 1", ResultDates);
@@ -157,12 +157,13 @@ function testDateTime() {
     string dateType = "2017-05-23";
     string timeTypeString = "14:15:23";
     string insertedTimeString = "2017-01-25 16:33:55.0";
+    string insertedDateTimeString = "2017-01-25 22:33:55.0";
 
     ResultDates expected = {
         DATE_TYPE: dateType,
         TIME_TYPE: timeTypeString,
         TIMESTAMP_TYPE: insertedTimeString,
-        DATETIME_TYPE: insertedTimeString
+        DATETIME_TYPE: insertedDateTimeString
     };
     test:assertEquals(value, expected, "Expected record did not match."); 
 }

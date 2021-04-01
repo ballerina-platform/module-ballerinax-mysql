@@ -236,24 +236,42 @@ task ballerinaBuild {
 }
 
 task ballerinaPublish {
-    doLast {
-        // Publish to central
-        if (project.version.endsWith('-SNAPSHOT')) {
-            return
+
+    ext.balPush = { additionalParams ->
+        exec {
+            workingDir project.projectDir
+            environment "JAVA_OPTS", "-DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true"
+            if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+                commandLine 'cmd', '/c', "$distributionBinPath/bal.bat push ${additionalParams} && exit %%ERRORLEVEL%%"
+            } else {
+                commandLine 'sh', '-c', "$distributionBinPath/bal push ${additionalParams} "
+            }
         }
-        if (ballerinaCentralAccessToken != null) {
+    }
+
+    doLast {
+        // Publish to local repository
+        def repository = ""
+        if (project.hasProperty("repository")) {
+            repository = project.findProperty("repository")
+        }
+
+        if (repository == "local") {
+            println("Publishing to the ballerina local repository...")
+            balPush("--repository=local")
+        } else if (repository == "central") {
+            // Publish to central
             println("Publishing to the ballerina central..")
-            exec {
-                workingDir project.projectDir
-                environment "JAVA_OPTS", "-DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true"
-                if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                    commandLine 'cmd', '/c', "$distributionBinPath/bal.bat push && exit %%ERRORLEVEL%%"
-                } else {
-                    commandLine 'sh', '-c', "$distributionBinPath/bal push"
-                }
+            if (project.version.endsWith('-SNAPSHOT')) {
+                throw new InvalidUserDataException("Cannot push SNAPSHOT version to central")
+            }
+            if (ballerinaCentralAccessToken != null) {
+                balPush("")
+            } else {
+                throw new InvalidUserDataException("Central Access Token is Not Present")
             }
         } else {
-            throw new InvalidUserDataException("Central Access Token is Not Present")
+            println("Publish task does not publish to ballerina repository")
         }
     }
 }

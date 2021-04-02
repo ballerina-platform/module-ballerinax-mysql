@@ -86,7 +86,11 @@ Execute the commands below to build from the source.
 
 7. To debug the package with Ballerina language:
 
-        ./gradlew clean build -PbalJavaDebug=<port>     
+        ./gradlew clean build -PbalJavaDebug=<port>
+
+8. To publish to local repository of ballerina
+
+         ./gradlew clean publish -Prepository=local
 
 ## Contributing to Ballerina
 

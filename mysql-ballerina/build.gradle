@@ -231,24 +231,42 @@ task ballerinaBuild {
 }
 
 task ballerinaPublish {
-    doLast {
-        // Publish to central
-        if (project.version.endsWith('-SNAPSHOT')) {
-            return
+
+    ext.balPush = { additionalParams ->
+        exec {
+            workingDir project.projectDir
+            environment "JAVA_OPTS", "-DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true"
+            if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+                commandLine 'cmd', '/c', "$distributionBinPath/bal.bat push ${additionalParams} && exit %%ERRORLEVEL%%"
+            } else {
+                commandLine 'sh', '-c', "$distributionBinPath/bal push ${additionalParams} "
+            }
         }
-        if (ballerinaCentralAccessToken != null) {
+    }
+
+    doLast {
+        // Publish to local repository
+        def repository = ""
+        if (project.hasProperty("repository")) {
+            repository = project.findProperty("repository")
+        }
+
+        if (repository == "local") {
+            println("Publishing to the ballerina local repository...")
+            balPush("--repository=local")
+        } else if (repository == "central") {
+            // Publish to central
             println("Publishing to the ballerina central..")
-            exec {
-                workingDir project.projectDir
-                environment "JAVA_OPTS", "-DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true"
-                if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                    commandLine 'cmd', '/c', "$distributionBinPath/bal.bat push && exit %%ERRORLEVEL%%"
-                } else {
-                    commandLine 'sh', '-c', "$distributionBinPath/bal push"
-                }
+            if (project.version.endsWith('-SNAPSHOT')) {
+                throw new InvalidUserDataException("Cannot push SNAPSHOT version to central")
+            }
+            if (ballerinaCentralAccessToken != null) {
+                balPush("")
+            } else {
+                throw new InvalidUserDataException("Central Access Token is Not Present")
             }
         } else {
-            throw new InvalidUserDataException("Central Access Token is Not Present")
+            println("Publish task does not publish to ballerina repository")
         }
     }
 }
@@ -306,12 +324,12 @@ task createTestDockerImage(type: Exec) {
     }
 }
 
-def checkTestDockerContainerStatus() {
+def checkTestDockerContainerStatus(dockerName) {
     if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
         try {
             return exec {
                 commandLine 'sh', '-c',
-                        "docker exec ballerina-mysql mysqladmin ping -hlocalhost -uroot -pTest123# --silent"
+                        "docker exec ${dockerName} mysqladmin ping -hlocalhost -uroot -pTest123# --silent"
             }.exitValue
         } catch (all) {
             return 1;
@@ -329,11 +347,34 @@ task startTestDockerContainer(type: Exec) {
             checkExecResult(execResult, 'Error', standardOutput)
             while (healthCheck != 0 && counter < 12) {
                 sleep(5 * 1000)
-                healthCheck = checkTestDockerContainerStatus()
+                healthCheck = checkTestDockerContainerStatus("ballerina-mysql")
                 counter = counter + 1;
             }
             if (healthCheck != 0) {
                 throw new GradleException("Docker container 'ballerina-mysql' health test exceeded timeout!")
+            }
+        }
+    }
+}
+
+task startTestSslDockerContainer(type: Exec) {
+    if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
+        def standardOutput = new ByteArrayOutputStream()
+        commandLine 'sh', '-c', "docker run --rm -d --name ballerina-mysql-ssl " +
+                "-v $project.projectDir/tests/resources/mysql-ssl.cnf:/etc/mysql/conf.d/mysql-ssl.cnf " +
+                "-p 3307:3306 " +
+                "-t ballerina-mysql"
+        def healthCheck = 1;
+        def counter = 0;
+        doLast {
+            checkExecResult(execResult, 'Error', standardOutput)
+            while (healthCheck != 0 && counter < 12) {
+                sleep(5 * 1000)
+                healthCheck = checkTestDockerContainerStatus("ballerina-mysql-ssl")
+                counter = counter + 1;
+            }
+            if (healthCheck != 0) {
+                throw new GradleException("Docker container 'ballerina-mysql-ssl' health test exceeded timeout!")
             }
         }
     }
@@ -355,18 +396,37 @@ task stopTestDockerContainer() {
     }
 }
 
+task stopTestSslDockerContainer() {
+    doLast {
+        if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
+            try {
+                def stdOut = new ByteArrayOutputStream()
+                exec {
+                    commandLine 'sh', '-c', "docker stop ballerina-mysql-ssl"
+                    standardOutput = stdOut
+                }
+            } catch (all) {
+                println("Process can safely ignore stopTestDockerContainer task")
+            }
+        }
+    }
+}
+
 unpackJballerinaTools.dependsOn copyToLib
 unpackStdLibs.dependsOn unpackJballerinaTools
 copyStdlibs.dependsOn unpackStdLibs
 updateTomlFile.dependsOn copyStdlibs
 startTestDockerContainer.dependsOn createTestDockerImage
+startTestSslDockerContainer.dependsOn createTestDockerImage
 
 ballerinaTest.dependsOn updateTomlFile
 ballerinaTest.dependsOn initializeVariables
 ballerinaTest.dependsOn ":${packageName}-native:build"
 ballerinaTest.dependsOn startTestDockerContainer
+ballerinaTest.dependsOn startTestSslDockerContainer
 ballerinaTest.finalizedBy revertTomlFile
 ballerinaTest.finalizedBy stopTestDockerContainer
+ballerinaTest.finalizedBy stopTestSslDockerContainer
 test.dependsOn ballerinaTest
 
 ballerinaBuild.dependsOn test
@@ -375,6 +435,7 @@ ballerinaBuild.dependsOn initializeVariables
 ballerinaBuild.dependsOn ":${packageName}-native:build"
 ballerinaBuild.finalizedBy revertTomlFile
 ballerinaBuild.finalizedBy stopTestDockerContainer
+ballerinaBuild.finalizedBy stopTestSslDockerContainer
 build.dependsOn ballerinaBuild
 
 ballerinaPublish.finalizedBy revertTomlFile

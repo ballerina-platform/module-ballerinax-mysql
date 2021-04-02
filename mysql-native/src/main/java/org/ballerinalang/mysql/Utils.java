@@ -59,34 +59,35 @@ public class Utils {
         return -1;
     }
 
-    public static void addSSLOptions(BMap sslConfig, BMap<BString, Object> options) {
-        if (sslConfig == null) {
+    public static void addSSLOptions(BMap secureSocket, BMap<BString, Object> options) {
+        if (secureSocket == null) {
             options.put(Constants.DatabaseProps.SSL_MODE, Constants.DatabaseProps.SSL_MODE_DISABLED);
         } else {
-            BString mode = sslConfig.getStringValue(Constants.SSLConfig.MODE);
-            if (mode.getValue().equalsIgnoreCase(Constants.SSLConfig.VERIFY_CERT_MODE)) {
-                mode = Constants.DatabaseProps.SSL_MODE_VERIFY_CA;
-            }
+            BString mode = secureSocket.getStringValue(Constants.SecureSocket.MODE);
             options.put(Constants.DatabaseProps.SSL_MODE, mode);
 
-            BMap clientCertKeystore = sslConfig.getMapValue(Constants.SSLConfig.CLIENT_CERT_KEYSTORE);
+            BMap clientCertKeystore = secureSocket.getMapValue(Constants.SecureSocket.CLIENT_KEY);
             if (clientCertKeystore != null) {
                 options.put(Constants.DatabaseProps.CLIENT_KEYSTORE_URL, StringUtils.fromString(
                         Constants.FILE + clientCertKeystore.getStringValue(
-                                Constants.SSLConfig.CryptoKeyStoreRecord.KEY_STORE_RECORD_PATH_FIELD)));
-                options.put(Constants.DatabaseProps.CLIENT_KEYSTORE_PASSWORD, clientCertKeystore
-                        .getStringValue(Constants.SSLConfig.CryptoKeyStoreRecord.KEY_STORE_RECORD_PASSWORD_FIELD));
-                options.put(Constants.DatabaseProps.CLIENT_KEYSTORE_TYPE, Constants.DatabaseProps.KEYSTORE_TYPE_PKCS12);
+                                Constants.SecureSocket.CryptoKeyStoreRecord.KEY_STORE_RECORD_PATH_FIELD)));
+                options.put(Constants.DatabaseProps.CLIENT_KEYSTORE_PASSWORD,
+                        clientCertKeystore.getStringValue(
+                                Constants.SecureSocket.CryptoKeyStoreRecord.KEY_STORE_RECORD_PASSWORD_FIELD));
+                options.put(Constants.DatabaseProps.CLIENT_KEYSTORE_TYPE,
+                        Constants.DatabaseProps.KEYSTORE_TYPE_PKCS12);
             }
 
-            BMap trustCertKeystore = sslConfig.getMapValue(Constants.SSLConfig.TRUST_CERT_KEYSTORE);
+            BMap trustCertKeystore = secureSocket.getMapValue(Constants.SecureSocket.CLIENT_CERT);
             if (trustCertKeystore != null) {
-                options.put(Constants.DatabaseProps.TRUST_KEYSTORE_URL, StringUtils.fromString(
-                        Constants.FILE + trustCertKeystore.getStringValue(
-                                Constants.SSLConfig.CryptoKeyStoreRecord.KEY_STORE_RECORD_PATH_FIELD)));
-                options.put(Constants.DatabaseProps.TRUST_KEYSTORE_PASSWORD, trustCertKeystore
-                        .getStringValue(Constants.SSLConfig.CryptoKeyStoreRecord.KEY_STORE_RECORD_PASSWORD_FIELD));
-                options.put(Constants.DatabaseProps.TRUST_KEYSTORE_TYPE, Constants.DatabaseProps.KEYSTORE_TYPE_PKCS12);
+                options.put(Constants.DatabaseProps.TRUST_KEYSTORE_URL,
+                        StringUtils.fromString(Constants.FILE + trustCertKeystore.getStringValue(
+                                Constants.SecureSocket.CryptoTrustStoreRecord.TRUST_STORE_RECORD_PATH_FIELD)));
+                options.put(Constants.DatabaseProps.TRUST_KEYSTORE_PASSWORD,
+                        trustCertKeystore.getStringValue(
+                                Constants.SecureSocket.CryptoTrustStoreRecord.TRUST_STORE_RECORD_PASSWORD_FIELD));
+                options.put(Constants.DatabaseProps.TRUST_KEYSTORE_TYPE,
+                        Constants.DatabaseProps.KEYSTORE_TYPE_PKCS12);
             }
         }
     }

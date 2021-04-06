@@ -90,7 +90,7 @@ Execute the commands below to build from the source.
 
 8. To publish to local repository of ballerina
 
-         ./gradlew clean publish -Prepository=local
+         ./gradlew clean ballerinaPublish -Prepository=local
 
 ## Contributing to Ballerina
 

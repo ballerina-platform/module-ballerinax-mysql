@@ -3,8 +3,8 @@
 This Package provides the functionality required to access and manipulate data stored in a MySQL database.  
 
 **Prerequisite:** Add the MySQL driver JAR as a native library dependency in your Ballerina project. 
-This Package uses database properties from the MySQL version 8.0.x onwards. Therefore, it is recommended to use a 
-MySQL driver version greater than 8.0.x. Then, once you build the project by executing the `ballerina build`
+This Package uses database properties from the MySQL version 8.0.13 onwards. Therefore, it is recommended to use a 
+MySQL driver version greater than 8.0.13. Then, once you build the project by executing the `ballerina build`
 command, you should be able to run the resultant by executing the `ballerina run` command.
 
 E.g., The `Ballerina.toml` content.

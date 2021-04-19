@@ -54,8 +54,8 @@ public client class Client {
     #              params to be passed in
     # + rowType - The `typedesc` of the record that should be returned as a result. If this is not provided the default
     #             column names of the query result set be used for the record attributes.
-    # + return - Stream of records in the type of `rowType`. If `rowType` is not provided, then the all returned fields
-    #            of the stream of records are optional fields.
+    # + return - Stream of records in the type of `rowType`. If `rowType` is not provided, the column names of     
+    #                  the query are used as record fields and all record fields are optional.
     remote isolated function query(@untainted string|sql:ParameterizedQuery sqlQuery, typedesc<record {}>? rowType = ())
     returns @tainted stream <record {}, sql:Error> {
         if (self.clientActive) {

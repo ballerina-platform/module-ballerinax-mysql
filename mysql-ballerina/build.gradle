@@ -435,9 +435,9 @@ ballerinaBuild.dependsOn ":${packageName}-native:build"
 ballerinaBuild.finalizedBy revertTomlFile
 ballerinaBuild.finalizedBy stopTestDockerContainer
 ballerinaBuild.finalizedBy stopTestSslDockerContainer
-test.dependsOn ballerinaBuild
 test.dependsOn startTestDockerContainer
 test.dependsOn startTestSslDockerContainer
+ballerinaBuild.dependsOn test
 build.dependsOn ballerinaBuild
 
 publishToMavenLocal.dependsOn build

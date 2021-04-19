@@ -400,7 +400,7 @@ task stopTestDockerContainer() {
                     standardOutput = stdOut
                 }
             } catch (all) {
-                println("Process can safely ignore stopTestDockerContainer task")
+                println("Gradle process can safely ignore stopTestDockerContainer task")
             }
         }
     }
@@ -416,7 +416,7 @@ task stopTestSslDockerContainer() {
                     standardOutput = stdOut
                 }
             } catch (all) {
-                println("Process can safely ignore stopTestDockerContainer task")
+                println("Gradle process can safely ignore stopTestSslDockerContainer task")
             }
         }
     }
@@ -432,12 +432,12 @@ startTestSslDockerContainer.dependsOn createTestDockerImage
 ballerinaBuild.dependsOn updateTomlFile
 ballerinaBuild.dependsOn initializeVariables
 ballerinaBuild.dependsOn ":${packageName}-native:build"
-ballerinaBuild.dependsOn startTestDockerContainer
-ballerinaBuild.dependsOn startTestSslDockerContainer
 ballerinaBuild.finalizedBy revertTomlFile
 ballerinaBuild.finalizedBy stopTestDockerContainer
 ballerinaBuild.finalizedBy stopTestSslDockerContainer
 test.dependsOn ballerinaBuild
+test.dependsOn startTestDockerContainer
+test.dependsOn startTestSslDockerContainer
 build.dependsOn ballerinaBuild
 
 publishToMavenLocal.dependsOn build

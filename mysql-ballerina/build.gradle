@@ -437,7 +437,7 @@ ballerinaBuild.finalizedBy stopTestDockerContainer
 ballerinaBuild.finalizedBy stopTestSslDockerContainer
 test.dependsOn startTestDockerContainer
 test.dependsOn startTestSslDockerContainer
-ballerinaBuild.dependsOn test
+test.finalizedBy ballerinaBuild
 build.dependsOn ballerinaBuild
 
 publishToMavenLocal.dependsOn build

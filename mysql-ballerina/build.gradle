@@ -187,12 +187,6 @@ task initializeVariables {
     }
 }
 
-task ballerinaTest {
-    doLast {
-
-    }
-}
-
 task ballerinaBuild {
     inputs.dir file(project.projectDir)
 
@@ -285,48 +279,6 @@ task ballerinaBuild {
     outputs.dir artifactCacheParent
     outputs.dir artifactBallerinaDocs
     outputs.dir artifactLibParent
-}
-
-task ballerinaPublish {
-
-    ext.balPush = { additionalParams ->
-        exec {
-            workingDir project.projectDir
-            environment "JAVA_OPTS", "-DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true"
-            if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                commandLine 'cmd', '/c', "$distributionBinPath/bal.bat push ${additionalParams} && exit %%ERRORLEVEL%%"
-            } else {
-                commandLine 'sh', '-c', "$distributionBinPath/bal push ${additionalParams} "
-            }
-        }
-    }
-
-    doLast {
-        // Publish to local repository
-        def repository = ""
-        if (project.hasProperty("repository")) {
-            repository = project.findProperty("repository")
-        }
-
-        if (repository == "local") {
-            println("Publishing to the ballerina local repository...")
-            balPush("--repository=local")
-        } else if (repository == "central") {
-            // Publish to central
-            println("Publishing to the ballerina central..")
-            if (project.version.endsWith('-SNAPSHOT') ||
-                    project.version.matches(project.ext.timestampedVersionRegex)) {
-                throw new InvalidUserDataException("Cannot push SNAPSHOT version to central")
-            }
-            if (ballerinaCentralAccessToken != null) {
-                balPush("")
-            } else {
-                throw new InvalidUserDataException("Central Access Token is Not Present")
-            }
-        } else {
-            println("Publish task does not publish to ballerina repository")
-        }
-    }
 }
 
 task createArtifactZip(type: Zip) {
@@ -480,8 +432,8 @@ startTestSslDockerContainer.dependsOn createTestDockerImage
 ballerinaBuild.dependsOn updateTomlFile
 ballerinaBuild.dependsOn initializeVariables
 ballerinaBuild.dependsOn ":${packageName}-native:build"
-ballerinaTest.dependsOn startTestDockerContainer
-ballerinaTest.dependsOn startTestSslDockerContainer
+ballerinaBuild.dependsOn startTestDockerContainer
+ballerinaBuild.dependsOn startTestSslDockerContainer
 ballerinaBuild.finalizedBy revertTomlFile
 ballerinaBuild.finalizedBy stopTestDockerContainer
 ballerinaBuild.finalizedBy stopTestSslDockerContainer

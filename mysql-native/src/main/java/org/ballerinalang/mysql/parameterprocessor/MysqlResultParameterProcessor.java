@@ -86,20 +86,25 @@ public class MysqlResultParameterProcessor extends DefaultResultParameterProcess
                     return fromString(sqlTime.toString());
                 case TypeTags.OBJECT_TYPE_TAG:
                 case TypeTags.RECORD_TYPE_TAG:
-                    LocalTime timeObj = ((Time) sqlTime).toLocalTime();
-                    BMap<BString, Object> timeMap = ValueCreator.createRecordValue(
+                    if (type.getName().equals(org.ballerinalang.stdlib.time.util.Constants.TIME_OF_DAY_RECORD)) {
+                        LocalTime timeObj = sqlTime.toLocalTime();
+                        BMap<BString, Object> timeMap = ValueCreator.createRecordValue(
                             org.ballerinalang.stdlib.time.util.ModuleUtils.getModule(),
                             org.ballerinalang.stdlib.time.util.Constants.TIME_OF_DAY_RECORD);
-                    timeMap.put(StringUtils.fromString(org.ballerinalang.stdlib.time.util.Constants
+                        timeMap.put(StringUtils.fromString(org.ballerinalang.stdlib.time.util.Constants
                             .TIME_OF_DAY_RECORD_HOUR), timeObj.getHour());
-                    timeMap.put(StringUtils.fromString(org.ballerinalang.stdlib.time.util.Constants
+                        timeMap.put(StringUtils.fromString(org.ballerinalang.stdlib.time.util.Constants
                             .TIME_OF_DAY_RECORD_MINUTE) , timeObj.getMinute());
-                    BigDecimal second = new BigDecimal(timeObj.getSecond());
-                    second = second.add(new BigDecimal(timeObj.getNano())
+                        BigDecimal second = new BigDecimal(timeObj.getSecond());
+                        second = second.add(new BigDecimal(timeObj.getNano())
                             .divide(ANALOG_GIGA, MathContext.DECIMAL128));
-                    timeMap.put(StringUtils.fromString(org.ballerinalang.stdlib.time.util.Constants
+                        timeMap.put(StringUtils.fromString(org.ballerinalang.stdlib.time.util.Constants
                             .TIME_OF_DAY_RECORD_SECOND), ValueCreator.createDecimalValue(second));
-                    return timeMap;
+                        return timeMap;
+                    } else {
+                        throw new ApplicationError("Unsupported Ballerina type:" +
+                            type.getName() + " for SQL Time data type.");
+                    }
                 case TypeTags.INT_TAG:
                     return sqlTime.getTime();
             }
@@ -151,7 +156,8 @@ public class MysqlResultParameterProcessor extends DefaultResultParameterProcess
                                 .TIME_OF_DAY_RECORD_SECOND), ValueCreator.createDecimalValue(second));
                         return civilMap;
                     } else {
-                        return Utils.createTimeStruct(sqlTimestamp.getTime());
+                        throw new ApplicationError("Unsupported Ballerina type:" +
+                                type.getName() + " for SQL Timestamp data type.");
                     }
                 case TypeTags.INT_TAG:
                     return sqlTimestamp.getTime();

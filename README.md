@@ -83,14 +83,24 @@ Execute the commands below to build from the source.
 6. To debug the tests:
 
         ./gradlew clean build -Pdebug=<port>
+        ./gradlew clean test -Pdebug=<port>
 
 7. To debug the package with Ballerina language:
 
         ./gradlew clean build -PbalJavaDebug=<port>
+        ./gradlew clean test -PbalJavaDebug=<port>
 
-8. To publish to local repository of ballerina
+8. Publish ZIP artifact to the local `.m2` repository:
 
-         ./gradlew clean publish -Prepository=local
+        ./gradlew clean build publishToMavenLocal
+
+9. Publish the generated artifacts to the local Ballerina central repository:
+
+        ./gradlew clean build -PpublishToLocalCentral=true
+
+10. Publish the generated artifacts to the Ballerina central repository:
+
+        ./gradlew clean build -PpublishToCentral=true
 
 ## Contributing to Ballerina
 
@@ -104,6 +114,6 @@ All contributors are encouraged to read the [Ballerina Code of Conduct](https://
 
 ## Useful Links
 
-* Discuss about code changes of the Ballerina project in [ballerina-dev@googlegroups.com](mailto:ballerina-dev@googlegroups.com).
+* Discuss code changes of the Ballerina project in [ballerina-dev@googlegroups.com](mailto:ballerina-dev@googlegroups.com).
 * Chat live with us via our [Slack channel](https://ballerina.io/community/slack/).
 * Post all technical questions on Stack Overflow with the [#ballerina](https://stackoverflow.com/questions/tagged/ballerina) tag.

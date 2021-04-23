@@ -44,19 +44,6 @@ public class Utils {
             if (socketTimeout > 0) {
                 options.put(Constants.DatabaseProps.SOCKET_TIMEOUT, socketTimeout);
             }
-
-            BString connectionAttributes = mysqlOptions.getStringValue(Constants.Options.CONNECTION_ATTRIBUTES);
-            if (connectionAttributes != null) {
-                options.put(Constants.DatabaseProps.CONNECTION_ATTRIBUTES, connectionAttributes);
-            }
-            
-            BString useConfigs = mysqlOptions.getStringValue(Constants.Options.USE_CONFIGS);
-            if (useConfigs != null) {
-                options.put(Constants.DatabaseProps.USE_CONFIGS, useConfigs);
-            }
-            
-            boolean allowPublicKeyRetrieval = mysqlOptions.getBooleanValue(Constants.Options.ALLOW_PUBLICKEY_RETRIEVAL);
-            options.put(Constants.DatabaseProps.ALLOW_PUBLICKEY_RETRIEVAL, allowPublicKeyRetrieval);
             
             BString serverTimezone = mysqlOptions.getStringValue(Constants.Options.SERVER_TIMEZONE);
             if (serverTimezone != null) {
@@ -107,6 +94,9 @@ public class Utils {
                 options.put(Constants.DatabaseProps.TRUST_KEYSTORE_TYPE,
                         Constants.DatabaseProps.KEYSTORE_TYPE_PKCS12);
             }
+
+            boolean allowPublicKeyRetrieval = secureSocket.getBooleanValue(Constants.Options.ALLOW_PUBLICKEY_RETRIEVAL);
+            options.put(Constants.DatabaseProps.ALLOW_PUBLICKEY_RETRIEVAL, allowPublicKeyRetrieval);
         }
     }
 }

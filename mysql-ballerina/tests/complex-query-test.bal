@@ -192,7 +192,7 @@ function testDateTimeRecords() {
 
     time:Date dateRecord = {"year":2017,"month":5,"day":23};
     time:TimeOfDay timeRecord = {"hour":14,"minute":15,"second":23};
-    time:Utc timestampRecord = [1485342235, 0];
+    time:Utc timestampRecord = [1485362035, 0];
     time:Civil dateTimeRecord = {"year":2017,"month":1,"day":25,"hour":22,"minute":33,"second":55};
 
     ResultDatesRecord expected = {

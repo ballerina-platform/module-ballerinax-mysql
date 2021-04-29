@@ -150,12 +150,15 @@ type ClientConfiguration record {|
 # + useXADatasource - Boolean value to enable XADatasource
 # + connectTimeout - Timeout (in seconds) to be used when connecting to the mysql server
 # + socketTimeout - Socket timeout (in seconds) during the read/write operations with mysql server,
-#                            0 means no socket timeout
+#                   0 means no socket timeout
+# + serverTimezone - Configures the connection time zone which is used by Connector/J if conversion between a ballerina
+#                    application and a target time zone is needed when preserving instant temporal values.
 public type Options record {|
     SecureSocket ssl?;
     boolean useXADatasource = false;
     decimal connectTimeout = 30;
     decimal socketTimeout = 0;
+    string serverTimezone?;
 |};
 
 # Possible options for SSL Mode.
@@ -172,10 +175,13 @@ public type SSLMode SSL_PREFERRED|SSL_REQUIRED|SSL_VERIFY_CA|SSL_VERIFY_IDENTITY
 # + mode - `SSLMode` to be used during the connection
 # + key - Keystore configuration of the client certificates
 # + cert - Keystore configuration of the trust certificates
+# + allowPublicKeyRetrieval - Boolean value to allow special handshake round-trip to get an RSA public key directly
+#                             from server
 public type SecureSocket record {|
     SSLMode mode = SSL_PREFERRED;
     crypto:KeyStore key?;
     crypto:TrustStore cert?;
+    boolean allowPublicKeyRetrieval = false;
 |};
 
 isolated function createClient(Client mysqlClient, ClientConfiguration clientConf,

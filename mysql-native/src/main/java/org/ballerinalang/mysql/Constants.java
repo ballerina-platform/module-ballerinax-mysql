@@ -47,6 +47,10 @@ public final class Constants {
         public static final BString USE_XA_DATASOURCE = StringUtils.fromString("useXADatasource");
         public static final BString CONNECT_TIMEOUT = StringUtils.fromString("connectTimeout");
         public static final BString SOCKET_TIMEOUT = StringUtils.fromString("socketTimeout");
+        public static final BString CONNECTION_ATTRIBUTES = StringUtils.fromString("connectionAttributes");
+        public static final BString USE_CONFIGS = StringUtils.fromString("useConfigs");
+        public static final BString ALLOW_PUBLICKEY_RETRIEVAL = StringUtils.fromString("allowPublicKeyRetrieval");
+        public static final BString SERVER_TIMEZONE = StringUtils.fromString("serverTimezone");
     }
 
     /**
@@ -93,6 +97,10 @@ public final class Constants {
 
         public static final BString CONNECT_TIMEOUT = StringUtils.fromString("connectTimeout");
         public static final BString SOCKET_TIMEOUT = StringUtils.fromString("socketTimeout");
+        public static final BString CONNECTION_ATTRIBUTES = StringUtils.fromString("connectionAttributes");
+        public static final BString USE_CONFIGS = StringUtils.fromString("useConfigs");
+        public static final BString ALLOW_PUBLICKEY_RETRIEVAL = StringUtils.fromString("allowPublicKeyRetrieval");
+        public static final BString SERVER_TIMEZONE = StringUtils.fromString("serverTimezone");
     }
 
     public static final String MYSQL_DATASOURCE_NAME = "com.mysql.cj.jdbc.MysqlDataSource";

@@ -555,17 +555,13 @@ function queryTimeStringParam() {
 }
 
 @test:Config {
-    groups: ["query","query-simple-params"],
-    enable: false
+    groups: ["query","query-simple-params"]
 }
 function queryTimeStringInvalidParam() {
-    sql:TimeValue typeVal = new ("xx:xx:xx");
+    sql:TimeValue typeVal = new ("xx.xx.xx");
     sql:ParameterizedQuery sqlQuery = `SELECT * from DateTimeTypes WHERE time_type = ${typeVal}`;
     record{}|error? returnVal = trap queryMysqlClient(sqlQuery);
-    test:assertTrue(returnVal is error);
-    error dbError = <error> returnVal;
-    test:assertEquals(dbError.message(), 
-        "Error while executing SQL query: SELECT * from DateTimeTypes WHERE time_type =  ? . java.lang.IllegalArgumentException");
+    test:assertTrue(returnVal is ());
 }
 
 @test:Config {
@@ -581,13 +577,13 @@ function queryTimestampStringParam() {
     groups: ["query","query-simple-params"]
 }
 function queryTimestampStringInvalidParam() {
-    sql:TimestampValue typeVal = new ("2017/02/0311:53:00");
+    sql:TimestampValue typeVal = new ("11:53:00 2017/02/03");
     sql:ParameterizedQuery sqlQuery = `SELECT * from DateTimeTypes WHERE timestamp_type = ${typeVal}`;
     record{}|error? returnVal = trap queryMysqlClient(sqlQuery);
     test:assertTrue(returnVal is error);
     error dbError = <error> returnVal;
     test:assertEquals(dbError.message(), "Error while executing SQL query: SELECT * from DateTimeTypes WHERE " +
-                "timestamp_type =  ? . Incorrect TIMESTAMP value: '2017/02/0311:53:00'.");
+                    "timestamp_type =  ? . Incorrect TIMESTAMP value: '11:53:00 2017/02/03'.");
 }
 
 @test:Config {

@@ -573,13 +573,13 @@ isolated function getReturnValue(stream<record{}, error> queryResult) returns in
     return count;
 }
 
-function validateApplicationError(int|error dbError) {
+isolated function validateApplicationError(int|error dbError) {
     test:assertTrue(dbError is error);
     sql:ApplicationError sqlError = <sql:ApplicationError> dbError;
     test:assertTrue(strings:includes(sqlError.message(), "Client is already closed"), sqlError.message());
 }
 
-function validateConnectionTimeoutError(int|error dbError) {
+isolated function validateConnectionTimeoutError(int|error dbError) {
     test:assertTrue(dbError is error);
     sql:DatabaseError sqlError = <sql:DatabaseError> dbError;
     test:assertTrue(strings:includes(sqlError.message(), "request timed out after"), sqlError.message());

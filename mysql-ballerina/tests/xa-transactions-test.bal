@@ -72,13 +72,13 @@ function testXATransactionSuccessWithDataSource() {
     checkpanic dbClient2.close();
 }
 
-function getCustomerCount(Client dbClient, string id) returns @tainted int|error{
+isolated function getCustomerCount(Client dbClient, string id) returns @tainted int|error{
     stream<XAResultCount,  sql:Error> streamData = <stream<XAResultCount,  sql:Error>> dbClient->query("Select COUNT(*) as " +
         "countval from Customers where customerId = "+ id, XAResultCount);
     return getResult(streamData);
 }
 
-function getSalaryCount(Client dbClient, string id) returns @tainted int|error{
+isolated function getSalaryCount(Client dbClient, string id) returns @tainted int|error{
     stream<XAResultCount,  sql:Error> streamData =
     <stream<XAResultCount,  sql:Error>> dbClient->query("Select COUNT(*) as countval " +
     "from Salary where id = "+ id, XAResultCount);

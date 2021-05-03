@@ -27,10 +27,10 @@ type TransactionResultCount record {
 
 public class SQLDefaultRetryManager {
     private int count;
-    public function init(int count = 2) {
+    public isolated function init(int count = 2) {
         self.count = count;
     }
-    public function shouldRetry(error? e) returns boolean {
+    public isolated function shouldRetry(error? e) returns boolean {
         if e is error && self.count >  0 {
             self.count -= 1;
             return true;
@@ -49,8 +49,8 @@ function testLocalTransaction() returns error? {
     boolean committedBlockExecuted = false;
     transactions:Info transInfo;
     retry<SQLDefaultRetryManager>(1) transaction {
-        var res = check dbClient->execute("Insert into Customers (firstName,lastName,registrationID,c" +
-                                "reditLimit,country) values ('James', 'Clerk', 200, 5000.75, 'USA')");
+        var res = check dbClient->execute("Insert into Customers (firstName,lastName,registrationID,creditLimit," +
+                                "country) values ('James', 'Clerk', 200, 5000.75, 'USA')");
         res = check dbClient->execute("Insert into Customers (firstName,lastName,registrationID,creditLimit,country) " +
                                 "values ('James', 'Clerk', 200, 5000.75, 'USA')");
         transInfo = transactions:info();
@@ -210,7 +210,7 @@ function testTransactionAbort() returns error? {
         transactions:onRollback(abortFunc);
         var e1 = check dbClient->execute("Insert into Customers " +
          "(firstName,lastName,registrationID,creditLimit,country) values ('James', 'Clerk', 220, 5000.75, 'USA')");
-        var e2 =  check dbClient->execute("Insert into Customers " +
+        var e2 = check dbClient->execute("Insert into Customers " +
         "(firstName,lastName,registrationID,creditLimit,country) values ('James', 'Clerk', 220, 5000.75, 'USA')");
         int i = 0;
         if (i == 0) {
@@ -445,7 +445,7 @@ function testLocalTransactionSuccessWithFailed() returns error? {
     test:assertEquals(count, 2);
 }
 
-function testLocalTransactionSuccessWithFailedHelper(string status,Client dbClient) returns string|error {
+isolated function testLocalTransactionSuccessWithFailedHelper(string status,Client dbClient) returns string|error {
     int i = 0;
     string a = status;
     retry<SQLDefaultRetryManager>(3) transaction {
@@ -466,7 +466,7 @@ function testLocalTransactionSuccessWithFailedHelper(string status,Client dbClie
     return a;
 }
 
-function getCount(Client dbClient, string id) returns @tainted int|error {
+isolated function getCount(Client dbClient, string id) returns @tainted int|error {
     stream<TransactionResultCount, sql:Error> streamData = <stream<TransactionResultCount, sql:Error>> dbClient->query("Select COUNT(*) as " +
         "countval from Customers where registrationID = "+ id, TransactionResultCount);
         record {|TransactionResultCount value;|}? data = check streamData.next();

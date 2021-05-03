@@ -211,6 +211,7 @@ subprojects {
     dependencies {
         compile group: 'org.ballerinalang', name: 'ballerina-runtime', version: "${ballerinaLangVersion}"
         compile group: 'org.ballerinalang', name: 'sql-native', version: "${stdlibSqlVersion}"
+        compile group: 'org.ballerinalang', name: 'time-native', version: "${stdlibTimeVersion}"
 
         ballerinaStdLibs "org.ballerinalang:sql-ballerina:${stdlibSqlVersion}"
         ballerinaStdLibs "org.ballerinalang:io-ballerina:${stdlibIoVersion}"

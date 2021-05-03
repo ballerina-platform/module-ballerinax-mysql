@@ -162,7 +162,7 @@ public class MysqlResultParameterProcessor extends DefaultResultParameterProcess
                 case TypeTags.INT_TAG:
                     return sqlTimestamp.getTime();
                 case TypeTags.INTERSECTION_TAG:
-                    return Utils.createTimeStruct(sqlTimestamp.getTime());
+                    return Utils.createTimeStruct(timestamp.getTime());
             }
         }
         return null;

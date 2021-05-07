@@ -37,7 +37,7 @@ if (Os.isFamily(Os.FAMILY_WINDOWS)) {
 def distributionBinPath = distributionPath + "/bin"
 def originalConfig = ballerinaConfigFile.text
 def originalDependencies = ballerinaDependencyFile.text
-def testCoverageParam = "--code-coverage --includes=org.ballerinalang.mysql.*:ballerinax.*"
+def testCoverageParam = "--code-coverage --jacoco-xml --includes=org.ballerinalang.mysql.*:ballerinax.mysql.*"
 
 def stripBallerinaExtensionVersion(String extVersion) {
     if (extVersion.matches(project.ext.timestampedVersionRegex)) {

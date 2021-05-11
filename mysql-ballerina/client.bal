@@ -23,7 +23,7 @@ public client class Client {
     *sql:Client;
     private boolean clientActive = true;
 
-    # Initialize MySQL Client.
+    # Initializes MySQL Client.
     #
     # + host - Hostname of the mysql server to be connected
     # + user - If the mysql server is secured, the username to be used to connect to the mysql server
@@ -33,7 +33,7 @@ public client class Client {
     # + options - The Database specific JDBC client properties
     # + connectionPool - The `sql:ConnectionPool` object to be used within the jdbc client.
     #                   If there is no connectionPool is provided, the global connection pool will be used and it will
-    #                   be shared by other clients which has same properties.
+    #                   be shared by other clients which has same properties
     public isolated function init(string host = "localhost", string? user = (), string? password = (), string? database = (),
         int port = 3306, Options? options = (), sql:ConnectionPool? connectionPool = ()) returns sql:Error? {
         ClientConfiguration clientConfig = {
@@ -53,9 +53,9 @@ public client class Client {
     # + sqlQuery - The query which needs to be executed as `string` or `ParameterizedQuery` when the SQL query has
     #              params to be passed in
     # + rowType - The `typedesc` of the record that should be returned as a result. If this is not provided the default
-    #             column names of the query result set be used for the record attributes.
+    #             column names of the query result set be used for the record attributes
     # + return - Stream of records in the type of `rowType`. If `rowType` is not provided, the column names of     
-    #                  the query are used as record fields and all record fields are optional.
+    #                  the query are used as record fields and all record fields are optional
     remote isolated function query(@untainted string|sql:ParameterizedQuery sqlQuery, typedesc<record {}>? rowType = ())
     returns @tainted stream <record {}, sql:Error> {
         if (self.clientActive) {
@@ -68,9 +68,9 @@ public client class Client {
 
     # Executes the DDL or DML sql queries provided by the user, and returns summary of the execution.
     #
-    # + sqlQuery - The DDL or DML query such as INSERT, DELETE, UPDATE, etc as `string` or `ParameterizedQuery`
+    # + sqlQuery - The DDL or DML query such as INSERT, DELETE, UPDATE, etc as `string`, or `ParameterizedQuery`
     #              when the query has params to be passed in
-    # + return - Summary of the sql update query as `ExecutionResult` or returns `Error`
+    # + return - Summary of the sql update query as `ExecutionResult`, or an `Error`
     #           if any error occurred when executing the query
     remote isolated function execute(@untainted string|sql:ParameterizedQuery sqlQuery) returns sql:ExecutionResult|sql:Error {
         if (self.clientActive) {
@@ -86,10 +86,10 @@ public client class Client {
     # + sqlQueries - The DDL or DML query such as INSERT, DELETE, UPDATE, etc as `ParameterizedQuery` with an array
     #                of values passed in
     # + return - Summary of the executed SQL queries as `ExecutionResult[]` which includes details such as
-    #            `affectedRowCount` and `lastInsertId`. If one of the commands in the batch fails, this function
+    #            `affectedRowCount`, and `lastInsertId`. If one of the commands in the batch fails, this function
     #            will return `BatchExecuteError`, however the JDBC driver may or may not continue to process the
     #            remaining commands in the batch after a failure. The summary of the executed queries in case of error
-    #            can be accessed as `(<sql:BatchExecuteError> result).detail()?.executionResults`.
+    #            can be accessed as `(<sql:BatchExecuteError> result).detail()?.executionResults`
     remote isolated function batchExecute(@untainted sql:ParameterizedQuery[] sqlQueries) returns sql:ExecutionResult[]|sql:Error {
         if (sqlQueries.length() == 0) {
             return error sql:ApplicationError(" Parameter 'sqlQueries' cannot be empty array");
@@ -105,8 +105,8 @@ public client class Client {
     #
     # + sqlQuery - The query to execute the SQL stored procedure
     # + rowTypes - The array of `typedesc` of the records that should be returned as a result. If this is not provided
-    #               the default column names of the query result set be used for the record attributes.
-    # + return - Summary of the execution is returned in `ProcedureCallResult` or `sql:Error`
+    #               the default column names of the query result set be used for the record attributes
+    # + return - Summary of the execution is returned in `ProcedureCallResult`, or `sql:Error`
     remote isolated function call(@untainted string|sql:ParameterizedCallQuery sqlQuery, typedesc<record {}>[] rowTypes = [])
     returns sql:ProcedureCallResult|sql:Error {
         if (self.clientActive) {
@@ -152,7 +152,7 @@ type ClientConfiguration record {|
 # + socketTimeout - Socket timeout (in seconds) during the read/write operations with mysql server,
 #                   0 means no socket timeout
 # + serverTimezone - Configures the connection time zone which is used by Connector/J if conversion between a ballerina
-#                    application and a target time zone is needed when preserving instant temporal values.
+#                    application and a target time zone is needed when preserving instant temporal values
 public type Options record {|
     SecureSocket ssl?;
     boolean useXADatasource = false;

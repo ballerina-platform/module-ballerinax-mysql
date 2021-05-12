@@ -1,4 +1,4 @@
-## Module overview
+## Module Overview
 
 This module provides the functionality required to access and manipulate data stored in a MySQL database.
 
@@ -28,7 +28,7 @@ To access a database, you must first create a
 [mysql:Client](https://ballerina.io/learn/api-docs/ballerina/#/mysql/clients/Client) object.
 The examples for creating a MySQL client can be found below.
 
-#### Creating a client
+#### Creating a Client
 This example shows different ways of creating the `mysql:Client`.
 
 The client can be created with an empty constructor and hence, the client will be initialized with the default properties.

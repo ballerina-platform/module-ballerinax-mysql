@@ -62,6 +62,31 @@ mysql:Client|sql:Error dbClient3 = new (user = "rootUser", password = "rootPass"
 mysql:Client|sql:Error dbClient4 = new (user = "rootUser", password = "rootPass",
                               connectionPool = {maxOpenConnections: 5});
 ```
+
+#### Using SSL
+In order to connect the MySQL database using SSL connection, you must add SSL configurations to `mysql:Options` when crating the `dbClient`.
+For SSLMode, You can select one of the modes `mysql:SSL_PREFERRED`, `mysql:SSL_REQUIRED`, `mysql:SSL_VERIFY_CA`, or `mysql:SSL_VERIFY_IDENTITY` according to the requirement.
+for key and cert files, you must provide the files in .p12 format.
+
+```ballerina
+string clientStorePath = "/path/to/keystore.p12";
+string turstStorePath = "/path/to/truststore.p12";
+
+mysql:Options mysqlOptions = {
+  ssl: {
+    mode: mysql:SSL_PREFERRED,
+    key: {
+        path: clientStorePath,
+        password: "password"
+    },
+    cert: {
+        path: turstStorePath,
+        password: "password"
+    }
+  }
+};
+```
+
 You can find more details about each property in the
 [mysql:Client](https://ballerina.io/learn/api-docs/ballerina/#/mysql/clients/Client) constructor.
 

@@ -167,11 +167,16 @@ public const SSL_PREFERRED = "PREFERRED";
 # Establish an encrypted connection if the server supports encrypted connections. The connection attempt fails if
 # an encrypted connection cannot be established.
 public const SSL_REQUIRED = "REQUIRED";
-# Like SSL_REQUIRED, but additionally verify the server Certificate Authority (CA) certificate against the configured
-# CA certificates. The connection attempt fails if no valid matching CA certificates are found.
+# Establish an encrypted connection if the server supports encrypted connections. The connection attempt fails if
+# an encrypted connection cannot be established. Also additionally verify the server Certificate Authority (CA)
+# certificate against the configured CA certificates. The connection attempt fails if no valid matching CA
+# certificates are found.
 public const SSL_VERIFY_CA = "VERIFY_CA";
-#Like SSL_VERIFY_CA, but additionally perform host name identity verification by checking the host name the client
-# uses for connecting to the server against the identity in the certificate that the server sends to the client.
+# Establish an encrypted connection if the server supports encrypted connections and verify the server
+# Certificate Authority (CA) certificate against the configured CA certificates. The connection attempt fails if an
+# encrypted connection cannot be established or no valid matching CA certificates are found. Also perform host name
+# identity verification by checking the host name the client uses for connecting to the server against the identity
+# in the certificate that the server sends to the client.
 public const SSL_VERIFY_IDENTITY = "VERIFY_IDENTITY";
 
 # SSLMode as a union of available ssl modes.

@@ -1,4 +1,4 @@
-## Module Overview
+## Overview
 
 This module provides the functionality required to access and manipulate data stored in a MySQL database.
 
@@ -64,7 +64,7 @@ mysql:Client|sql:Error dbClient4 = new (user = "rootUser", password = "rootPass"
 ```
 
 #### Using SSL
-In order to connect the MySQL database using SSL connection, you must add SSL configurations to `mysql:Options` when crating the `dbClient`.
+To connect the MySQL database using an SSL connection, you must add SSL configurations to `mysql:Options` when creating the `dbClient`.
 For SSLMode, You can select one of the modes `mysql:SSL_PREFERRED`, `mysql:SSL_REQUIRED`, `mysql:SSL_VERIFY_CA`, or `mysql:SSL_VERIFY_IDENTITY` according to the requirement.
 for key and cert files, you must provide the files in .p12 format.
 

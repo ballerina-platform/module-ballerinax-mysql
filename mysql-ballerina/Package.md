@@ -2,9 +2,7 @@
 
 The MySQL library is one of the external library packages of the<a target="_blank" href="https://ballerina.io/"> Ballerina</a> language.  This external package is maintained by the ballerina team.
 
-This provides the functionality required to access and manipulate data stored in a MySQL database.  
-
-For example demonstrations of the usage, go to [Ballerina By Examples](https://ballerina.io/learn/by-example/).
+This provides the functionality required to access and manipulate data stored in a MySQL database.
 
 ### Report Issues
 

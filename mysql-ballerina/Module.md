@@ -25,7 +25,7 @@ groupId = "mysql"
 
 ### Client
 To access a database, you must first create a
-[mysql:Client](https://ballerina.io/learn/api-docs/ballerina/#/mysql/clients/Client) object.
+[mysql:Client](https://docs.central.ballerina.io/ballerinax/mysql/latest/clients/Client) object.
 The examples for creating a MySQL client can be found below.
 
 #### Creating a Client
@@ -46,7 +46,7 @@ mysql:Client|sql:Error dbClient = new ("localhost", "rootUser", "rooPass",
 ```
 
 The `dbClient` uses the named params to pass the attributes since it is skipping some params in the constructor.
-Further, the [`mysql:Options`](https://ballerina.io/learn/api-docs/ballerina/#/mysql/records/Options)
+Further, the [`mysql:Options`](https://docs.central.ballerina.io/ballerinax/mysql/latest/records/Options)
 property is passed to configure the SSL and connection timeout in the MySQL client.
 
 ```ballerina
@@ -61,9 +61,9 @@ mysql:Client|sql:Error dbClient = new (user = "rootUser", password = "rootPass",
 ```
 
 Similarly, the `dbClient` uses the named params and it provides an unshared connection pool of the type of
-[sql:ConnectionPool](https://ballerina.io/learn/api-docs/ballerina/#/sql/records/ConnectionPool)
+[sql:ConnectionPool](https://docs.central.ballerina.io/ballerina/sql/latest/records/ConnectionPool)
 to be used within the client.
-For more details about connection pooling, see the [SQL Module](https://ballerina.io/learn/api-docs/ballerina/#/sql).
+For more details about connection pooling, see the [`sql` Module](https://docs.central.ballerina.io/ballerina/sql/latest).
 
 ```ballerina
 mysql:Client|sql:Error dbClient = new (user = "rootUser", password = "rootPass",
@@ -96,7 +96,7 @@ mysql:Options mysqlOptions = {
 #### Connection Pool Handling
 
 All database modules share the same connection pooling concept and there are three possible scenarios for 
-connection pool handling.  For its properties and possible values, see the `sql:ConnectionPool`.  
+connection pool handling.  For its properties and possible values, see the [`sql:ConnectionPool`](https://docs.central.ballerina.io/ballerina/sql/latest/records/ConnectionPool).
 
 1. Global, shareable, default connection pool
 
@@ -142,11 +142,10 @@ connection pool handling.  For its properties and possible values, see the `sql:
                                connectionPool = connPool);
     ```
    
-For more details about each property, see the [`mysql:Client`](https://ballerina.io/learn/api-docs/ballerina/#/mysql/clients/Client) constructor.
+For more details about each property, see the [`mysql:Client`](https://docs.central.ballerina.io/ballerinax/mysql/latest/clients/Client) constructor.
 
-
-The [mysql:Client](https://ballerina.io/learn/api-docs/ballerina/#/mysql/clients/Client) references
-[sql:Client](https://ballerina.io/learn/api-docs/ballerina/#/sql/abstractObjects/Client) and all the operations
+The [mysql:Client](https://docs.central.ballerina.io/ballerinax/mysql/latest/clients/Client) references
+[sql:Client](https://docs.central.ballerina.io/ballerina/sql/latest/clients/Client) and all the operations
 defined by the `sql:Client` will be supported by the `mysql:Client` as well.
  
 #### Closing the Client
@@ -387,6 +386,6 @@ if ret is error {
 
 Note that you have to invoke the close operation on the `sql:ProcedureCallResult` explicitly to release the connection resources and avoid a connection leak as shown above.
 
->**Note:** The default thread pool size used in Ballerina is the number of processors available * 2. You can configure
+>**Note:** The default thread pool size used in Ballerina is: [the number of processors available * 2]. You can configure
 the thread pool size by using the `BALLERINA_MAX_POOL_SIZE` environment variable.
 > 

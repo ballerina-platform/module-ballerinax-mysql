@@ -11,7 +11,7 @@ The MySQL library is one of the standard library packages of the<a target="_blan
 
 This provides the functionality required to access and manipulate data stored in a MySQL database.  
 
-For more information on the operations supported by the `mysql:Client`, which include the below, go to [The MySQL Package](https://ballerina.io/learn/api-docs/ballerina/mysql/).
+For more information on the operations supported by the `mysql:Client`, which include the below, go to [The MySQL Package](https://docs.central.ballerina.io/ballerinax/mysql/latest).
 
 - Pooling connections
 - Querying data

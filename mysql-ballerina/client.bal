@@ -83,7 +83,7 @@ public client class Client {
     # Executes a batch of parameterized DDL or DML sql query provided by the user,
     # and returns the summary of the execution.
     #
-    # + sqlQueries - The DDL or DML query such as INSERT, DELETE, UPDATE, etc as `ParameterizedQuery` with an array
+    # + sqlQueries - The DDL or DML query such as `INSERT`, `DELETE`, `UPDATE`, etc. as an `sql:ParameterizedQuery` with an array
     #                of values passed in
     # + return - Summary of the executed SQL queries as an `sql:ExecutionResult[]`, which includes details such as
     #            the `affectedRowCount` and `lastInsertId`. If one of the commands in the batch fails, this function
@@ -133,7 +133,7 @@ public client class Client {
 # + password - Password for the database connection
 # + database - Name of the database
 # + options - MySQL datasource `mysql:Options` to be configured
-# + connectionPool - Properties for the connection pool configuration. Refer `sql:ConnectionPool` for more details
+# + connectionPool - Properties of the `sql:ConnectionPool` for the connection pool configuration.
 type ClientConfiguration record {|
     string host;
     int port;

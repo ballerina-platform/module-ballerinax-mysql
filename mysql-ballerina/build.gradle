@@ -60,6 +60,7 @@ def stripBallerinaExtensionVersion(String extVersion) {
 apply plugin: 'io.ballerina.plugin'
 
 ballerina {
+    packageOrganization = packageOrg
     module = packageName
     langVersion = ballerinaLangVersion
     testCoverageParam = '--code-coverage --jacoco-xml --includes=org.ballerinalang.mysql.*:ballerinax.mysql.*'
@@ -71,7 +72,7 @@ dependencies {
     }
 }
 
-task updateTomlVersions {
+task updateTomlFiles {
     doLast {
         def stdlibDependentSqlVersion = stripBallerinaExtensionVersion(project.stdlibSqlVersion)
         def stdlibCryptoVersion = stripBallerinaExtensionVersion(project.stdlibCryptoVersion)
@@ -90,15 +91,11 @@ task updateTomlVersions {
     }
 }
 
-task revertTomlFile {
+task revertTomlFiles {
     doLast {
         ballerinaConfigFile.text = originalConfig
         ballerinaDependencyFile.text = originalDependencies
     }
-}
-
-def getCheckedOutGitCommitHash() {
-    'git rev-parse --verify --short HEAD'.execute().text.trim()
 }
 
 publishing {
@@ -233,7 +230,7 @@ task stopTestSslDockerContainer() {
     }
 }
 
-updateTomlVersions.dependsOn copyStdlibs
+updateTomlFiles.dependsOn copyStdlibs
 startTestDockerContainer.dependsOn createTestDockerImage
 startTestSslDockerContainer.dependsOn createTestDockerImage
 

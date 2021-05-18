@@ -22,8 +22,8 @@ buildscript {
         maven {
             url = 'https://maven.pkg.github.com/ballerina-platform/plugin-gradle'
             credentials {
-                username System.getenv("packageUser")
-                password System.getenv("packagePAT")
+                username System.getenv('packageUser')
+                password System.getenv('packagePAT')
             }
         }
     }
@@ -34,8 +34,8 @@ buildscript {
 
 description = 'Ballerina - MySQL Ballerina Generator'
 
-def packageName = "mysql"
-def packageOrg = "ballerinax"
+def packageName = 'mysql'
+def packageOrg = 'ballerinax'
 def tomlVersion = stripBallerinaExtensionVersion("${project.version}")
 def ballerinaConfigFile = new File("$project.projectDir/Ballerina.toml")
 def ballerinaDependencyFile = new File("$project.projectDir/Dependencies.toml")
@@ -45,7 +45,7 @@ def originalDependencies = ballerinaDependencyFile.text
 
 def stripBallerinaExtensionVersion(String extVersion) {
     if (extVersion.matches(project.ext.timestampedVersionRegex)) {
-        def splitVersion = extVersion.split('-');
+        def splitVersion = extVersion.split('-')
         if (splitVersion.length > 3) {
             def strippedValues = splitVersion[0..-4]
             return strippedValues.join('-')
@@ -53,39 +53,39 @@ def stripBallerinaExtensionVersion(String extVersion) {
             return extVersion
         }
     } else {
-        return extVersion.replace("${project.ext.snapshotVersion}", "")
+        return extVersion.replace("${project.ext.snapshotVersion}", '')
     }
 }
 
 apply plugin: 'io.ballerina.plugin'
 
-ballerina{
+ballerina {
     module = packageName
     langVersion = ballerinaLangVersion
-    testCoverageParam = "--code-coverage --jacoco-xml --includes=org.ballerinalang.mysql.*:ballerinax.mysql.*"
+    testCoverageParam = '--code-coverage --jacoco-xml --includes=org.ballerinalang.mysql.*:ballerinax.mysql.*'
 }
 
 dependencies {
-    externalJars (group: 'org.ballerinalang', name: 'sql-native', version: "${stdlibSqlVersion}") {
+    externalJars(group: 'org.ballerinalang', name: 'sql-native', version: "${stdlibSqlVersion}") {
         transitive = false
     }
- }
+}
 
 task updateTomlVersions {
     doLast {
         def stdlibDependentSqlVersion = stripBallerinaExtensionVersion(project.stdlibSqlVersion)
         def stdlibCryptoVersion = stripBallerinaExtensionVersion(project.stdlibCryptoVersion)
 
-        def newConfig = ballerinaConfigFile.text.replace("@project.version@", project.version.toString())
-        newConfig = newConfig.replace("@toml.version@", tomlVersion)
-        newConfig = newConfig.replace("@sql.native.version@", project.stdlibSqlVersion)
-        newConfig = newConfig.replace("@mysql.driver.version@", project.mySQLDriverVersion)
-        newConfig = newConfig.replace("@stdlib.sql.version@", stdlibDependentSqlVersion)
-        
+        def newConfig = ballerinaConfigFile.text.replace('@project.version@', project.version.toString())
+        newConfig = newConfig.replace('@toml.version@', tomlVersion)
+        newConfig = newConfig.replace('@sql.native.version@', project.stdlibSqlVersion)
+        newConfig = newConfig.replace('@mysql.driver.version@', project.mySQLDriverVersion)
+        newConfig = newConfig.replace('@stdlib.sql.version@', stdlibDependentSqlVersion)
+
         ballerinaConfigFile.text = newConfig
 
-        def newDependencyConfig = ballerinaDependencyFile.text.replace("@stdlib.sql.version@", stdlibDependentSqlVersion)
-        newDependencyConfig = newDependencyConfig.replace("@stdlib.crypto.version@", stdlibCryptoVersion)
+        def newDependencyConfig = ballerinaDependencyFile.text.replace('@stdlib.sql.version@', stdlibDependentSqlVersion)
+        newDependencyConfig = newDependencyConfig.replace('@stdlib.crypto.version@', stdlibCryptoVersion)
         ballerinaDependencyFile.text = newDependencyConfig
     }
 }
@@ -110,22 +110,22 @@ publishing {
     }
     repositories {
         maven {
-            name = "GitHubPackages"
+            name = 'GitHubPackages'
             url = uri("https://maven.pkg.github.com/ballerina-platform/module-${packageOrg}-${packageName}")
             credentials {
-                username = System.getenv("publishUser")
-                password = System.getenv("publishPAT")
+                username = System.getenv('publishUser')
+                password = System.getenv('publishPAT')
             }
         }
     }
 }
 
-def checkExecResult(execResult, failText, standardOutput){
+def checkExecResult(execResult, failText, standardOutput) {
     if (execResult) {
         if (execResult.getExitValue() != 0) {
             throw new GradleException('Non-zero exit value: ' + execResult.getExitValue())
         }
-        if (standardOutput.toString().contains(failText)){
+        if (standardOutput.toString().contains(failText)) {
             throw new GradleException('"' + failText + '" string in output: ' + standardOutput.toString())
         }
     } else {
@@ -153,7 +153,7 @@ def checkTestDockerContainerStatus(dockerName) {
                         "docker exec ${dockerName} mysqladmin ping -hlocalhost -uroot -pTest123# --silent"
             }.exitValue
         } catch (all) {
-            return 1;
+            return 1
         }
     }
 }
@@ -161,15 +161,15 @@ def checkTestDockerContainerStatus(dockerName) {
 task startTestDockerContainer(type: Exec) {
     if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
         def standardOutput = new ByteArrayOutputStream()
-        commandLine 'sh', '-c', "docker run --rm -d --name ballerina-mysql -p 3305:3306 -t ballerina-mysql"
-        def healthCheck = 1;
-        def counter = 0;
+        commandLine 'sh', '-c', 'docker run --rm -d --name ballerina-mysql -p 3305:3306 -t ballerina-mysql'
+        def healthCheck = 1
+        def counter = 0
         doLast {
             checkExecResult(execResult, 'Error', standardOutput)
             while (healthCheck != 0 && counter < 12) {
                 sleep(5 * 1000)
-                healthCheck = checkTestDockerContainerStatus("ballerina-mysql")
-                counter = counter + 1;
+                healthCheck = checkTestDockerContainerStatus('ballerina-mysql')
+                counter = counter + 1
             }
             if (healthCheck != 0) {
                 throw new GradleException("Docker container 'ballerina-mysql' health test exceeded timeout!")
@@ -181,18 +181,18 @@ task startTestDockerContainer(type: Exec) {
 task startTestSslDockerContainer(type: Exec) {
     if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
         def standardOutput = new ByteArrayOutputStream()
-        commandLine 'sh', '-c', "docker run --rm -d --name ballerina-mysql-ssl " +
+        commandLine 'sh', '-c', 'docker run --rm -d --name ballerina-mysql-ssl ' +
                 "-v $project.projectDir/tests/resources/mysql-ssl.cnf:/etc/mysql/conf.d/mysql-ssl.cnf " +
-                "-p 3307:3306 " +
-                "-t ballerina-mysql"
-        def healthCheck = 1;
-        def counter = 0;
+                '-p 3307:3306 ' +
+                '-t ballerina-mysql'
+        def healthCheck = 1
+        def counter = 0
         doLast {
             checkExecResult(execResult, 'Error', standardOutput)
             while (healthCheck != 0 && counter < 12) {
                 sleep(5 * 1000)
-                healthCheck = checkTestDockerContainerStatus("ballerina-mysql-ssl")
-                counter = counter + 1;
+                healthCheck = checkTestDockerContainerStatus('ballerina-mysql-ssl')
+                counter = counter + 1
             }
             if (healthCheck != 0) {
                 throw new GradleException("Docker container 'ballerina-mysql-ssl' health test exceeded timeout!")
@@ -207,11 +207,11 @@ task stopTestDockerContainer() {
             try {
                 def stdOut = new ByteArrayOutputStream()
                 exec {
-                    commandLine 'sh', '-c', "docker stop ballerina-mysql"
+                    commandLine 'sh', '-c', 'docker stop ballerina-mysql'
                     standardOutput = stdOut
                 }
             } catch (all) {
-                println("Gradle process can safely ignore stopTestDockerContainer task")
+                println('Gradle process can safely ignore stopTestDockerContainer task')
             }
         }
     }
@@ -223,11 +223,11 @@ task stopTestSslDockerContainer() {
             try {
                 def stdOut = new ByteArrayOutputStream()
                 exec {
-                    commandLine 'sh', '-c', "docker stop ballerina-mysql-ssl"
+                    commandLine 'sh', '-c', 'docker stop ballerina-mysql-ssl'
                     standardOutput = stdOut
                 }
             } catch (all) {
-                println("Gradle process can safely ignore stopTestSslDockerContainer task")
+                println('Gradle process can safely ignore stopTestSslDockerContainer task')
             }
         }
     }

@@ -1,15 +1,14 @@
 ## Package overview
 
-The MySQL library is one of the external library packages of the<a target="_blank" href="https://ballerina.io/"> Ballerina</a> language.  This external package is maintained by the ballerina team.
+The `mysql` library is one of the external library packages of the<a target="_blank" href="https://ballerina.io/"> Ballerina</a> language.  This external package is maintained by the Ballerina team.
 
 This provides the functionality required to access and manipulate data stored in a MySQL database.
 
 ### Report Issues
 
-To report bugs, request new features, start new discussions, view project boards, etc. please visit Ballerina Standard Library [parent repository](https://github.com/ballerina-platform/ballerina-standard-library).
+To report bugs, request new features, start new discussions, view project boards, etc., go to the [Ballerina Standard Library parent repository](https://github.com/ballerina-platform/ballerina-standard-library).
 
 ### Useful Links
 - Discuss code changes of the Ballerina project in ballerina-dev@googlegroups.com.
 - Chat live with us via our [Slack channel](https://ballerina.io/community/slack/).
 - Post all technical questions on Stack Overflow with the [#ballerina](https://stackoverflow.com/questions/tagged/ballerina) tag
-

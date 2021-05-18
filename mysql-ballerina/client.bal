@@ -23,17 +23,17 @@ public client class Client {
     *sql:Client;
     private boolean clientActive = true;
 
-    # Initializes MySQL Client.
+    # Initializes the MySQL Client.
     #
-    # + host - Hostname of the mysql server to be connected
-    # + user - If the mysql server is secured, the username to be used to connect to the mysql server
+    # + host - Hostname of the MySQL server to be connected
+    # + user - If the MySQL server is secured, the username to be used to connect to the MySQL server
     # + password - The password of provided username of the database
     # + database - The name fo the database to be connected
     # + port - Port number of the mysql server to be connected
-    # + options - The Database specific JDBC client properties
-    # + connectionPool - The `sql:ConnectionPool` object to be used within the jdbc client.
-    #                   If there is no connectionPool is provided, the global connection pool will be used and it will
-    #                   be shared by other clients which has same properties
+    # + options - The database-specific JDBC client properties
+    # + connectionPool - The `sql:ConnectionPool` object to be used within the JDBC client.
+    #                   If there is no `connectionPool` provided, the global connection pool will be used and it will
+    #                   be shared by other clients, which have the same properties
     public isolated function init(string host = "localhost", string? user = (), string? password = (), string? database = (),
         int port = 3306, Options? options = (), sql:ConnectionPool? connectionPool = ()) returns sql:Error? {
         ClientConfiguration clientConfig = {
@@ -48,13 +48,13 @@ public client class Client {
         return createClient(self, clientConfig, sql:getGlobalConnectionPool());
     }
 
-    # Queries the database with the query provided by the user, and returns the result as stream.
+    # Queries the database with the provided query and returns the result as a stream.
     #
-    # + sqlQuery - The query which needs to be executed as `string` or `sql:ParameterizedQuery` when the SQL query has
+    # + sqlQuery - The query, which needs to be executed as a `string` or  an `sql:ParameterizedQuery` when the SQL query has
     #              params to be passed in
-    # + rowType - The `typedesc` of the record that should be returned as a result. If this is not provided the default
-    #             column names of the query result set be used for the record attributes
-    # + return - Stream of records in the type of `rowType`. If `rowType` is not provided, the column names of     
+    # + rowType - The `typedesc` of the record that should be returned as a result. If this is not provided, the default
+    #             column names of the query result set will be used for the record attributes
+    # + return - Stream of records in the type of `rowType`. If the `rowType` is not provided, the column names of     
     #                  the query are used as record fields and all record fields are optional
     remote isolated function query(@untainted string|sql:ParameterizedQuery sqlQuery, typedesc<record {}>? rowType = ())
     returns @tainted stream <record {}, sql:Error> {
@@ -66,11 +66,11 @@ public client class Client {
         }
     }
 
-    # Executes the DDL or DML sql queries provided by the user, and returns summary of the execution.
+    # Executes the provided DDL or DML SQL queries and returns a summary of the execution.
     #
-    # + sqlQuery - The DDL or DML query such as INSERT, DELETE, UPDATE, etc as `string` or `sql:ParameterizedQuery`
+    # + sqlQuery - The DDL or DML queries such as `INSERT`, `DELETE`, `UPDATE`, etc. as a`string` or an `sql:ParameterizedQuery`
     #              when the query has params to be passed in
-    # + return - Summary of the sql update query as `sql:ExecutionResult` or an `sql:Error`
+    # + return - Summary of the SQL update query as an `sql:ExecutionResult` or `sql:Error`
     #           if any error occurred when executing the query
     remote isolated function execute(@untainted string|sql:ParameterizedQuery sqlQuery) returns sql:ExecutionResult|sql:Error {
         if (self.clientActive) {
@@ -85,10 +85,10 @@ public client class Client {
     #
     # + sqlQueries - The DDL or DML query such as INSERT, DELETE, UPDATE, etc as `ParameterizedQuery` with an array
     #                of values passed in
-    # + return - Summary of the executed SQL queries as `sql:ExecutionResult[]` which includes details such as
-    #            `affectedRowCount` and `lastInsertId`. If one of the commands in the batch fails, this function
-    #            will return `sql:BatchExecuteError`, however the JDBC driver may or may not continue to process the
-    #            remaining commands in the batch after a failure. The summary of the executed queries in case of error
+    # + return - Summary of the executed SQL queries as an `sql:ExecutionResult[]`, which includes details such as
+    #            the `affectedRowCount` and `lastInsertId`. If one of the commands in the batch fails, this function
+    #            will return an `sql:BatchExecuteError`. However, the JDBC driver may or may not continue to process the
+    #            remaining commands in the batch after a failure. The summary of the executed queries in case of an error
     #            can be accessed as `(<sql:BatchExecuteError> result).detail()?.executionResults`
     remote isolated function batchExecute(@untainted sql:ParameterizedQuery[] sqlQueries) returns sql:ExecutionResult[]|sql:Error {
         if (sqlQueries.length() == 0) {
@@ -104,9 +104,9 @@ public client class Client {
     # Executes a SQL stored procedure and returns the result as stream and execution summary.
     #
     # + sqlQuery - The query to execute the SQL stored procedure
-    # + rowTypes - The array of `typedesc` of the records that should be returned as a result. If this is not provided
-    #               the default column names of the query result set be used for the record attributes
-    # + return - Summary of the execution is returned in `sql:ProcedureCallResult` or `sql:Error`
+    # + rowTypes - The array of `typedesc` of the records that should be returned as a result. If this is not provided,
+    #               the default column names of the query result set will be used for the record attributes
+    # + return - Summary of the execution is returned in an `sql:ProcedureCallResult` or `sql:Error`
     remote isolated function call(@untainted string|sql:ParameterizedCallQuery sqlQuery, typedesc<record {}>[] rowTypes = [])
     returns sql:ProcedureCallResult|sql:Error {
         if (self.clientActive) {
@@ -132,7 +132,7 @@ public client class Client {
 # + user - Username for the database connection
 # + password - Password for the database connection
 # + database - Name of the database
-# + options - Mysql datasource `mysql:Options` to be configured
+# + options - MySQL datasource `mysql:Options` to be configured
 # + connectionPool - Properties for the connection pool configuration. Refer `sql:ConnectionPool` for more details
 type ClientConfiguration record {|
     string host;
@@ -149,9 +149,9 @@ type ClientConfiguration record {|
 # + ssl - SSL Configuration to be used
 # + useXADatasource - Boolean value to enable XADatasource
 # + connectTimeout - Timeout (in seconds) to be used when connecting to the mysql server
-# + socketTimeout - Socket timeout (in seconds) during the read/write operations with mysql server,
-#                   0 means no socket timeout
-# + serverTimezone - Configures the connection time zone which is used by Connector/J if conversion between a ballerina
+# + socketTimeout - Socket timeout (in seconds) during the read/write operations with the MySQL server
+#                   (0 means no socket timeout)
+# + serverTimezone - Configures the connection time zone, which is used by the `Connector/J` if the conversion between a Ballerina
 #                    application and a target time zone is needed when preserving instant temporal values
 public type Options record {|
     SecureSocket ssl?;
@@ -161,25 +161,25 @@ public type Options record {|
     string serverTimezone?;
 |};
 
-# Establish an encrypted connection if the server supports encrypted connections, falling back to an unencrypted
+# Establish an encrypted connection if the server supports encrypted connections falling back to an unencrypted
 # connection if an encrypted connection cannot be established.
 public const SSL_PREFERRED = "PREFERRED";
 # Establish an encrypted connection if the server supports encrypted connections. The connection attempt fails if
 # an encrypted connection cannot be established.
 public const SSL_REQUIRED = "REQUIRED";
 # Establish an encrypted connection if the server supports encrypted connections. The connection attempt fails if
-# an encrypted connection cannot be established. Also additionally verify the server Certificate Authority (CA)
+# an encrypted connection cannot be established. Additionally, verify the server Certificate Authority (CA)
 # certificate against the configured CA certificates. The connection attempt fails if no valid matching CA
 # certificates are found.
 public const SSL_VERIFY_CA = "VERIFY_CA";
 # Establish an encrypted connection if the server supports encrypted connections and verify the server
 # Certificate Authority (CA) certificate against the configured CA certificates. The connection attempt fails if an
-# encrypted connection cannot be established or no valid matching CA certificates are found. Also perform host name
-# identity verification by checking the host name the client uses for connecting to the server against the identity
+# encrypted connection cannot be established or no valid matching CA certificates are found. Also, perform hostname
+# identity verification by checking the hostname the client uses for connecting to the server against the identity
 # in the certificate that the server sends to the client.
 public const SSL_VERIFY_IDENTITY = "VERIFY_IDENTITY";
 
-# SSLMode as a union of available ssl modes.
+# `SSLMode` as a union of available SSL modes.
 public type SSLMode SSL_PREFERRED|SSL_REQUIRED|SSL_VERIFY_CA|SSL_VERIFY_IDENTITY;
 
 # SSL Configuration to be used when connecting to mysql server.

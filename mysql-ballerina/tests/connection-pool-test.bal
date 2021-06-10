@@ -312,7 +312,7 @@ returns error? {
 }
 
 function testLocalSharedConnectionPoolStopInitInterleaveHelper2(sql:ConnectionPool pool, string database)
-returns @tainted int|error {
+returns int|error {
     runtime:sleep(1);
     Client dbClient = check new (host, user, password, database, port, options, pool);
     var dt = dbClient->query("SELECT COUNT(*) as val from Customers where registrationID = 1", Result);
@@ -456,7 +456,7 @@ public type Variable record {
     string variable_name;
 };
 
-function getOpenConnectionCount(string database) returns @tainted (int|error) {
+function getOpenConnectionCount(string database) returns (int|error) {
     Client dbClient = check new (host, user, password, database, port, options, {maxOpenConnections: 1});
     var dt = dbClient->query("show status where `variable_name` = 'Threads_connected'", Variable);
     int|error count = getIntVariableValue(dt);
@@ -465,14 +465,14 @@ function getOpenConnectionCount(string database) returns @tainted (int|error) {
 }
 
 function testGlobalConnectionPoolConcurrentHelper1(string database) returns
-    @tainted [stream<record{}, error>, stream<record{}, error>]|error {
+    [stream<record{}, error>, stream<record{}, error>]|error {
     Client dbClient = check new (host, user, password, database, port, options);
     var dt1 = dbClient->query("select count(*) as val from Customers where registrationID = 1", Result);
     var dt2 = dbClient->query("select count(*) as val from Customers where registrationID = 2", Result);
     return [dt1, dt2];
 }
 
-function testGlobalConnectionPoolConcurrentHelper2(string database) returns @tainted (int|error)[] {
+function testGlobalConnectionPoolConcurrentHelper2(string database) returns (int|error)[] {
     Client dbClient = checkpanic new (host, user, password, database, port, options);
     (int|error)[] returnArray = [];
     var dt1 = dbClient->query("select count(*) as val from Customers where registrationID = 1", Result);

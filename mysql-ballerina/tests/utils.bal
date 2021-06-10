@@ -16,30 +16,30 @@
 
 import ballerina/io;
 
-isolated function getUntaintedData(record {}|error? value, string fieldName) returns @untainted anydata {
+isolated function getUntaintedData(record {}|error? value, string fieldName) returns anydata {
     if (value is record {}) {
         return value[fieldName];
     }
     return {};
 }
 
-isolated function getByteColumnChannel() returns @untainted io:ReadableByteChannel {
+isolated function getByteColumnChannel() returns io:ReadableByteChannel {
     io:ReadableByteChannel byteChannel = checkpanic io:openReadableFile("./tests/resources/files/byteValue.txt");
     return byteChannel;
 }
 
-isolated function getBlobColumnChannel() returns @untainted io:ReadableByteChannel {
+isolated function getBlobColumnChannel() returns io:ReadableByteChannel {
     io:ReadableByteChannel byteChannel = checkpanic io:openReadableFile("./tests/resources/files/blobValue.txt");
     return byteChannel;
 }
 
-isolated function getClobColumnChannel() returns @untainted io:ReadableCharacterChannel {
+isolated function getClobColumnChannel() returns io:ReadableCharacterChannel {
     io:ReadableByteChannel byteChannel = checkpanic io:openReadableFile("./tests/resources/files/clobValue.txt");
     io:ReadableCharacterChannel sourceChannel = new (byteChannel, "UTF-8");
     return sourceChannel;
 }
 
-isolated function getTextColumnChannel() returns @untainted io:ReadableCharacterChannel {
+isolated function getTextColumnChannel() returns io:ReadableCharacterChannel {
     io:ReadableByteChannel byteChannel = checkpanic io:openReadableFile("./tests/resources/files/clobValue.txt");
     io:ReadableCharacterChannel sourceChannel = new (byteChannel, "UTF-8");
     return sourceChannel;

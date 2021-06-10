@@ -34,7 +34,7 @@ type StringDataSingle record {
 @test:Config {
     groups: ["procedures"]
 }
-function testCallWithStringTypes() returns @tainted record {}|error? {
+function testCallWithStringTypes() returns record {}|error? {
     Client dbClient = checkpanic new (host, user, password, proceduresDb, port);
     sql:ProcedureCallResult ret = checkpanic dbClient->call("{call InsertStringData(2,'test1', 'test2', 'c', 'test3', 'd', 'test4')};");
 
@@ -223,8 +223,8 @@ function testCallWithNumericTypesOutParams() {
     test:assertEquals(paraDouble.get(float), 1234.56, "11th out parameter of procedure did not match.");
 }
 
-isolated function queryMySQLClient(Client dbClient, @untainted string|sql:ParameterizedQuery sqlQuery)
-returns @tainted record {} {
+isolated function queryMySQLClient(Client dbClient, string|sql:ParameterizedQuery sqlQuery)
+returns record {} {
     stream<record{}, error> streamData = dbClient->query(sqlQuery);
     record {|record {} value;|}? data = checkpanic streamData.next();
     checkpanic streamData.close();

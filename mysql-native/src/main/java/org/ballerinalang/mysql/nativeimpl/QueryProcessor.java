@@ -20,6 +20,7 @@ package org.ballerinalang.mysql.nativeimpl;
 
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BStream;
+import io.ballerina.runtime.api.values.BTypedesc;
 import org.ballerinalang.mysql.parameterprocessor.MysqlResultParameterProcessor;
 import org.ballerinalang.sql.parameterprocessor.DefaultStatementParameterProcessor;
 
@@ -33,7 +34,7 @@ public class QueryProcessor {
     }
 
     public static BStream nativeQuery(BObject client, Object paramSQLString,
-                                      Object recordType) {
+                                      BTypedesc recordType) {
         DefaultStatementParameterProcessor statementParametersProcessor = DefaultStatementParameterProcessor
                 .getInstance();
         MysqlResultParameterProcessor resultParametersProcessor = MysqlResultParameterProcessor.getInstance();

@@ -676,7 +676,12 @@ function queryJsonParam3() returns record {}|error? {
 function queryMysqlClient(string|sql:ParameterizedQuery sqlQuery, typedesc<record {}>? resultType = ())
 returns record {}? {
     Client dbClient = checkpanic new (host, user, password, simpleParamsDb, port);
-    stream<record {}, error> streamData = dbClient->query(sqlQuery, resultType);
+    stream<record {}, error> streamData;
+    if resultType is () {
+        streamData = dbClient->query(sqlQuery);
+    } else {
+        streamData = dbClient->query(sqlQuery, resultType);
+    }
     record {|record {} value;|}? data = checkpanic streamData.next();
     checkpanic streamData.close();
     record {}? value = data?.value;

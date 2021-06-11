@@ -55,10 +55,11 @@ public isolated client class Client {
     #             column names of the query result set will be used for the record attributes
     # + return - Stream of records in the type of `rowType`. If the `rowType` is not provided, the column names of     
     #                  the query are used as record fields and all record fields are optional
-    remote isolated function query(string|sql:ParameterizedQuery sqlQuery, typedesc<record {}>? rowType = ())
-    returns stream <record {}, sql:Error> {
-        return nativeQuery(self, sqlQuery, rowType);
-    }
+    remote isolated function query(string|sql:ParameterizedQuery sqlQuery, typedesc<record {}> rowType = <>)
+    returns stream <rowType, sql:Error> = @java:Method {
+        'class: "org.ballerinalang.mysql.nativeimpl.QueryProcessor",
+        name: "nativeQuery"
+    } external;
 
     # Executes the provided DDL or DML SQL queries and returns a summary of the execution.
     #
@@ -66,9 +67,11 @@ public isolated client class Client {
     #              when the query has params to be passed in
     # + return - Summary of the SQL update query as an `sql:ExecutionResult` or `sql:Error`
     #           if any error occurred when executing the query
-    remote isolated function execute(string|sql:ParameterizedQuery sqlQuery) returns sql:ExecutionResult|sql:Error {
-        return nativeExecute(self, sqlQuery);
-    }
+    remote isolated function execute(string|sql:ParameterizedQuery sqlQuery)
+     returns sql:ExecutionResult|sql:Error = @java:Method {
+         'class: "org.ballerinalang.mysql.nativeimpl.ExecuteProcessor",
+         name: "nativeExecute"
+    } external;
 
     # Executes a batch of parameterized DDL or DML sql query provided by the user,
     # and returns the summary of the execution.
@@ -94,16 +97,18 @@ public isolated client class Client {
     #               the default column names of the query result set will be used for the record attributes
     # + return - Summary of the execution is returned in an `sql:ProcedureCallResult` or `sql:Error`
     remote isolated function call(string|sql:ParameterizedCallQuery sqlQuery, typedesc<record {}>[] rowTypes = [])
-    returns sql:ProcedureCallResult|sql:Error {
-        return nativeCall(self, sqlQuery, rowTypes);
-    }
+    returns sql:ProcedureCallResult|sql:Error = @java:Method {
+        'class: "org.ballerinalang.mysql.nativeimpl.CallProcessor",
+        name: "nativeCall"
+    } external;
 
     # Close the SQL client.
     #
     # + return - Possible error during closing the client
-    public isolated function close() returns sql:Error? {
-        return close(self);
-    }
+    public isolated function close() returns sql:Error? = @java:Method {
+        'class: "org.ballerinalang.mysql.nativeimpl.ClientProcessor",
+        name: "close"
+    } external;
 }
 
 # Provides a set of configurations for the mysql client to be passed internally within the module.
@@ -182,26 +187,7 @@ isolated function createClient(Client mysqlClient, ClientConfiguration clientCon
     'class: "org.ballerinalang.mysql.nativeimpl.ClientProcessor"
 } external;
 
-isolated function nativeQuery(Client sqlClient, string|sql:ParameterizedQuery sqlQuery, typedesc<record {}>? rowType)
-returns stream <record {}, sql:Error> = @java:Method {
-    'class: "org.ballerinalang.mysql.nativeimpl.QueryProcessor"
-} external;
-
-isolated function nativeExecute(Client sqlClient, string|sql:ParameterizedQuery sqlQuery)
-returns sql:ExecutionResult|sql:Error = @java:Method {
-    'class: "org.ballerinalang.mysql.nativeimpl.ExecuteProcessor"
-} external;
-
 isolated function nativeBatchExecute(Client sqlClient, sql:ParameterizedQuery[] sqlQueries)
 returns sql:ExecutionResult[]|sql:Error = @java:Method {
     'class: "org.ballerinalang.mysql.nativeimpl.ExecuteProcessor"
-} external;
-
-isolated function nativeCall(Client sqlClient, string|sql:ParameterizedCallQuery sqlQuery, typedesc<record {}>[] rowTypes)
-returns sql:ProcedureCallResult|sql:Error = @java:Method {
-    'class: "org.ballerinalang.mysql.nativeimpl.CallProcessor"
-} external;
-
-isolated function close(Client mysqlClient) returns sql:Error? = @java:Method {
-    'class: "org.ballerinalang.mysql.nativeimpl.ClientProcessor"
 } external;

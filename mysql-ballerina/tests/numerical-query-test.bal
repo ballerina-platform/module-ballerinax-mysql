@@ -85,7 +85,7 @@ function testQueryNumericTypeRecord() {
     test:assertTrue(returnData?.float_type is float);
 }
 
-type NumericInvalidColumn record {
+type NumericInvalidColumn record {|
     int num_id;
     int int_type;
     int bigint_type;
@@ -96,7 +96,7 @@ type NumericInvalidColumn record {
     decimal numeric_type;
     float float_type;
     float real_type;
-};
+|};
 
 @test:Config {
     groups: ["query","query-numeric-params"]

@@ -646,7 +646,7 @@ function queryGeoParam2() {
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryJsonParam() returns @tainted record {}|error? {
+function queryJsonParam() returns record {}|error? {
     sql:ParameterizedQuery sqlQuery = `SELECT * from JsonTable`;
     validateJsonTableWithoutRequestType(queryMysqlClient(sqlQuery));
 }
@@ -659,7 +659,7 @@ type JsonResult record {|
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryJsonParam2() returns @tainted record {}|error? {
+function queryJsonParam2() returns record {}|error? {
     sql:ParameterizedQuery sqlQuery = `SELECT * from JsonTable`;
     validateJsonTable(queryMysqlClient(sqlQuery, resultType = JsonResult));
 }
@@ -667,14 +667,14 @@ function queryJsonParam2() returns @tainted record {}|error? {
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryJsonParam3() returns @tainted record {}|error? {
+function queryJsonParam3() returns record {}|error? {
     int id = 100;
     sql:ParameterizedQuery sqlQuery = `SELECT * from JsonTable where json_type->'$.id'=${id}`;
     validateJsonTable(queryMysqlClient(sqlQuery, resultType = JsonResult));
 }
 
-function queryMysqlClient(@untainted string|sql:ParameterizedQuery sqlQuery, typedesc<record {}>? resultType = ())
-returns @tainted record {}? {
+function queryMysqlClient(string|sql:ParameterizedQuery sqlQuery, typedesc<record {}>? resultType = ())
+returns record {}? {
     Client dbClient = checkpanic new (host, user, password, simpleParamsDb, port);
     stream<record {}, error> streamData = dbClient->query(sqlQuery, resultType);
     record {|record {} value;|}? data = checkpanic streamData.next();

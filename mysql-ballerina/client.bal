@@ -149,24 +149,15 @@ type ClientConfiguration record {|
 # + ssl - SSL Configuration to be used
 # + useXADatasource - Boolean value to enable XADatasource
 # + connectTimeout - Timeout (in seconds) to be used when connecting to the mysql server
-# + socketTimeout - Socket timeout (in seconds) during the read/write operations with mysql server,
-#                   0 means no socket timeout
-# + connectionAttributes - A comma-delimited list of user-defined key:value pairs (in addition to standard
-#                          MySQL-defined key:value pairs) to be passed to MySQL Server
-# + useConfigs - Load the comma-delimited list of configuration properties before parsing the URL or applying
-#                user-specified properties
-# + allowPublicKeyRetrieval - Boolean value to allow special handshake round-trip to get an RSA public key directly
-#                             from server
-# + serverTimezone - Configures the connection time zone which is used by Connector/J if conversion between a ballerina
-#                    application and a target time zone is needed when preserving instant temporal values.
+# + socketTimeout - Socket timeout (in seconds) during the read/write operations with the MySQL server
+#                   (0 means no socket timeout)
+# + serverTimezone - Configures the connection time zone, which is used by the `Connector/J` if the conversion between a Ballerina
+#                    application and a target time zone is needed when preserving instant temporal values
 public type Options record {|
     SecureSocket ssl?;
     boolean useXADatasource = false;
     decimal connectTimeout = 30;
     decimal socketTimeout = 0;
-    string connectionAttributes?;
-    string useConfigs?;
-    boolean allowPublicKeyRetrieval = false;
     string serverTimezone?;
 |};
 
@@ -184,10 +175,13 @@ public type SSLMode SSL_PREFERRED|SSL_REQUIRED|SSL_VERIFY_CA|SSL_VERIFY_IDENTITY
 # + mode - `SSLMode` to be used during the connection
 # + key - Keystore configuration of the client certificates
 # + cert - Keystore configuration of the trust certificates
+# + allowPublicKeyRetrieval - Boolean value to allow special handshake round-trip to get an RSA public key directly
+#                             from server
 public type SecureSocket record {|
     SSLMode mode = SSL_PREFERRED;
     crypto:KeyStore key?;
     crypto:TrustStore cert?;
+    boolean allowPublicKeyRetrieval = false;
 |};
 
 isolated function createClient(Client mysqlClient, ClientConfiguration clientConf,

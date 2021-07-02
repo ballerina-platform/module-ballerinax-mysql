@@ -2,26 +2,26 @@
 
 This module provides the functionality required to access and manipulate data stored in a MySQL database.
 
-**Prerequisite:** Add the MySQL driver JAR as a native library dependency in your Ballerina project.
-This module uses the database properties from the MySQL version 8.0.13 onwards. Therefore, it is recommended to use a
-MySQL driver version greater than 8.0.13. Then, once you build the project by executing the `ballerina build`
-command, you should be able to run the resultant by executing the `ballerina run` command.
-
-E.g., The `Ballerina.toml` content.
-Change the path to the JDBC driver appropriately.
-
-```toml
-[package]
-org = "sample"
-name = "mysql"
-version= "0.1.0"
-
-[[platform.java11.dependency]]
-artifactId = "mysql-connector-java"
-version = "8.0.17"
-path = "/path/to/mysql-connector-java-8.0.17.jar"
-groupId = "mysql"
-``` 
+### Prerequisite
+Add the MySQL driver JAR as a native library dependency in your Ballerina project's `Ballerina.toml` file. 
+It is recommended to use a MySQL driver version greater than 8.0.13 as this module uses the database properties 
+from the MySQL driver version 8.0.13 onwards.
+    
+Follow one of the following ways to add the JAR in the file:
+        
+* Download the JAR and update the path
+    ```
+    [[platform.java11.dependency]]
+    path = "PATH"
+    ```
+ 
+* Add JAR with a maven dependency params
+    ```
+    [platform.java11.dependency]]
+    groupId = "mysql"
+    artifactId = "mysql-connector-java"
+    version = "8.0.20"
+    ```
 
 ### Client
 To access a database, you must first create a
@@ -102,7 +102,6 @@ connection pool handling.  For its properties and possible values, see the [`sql
 
     If you do not provide the `poolOptions` field when creating the database client, a globally-shareable pool will be
     created for your database unless a connection pool matching with the properties you provided already exists.
-    The JDBC module sample below shows how the global connection pool is used.
 
     ```ballerina
     mysql:Client|sql:Error dbClient = 
@@ -113,8 +112,7 @@ connection pool handling.  For its properties and possible values, see the [`sql
 2. Client owned, unsharable connection pool
 
     If you define the `connectionPool` field inline when creating the database client with the `sql:ConnectionPool` type, 
-    an unsharable connection pool will be created. The JDBC module sample below shows how the global 
-    connection pool is used.
+    an unsharable connection pool will be created.
 
     ```ballerina
     mysql:Client|sql:Error dbClient = 
@@ -126,7 +124,7 @@ connection pool handling.  For its properties and possible values, see the [`sql
 
     If you create a record of type `sql:ConnectionPool` and reuse that in the configuration of multiple clients, 
     for each set of clients that connects to the same database instance with the same set of properties, a shared 
-    connection pool will be created. The JDBC module sample below shows how the global connection pool is used.
+    connection pool will be created.
 
     ```ballerina
     sql:ConnectionPool connPool = {maxOpenConnections: 5};
@@ -388,6 +386,5 @@ if result is error {
 ```
 Note that you have to explicitly invoke the close operation on the `sql:ProcedureCallResult` to release the connection resources and avoid a connection leak as shown above.
 
->**Note:** The default thread pool size used in Ballerina is: [the number of processors available * 2]. You can configure
-the thread pool size by using the `BALLERINA_MAX_POOL_SIZE` environment variable.
-> 
+>**Note:** The default thread pool size used in Ballerina is: `the number of processors available * 2`. You can configure the thread pool size by using the `BALLERINA_MAX_POOL_SIZE` environment variable.
+

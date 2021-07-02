@@ -80,7 +80,7 @@ public isolated client class Client {
     #                of values passed in
     # + return - Summary of the executed SQL queries as an `sql:ExecutionResult[]`, which includes details such as
     #            the `affectedRowCount` and `lastInsertId`. If one of the commands in the batch fails, this function
-    #            will return an `sql:BatchExecuteError`. However, the JDBC driver may or may not continue to process the
+    #            will return an `sql:BatchExecuteError`. However, the MySQL driver may or may not continue to process the
     #            remaining commands in the batch after a failure. The summary of the executed queries in case of an error
     #            can be accessed as `(<sql:BatchExecuteError> result).detail()?.executionResults`
     remote isolated function batchExecute(sql:ParameterizedQuery[] sqlQueries) returns sql:ExecutionResult[]|sql:Error {

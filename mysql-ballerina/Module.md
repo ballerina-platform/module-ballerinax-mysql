@@ -38,7 +38,7 @@ mysql:Client|sql:Error dbClient = new ();
 ```
 
 The `dbClient` receives the host, username, and password. Since the properties are passed in the same order as they are defined
-in the `jdbc:Client`, you can pass them without named params.
+in the `mysql:Client`, you can pass them without named params.
 
 ```ballerina
 mysql:Client|sql:Error dbClient = new ("localhost", "rootUser", "rooPass", 

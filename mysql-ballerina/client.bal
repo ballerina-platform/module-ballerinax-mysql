@@ -29,8 +29,8 @@ public isolated client class Client {
     # + password - The password of provided username of the database
     # + database - The name fo the database to be connected
     # + port - Port number of the mysql server to be connected
-    # + options - The database-specific JDBC client properties
-    # + connectionPool - The `sql:ConnectionPool` object to be used within the JDBC client.
+    # + options - MySQL database options
+    # + connectionPool - The `sql:ConnectionPool` object to be used within the MySQL client.
     #                   If there is no `connectionPool` provided, the global connection pool will be used and it will
     #                   be shared by other clients, which have the same properties
     public isolated function init(string host = "localhost", string? user = (), string? password = (), string? database = (),

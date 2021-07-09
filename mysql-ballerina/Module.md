@@ -104,9 +104,7 @@ connection pool handling.  For its properties and possible values, see the [`sql
     created for your database unless a connection pool matching with the properties you provided already exists.
 
     ```ballerina
-    mysql:Client|sql:Error dbClient = 
-                               new ("jdbc:mysql://localhost:3306/testdb", 
-                                "root", "root");
+    mysql:Client|sql:Error dbClient = new ("localhost", "rootUser", "rootPass");
     ```
 
 2. Client owned, unsharable connection pool
@@ -115,9 +113,8 @@ connection pool handling.  For its properties and possible values, see the [`sql
     an unsharable connection pool will be created.
 
     ```ballerina
-    mysql:Client|sql:Error dbClient = 
-                               new (url = "jdbc:mysql://localhost:3306/testdb", 
-                               connectionPool = { maxOpenConnections: 5 });
+    mysql:Client|sql:Error dbClient = new ("localhost", "rootUser", "rootPass",
+                                           connectionPool = { maxOpenConnections: 5 });
     ```
 
 3. Local, shareable connection pool
@@ -130,13 +127,13 @@ connection pool handling.  For its properties and possible values, see the [`sql
     sql:ConnectionPool connPool = {maxOpenConnections: 5};
     
     mysql:Client|sql:Error dbClient1 =       
-                               new (url = "jdbc:mysql://localhost:3306/testdb",
+                               new ("localhost", "rootUser", "rootPass",
                                connectionPool = connPool);
     mysql:Client|sql:Error dbClient2 = 
-                               new (url = "jdbc:mysql://localhost:3306/testdb",
+                               new ("localhost", "rootUser", "rootPass",
                                connectionPool = connPool);
     mysql:Client|sql:Error dbClient3 = 
-                               new (url = "jdbc:mysql://localhost:3306/testdb",
+                               new ("localhost", "rootUser", "rootPass",
                                connectionPool = connPool);
     ```
    

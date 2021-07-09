@@ -13,7 +13,12 @@ plugins {
 
 rootProject.name = 'ballerina-mysql'
 include(':build-config:checkstyle')
-include ':mysql-native', ':mysql-ballerina'
+
+include ':mysql-native'
+include ':mysql-ballerina'
+
+project(':mysql-native').projectDir = file('native')
+project(':mysql-ballerina').projectDir = file('ballerina')
 
 gradleEnterprise {
     buildScan {

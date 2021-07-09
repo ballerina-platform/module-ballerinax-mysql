@@ -4,7 +4,7 @@ name = "mysql"
 version = "@toml.version@"
 
 [[platform.java11.dependency]]
-path = "../mysql-native/build/libs/mysql-native-@project.version@.jar"
+path = "../native/build/libs/mysql-native-@project.version@.jar"
 groupId = "org.ballerinalang"
 artifactId = "mysql-native"
 version = "@project.version@"

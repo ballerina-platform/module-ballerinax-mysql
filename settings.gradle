@@ -12,11 +12,12 @@ plugins {
 }
 
 rootProject.name = 'ballerina-mysql'
-include(':build-config:checkstyle')
 
+include ':checkstyle'
 include ':mysql-native'
 include ':mysql-ballerina'
 
+project(':checkstyle').projectDir = file("build-config${File.separator}checkstyle")
 project(':mysql-native').projectDir = file('native')
 project(':mysql-ballerina').projectDir = file('ballerina')
 

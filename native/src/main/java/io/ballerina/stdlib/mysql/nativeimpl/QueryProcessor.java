@@ -16,12 +16,12 @@
  * under the License.
  */
 
-package org.ballerinalang.mysql.nativeimpl;
+package io.ballerina.stdlib.mysql.nativeimpl;
 
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BStream;
 import io.ballerina.runtime.api.values.BTypedesc;
-import org.ballerinalang.mysql.parameterprocessor.MysqlResultParameterProcessor;
+import io.ballerina.stdlib.mysql.parameterprocessor.MysqlResultParameterProcessor;
 import org.ballerinalang.sql.parameterprocessor.DefaultStatementParameterProcessor;
 
 /**

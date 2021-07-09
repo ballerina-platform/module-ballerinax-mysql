@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.ballerinalang.mysql.utils;
+package io.ballerina.stdlib.mysql.utils;
 
 import io.ballerina.runtime.api.Environment;
 import io.ballerina.runtime.api.Module;

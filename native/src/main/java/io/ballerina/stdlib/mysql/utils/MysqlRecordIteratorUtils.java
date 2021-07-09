@@ -15,9 +15,9 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package org.ballerinalang.mysql.utils;
+package io.ballerina.stdlib.mysql.utils;
 import io.ballerina.runtime.api.values.BObject;
-import org.ballerinalang.mysql.parameterprocessor.MysqlResultParameterProcessor;
+import io.ballerina.stdlib.mysql.parameterprocessor.MysqlResultParameterProcessor;
 import org.ballerinalang.sql.utils.RecordIteratorUtils;
 
 /**

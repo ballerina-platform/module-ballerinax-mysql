@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.ballerinalang.mysql.nativeimpl;
+package io.ballerina.stdlib.mysql.nativeimpl;
 
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BObject;

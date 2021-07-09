@@ -73,7 +73,7 @@ subprojects {
 
     dependencies {
 
-        ballerinaStdLibs "org.ballerinalang:sql-ballerina:${stdlibSqlVersion}"
+        ballerinaStdLibs "io.ballerina.stdlib:sql-ballerina:${stdlibSqlVersion}"
         ballerinaStdLibs "org.ballerinalang:io-ballerina:${stdlibIoVersion}"
         ballerinaStdLibs "org.ballerinalang:time-ballerina:${stdlibTimeVersion}"
         ballerinaStdLibs "org.ballerinalang:regex-ballerina:${stdlibRegexVersion}"

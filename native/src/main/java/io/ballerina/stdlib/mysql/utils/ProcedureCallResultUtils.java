@@ -25,7 +25,7 @@ import io.ballerina.stdlib.mysql.parameterprocessor.MysqlResultParameterProcesso
  */
 public class ProcedureCallResultUtils {
     public static Object getNextQueryResult(BObject procedureCallResultset, BObject procedureCallResult) {
-        return org.ballerinalang.sql.utils.ProcedureCallResultUtils
+        return io.ballerina.stdlib.sql.utils.ProcedureCallResultUtils
                 .getNextQueryResult(procedureCallResult, MysqlResultParameterProcessor.getInstance());
     }
 }

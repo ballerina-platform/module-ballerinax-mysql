@@ -23,7 +23,7 @@ import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
 import io.ballerina.stdlib.mysql.Constants;
 import io.ballerina.stdlib.mysql.Utils;
-import org.ballerinalang.sql.datasource.SQLDatasource;
+import io.ballerina.stdlib.sql.datasource.SQLDatasource;
 
 import java.util.Properties;
 
@@ -77,10 +77,10 @@ public class ClientProcessor {
                 .setConnectionPool(connectionPool, globalPool)
                 .setPoolProperties(poolProperties);
 
-        return org.ballerinalang.sql.nativeimpl.ClientProcessor.createClient(client, sqlDatasourceParams);
+        return io.ballerina.stdlib.sql.nativeimpl.ClientProcessor.createClient(client, sqlDatasourceParams);
     }
 
     public static Object close(BObject client) {
-        return org.ballerinalang.sql.nativeimpl.ClientProcessor.close(client);
+        return io.ballerina.stdlib.sql.nativeimpl.ClientProcessor.close(client);
     }
 }

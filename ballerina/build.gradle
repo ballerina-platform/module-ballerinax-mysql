@@ -65,7 +65,7 @@ ballerina {
 }
 
 dependencies {
-    externalJars(group: 'org.ballerinalang', name: 'sql-native', version: "${stdlibSqlVersion}") {
+    externalJars(group: 'io.ballerina.stdlib', name: 'sql-native', version: "${stdlibSqlVersion}") {
         transitive = false
     }
 }

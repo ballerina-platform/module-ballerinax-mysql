@@ -18,7 +18,7 @@
 package io.ballerina.stdlib.mysql.utils;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.stdlib.mysql.parameterprocessor.MysqlResultParameterProcessor;
-import org.ballerinalang.sql.utils.RecordIteratorUtils;
+import io.ballerina.stdlib.sql.utils.RecordIteratorUtils;
 
 /**
  * This class provides functionality for the `RecordIterator` to iterate through the MySQL result set.

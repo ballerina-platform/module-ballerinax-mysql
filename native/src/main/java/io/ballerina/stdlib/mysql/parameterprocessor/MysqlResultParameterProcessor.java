@@ -26,11 +26,11 @@ import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
 import io.ballerina.stdlib.mysql.utils.ModuleUtils;
-import org.ballerinalang.sql.Constants;
-import org.ballerinalang.sql.exception.ApplicationError;
-import org.ballerinalang.sql.parameterprocessor.DefaultResultParameterProcessor;
-import org.ballerinalang.sql.utils.ColumnDefinition;
-import org.ballerinalang.sql.utils.Utils;
+import io.ballerina.stdlib.sql.Constants;
+import io.ballerina.stdlib.sql.exception.ApplicationError;
+import io.ballerina.stdlib.sql.parameterprocessor.DefaultResultParameterProcessor;
+import io.ballerina.stdlib.sql.utils.ColumnDefinition;
+import io.ballerina.stdlib.sql.utils.Utils;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -172,13 +172,14 @@ public class MysqlResultParameterProcessor extends DefaultResultParameterProcess
     public BObject createRecordIterator(ResultSet resultSet, Statement statement, Connection connection,
                                         List<ColumnDefinition> columnDefinitions, StructureType streamConstraint) {
         BObject iteratorObject = this.getIteratorObject();
-        BObject resultIterator = ValueCreator.createObjectValue(org.ballerinalang.sql.utils.ModuleUtils.getModule(),
-                org.ballerinalang.sql.Constants.RESULT_ITERATOR_OBJECT, new Object[]{null, iteratorObject});
-        resultIterator.addNativeData(org.ballerinalang.sql.Constants.RESULT_SET_NATIVE_DATA_FIELD, resultSet);
-        resultIterator.addNativeData(org.ballerinalang.sql.Constants.STATEMENT_NATIVE_DATA_FIELD, statement);
-        resultIterator.addNativeData(org.ballerinalang.sql.Constants.CONNECTION_NATIVE_DATA_FIELD, connection);
-        resultIterator.addNativeData(org.ballerinalang.sql.Constants.COLUMN_DEFINITIONS_DATA_FIELD, columnDefinitions);
-        resultIterator.addNativeData(org.ballerinalang.sql.Constants.RECORD_TYPE_DATA_FIELD, streamConstraint);
+        BObject resultIterator = ValueCreator.createObjectValue(io.ballerina.stdlib.sql.utils.ModuleUtils.getModule(),
+                io.ballerina.stdlib.sql.Constants.RESULT_ITERATOR_OBJECT, new Object[]{null, iteratorObject});
+        resultIterator.addNativeData(io.ballerina.stdlib.sql.Constants.RESULT_SET_NATIVE_DATA_FIELD, resultSet);
+        resultIterator.addNativeData(io.ballerina.stdlib.sql.Constants.STATEMENT_NATIVE_DATA_FIELD, statement);
+        resultIterator.addNativeData(io.ballerina.stdlib.sql.Constants.CONNECTION_NATIVE_DATA_FIELD, connection);
+        resultIterator.addNativeData(io.ballerina.stdlib.sql.Constants.COLUMN_DEFINITIONS_DATA_FIELD,
+                columnDefinitions);
+        resultIterator.addNativeData(io.ballerina.stdlib.sql.Constants.RECORD_TYPE_DATA_FIELD, streamConstraint);
         return resultIterator;
     }
 

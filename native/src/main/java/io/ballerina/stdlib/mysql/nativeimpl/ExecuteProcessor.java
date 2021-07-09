@@ -20,7 +20,7 @@ package io.ballerina.stdlib.mysql.nativeimpl;
 
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BObject;
-import org.ballerinalang.sql.parameterprocessor.DefaultStatementParameterProcessor;
+import io.ballerina.stdlib.sql.parameterprocessor.DefaultStatementParameterProcessor;
 
 /**
  * This class contains methods for executing SQL queries.
@@ -32,12 +32,12 @@ public class ExecuteProcessor {
     }
 
     public static Object nativeExecute(BObject client, Object paramSQLString) {
-        return org.ballerinalang.sql.nativeimpl.ExecuteProcessor.nativeExecute(client, paramSQLString,
+        return io.ballerina.stdlib.sql.nativeimpl.ExecuteProcessor.nativeExecute(client, paramSQLString,
           DefaultStatementParameterProcessor.getInstance());
     }
 
     public static Object nativeBatchExecute(BObject client, BArray paramSQLStrings) {
-        return org.ballerinalang.sql.nativeimpl.ExecuteProcessor.nativeBatchExecute(client, paramSQLStrings,
+        return io.ballerina.stdlib.sql.nativeimpl.ExecuteProcessor.nativeBatchExecute(client, paramSQLStrings,
                 DefaultStatementParameterProcessor.getInstance());    
     }
 }

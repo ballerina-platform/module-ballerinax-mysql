@@ -22,7 +22,7 @@ import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BStream;
 import io.ballerina.runtime.api.values.BTypedesc;
 import io.ballerina.stdlib.mysql.parameterprocessor.MysqlResultParameterProcessor;
-import org.ballerinalang.sql.parameterprocessor.DefaultStatementParameterProcessor;
+import io.ballerina.stdlib.sql.parameterprocessor.DefaultStatementParameterProcessor;
 
 /**
  * This class provides the methods for query processing which executes sql queries.
@@ -38,7 +38,7 @@ public class QueryProcessor {
         DefaultStatementParameterProcessor statementParametersProcessor = DefaultStatementParameterProcessor
                 .getInstance();
         MysqlResultParameterProcessor resultParametersProcessor = MysqlResultParameterProcessor.getInstance();
-        return org.ballerinalang.sql.nativeimpl.QueryProcessor.nativeQuery(client, paramSQLString, recordType,
+        return io.ballerina.stdlib.sql.nativeimpl.QueryProcessor.nativeQuery(client, paramSQLString, recordType,
                 statementParametersProcessor, resultParametersProcessor);
     }
 }

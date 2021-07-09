@@ -35,7 +35,7 @@ dependencies {
     checkstyle "com.puppycrawl.tools:checkstyle:${puppycrawlCheckstyleVersion}"
     implementation group: 'org.ballerinalang', name: 'ballerina-runtime', version: "${ballerinaLangVersion}"
     implementation group: 'io.ballerina.stdlib', name: 'sql-native', version: "${stdlibSqlVersion}"
-    implementation group: 'org.ballerinalang', name: 'time-native', version: "${stdlibTimeVersion}"
+    implementation group: 'io.ballerina.stdlib', name: 'time-native', version: "${stdlibTimeVersion}"
 }
 
 tasks.withType(JavaCompile) {

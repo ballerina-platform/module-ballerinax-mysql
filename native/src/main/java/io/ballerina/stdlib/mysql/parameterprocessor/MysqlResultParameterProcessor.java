@@ -47,7 +47,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import static io.ballerina.runtime.api.utils.StringUtils.fromString;
-import static org.ballerinalang.stdlib.time.util.Constants.ANALOG_GIGA;
+import static io.ballerina.stdlib.time.util.Constants.ANALOG_GIGA;
 
 /**
  * This class implements methods required convert mysql specific SQL types into ballerina types and
@@ -86,19 +86,19 @@ public class MysqlResultParameterProcessor extends DefaultResultParameterProcess
                     return fromString(sqlTime.toString());
                 case TypeTags.OBJECT_TYPE_TAG:
                 case TypeTags.RECORD_TYPE_TAG:
-                    if (type.getName().equals(org.ballerinalang.stdlib.time.util.Constants.TIME_OF_DAY_RECORD)) {
+                    if (type.getName().equals(io.ballerina.stdlib.time.util.Constants.TIME_OF_DAY_RECORD)) {
                         LocalTime timeObj = sqlTime.toLocalTime();
                         BMap<BString, Object> timeMap = ValueCreator.createRecordValue(
-                            org.ballerinalang.stdlib.time.util.ModuleUtils.getModule(),
-                            org.ballerinalang.stdlib.time.util.Constants.TIME_OF_DAY_RECORD);
-                        timeMap.put(StringUtils.fromString(org.ballerinalang.stdlib.time.util.Constants
+                            io.ballerina.stdlib.time.util.ModuleUtils.getModule(),
+                            io.ballerina.stdlib.time.util.Constants.TIME_OF_DAY_RECORD);
+                        timeMap.put(StringUtils.fromString(io.ballerina.stdlib.time.util.Constants
                             .TIME_OF_DAY_RECORD_HOUR), timeObj.getHour());
-                        timeMap.put(StringUtils.fromString(org.ballerinalang.stdlib.time.util.Constants
+                        timeMap.put(StringUtils.fromString(io.ballerina.stdlib.time.util.Constants
                             .TIME_OF_DAY_RECORD_MINUTE) , timeObj.getMinute());
                         BigDecimal second = new BigDecimal(timeObj.getSecond());
                         second = second.add(new BigDecimal(timeObj.getNano())
                             .divide(ANALOG_GIGA, MathContext.DECIMAL128));
-                        timeMap.put(StringUtils.fromString(org.ballerinalang.stdlib.time.util.Constants
+                        timeMap.put(StringUtils.fromString(io.ballerina.stdlib.time.util.Constants
                             .TIME_OF_DAY_RECORD_SECOND), ValueCreator.createDecimalValue(second));
                         return timeMap;
                     } else {
@@ -132,27 +132,27 @@ public class MysqlResultParameterProcessor extends DefaultResultParameterProcess
                     return fromString(sqlTimestamp.toString());
                 case TypeTags.OBJECT_TYPE_TAG:
                 case TypeTags.RECORD_TYPE_TAG:
-                    if (type.getName().equalsIgnoreCase(org.ballerinalang.stdlib.time.util.Constants.CIVIL_RECORD)) {
+                    if (type.getName().equalsIgnoreCase(io.ballerina.stdlib.time.util.Constants.CIVIL_RECORD)) {
                         LocalDateTime dateTimeObj = sqlTimestamp.toLocalDateTime();
                         BMap<BString, Object> civilMap = ValueCreator.createRecordValue(
-                                org.ballerinalang.stdlib.time.util.ModuleUtils.getModule(),
-                                org.ballerinalang.stdlib.time.util.Constants.CIVIL_RECORD);
+                                io.ballerina.stdlib.time.util.ModuleUtils.getModule(),
+                                io.ballerina.stdlib.time.util.Constants.CIVIL_RECORD);
                         civilMap.put(StringUtils.fromString(
-                                org.ballerinalang.stdlib.time.util.Constants.DATE_RECORD_YEAR), dateTimeObj.getYear());
+                                io.ballerina.stdlib.time.util.Constants.DATE_RECORD_YEAR), dateTimeObj.getYear());
                         civilMap.put(StringUtils.fromString(
-                                org.ballerinalang.stdlib.time.util.Constants.DATE_RECORD_MONTH),
+                                io.ballerina.stdlib.time.util.Constants.DATE_RECORD_MONTH),
                                 dateTimeObj.getMonthValue());
                         civilMap.put(StringUtils.fromString(
-                                org.ballerinalang.stdlib.time.util.Constants.DATE_RECORD_DAY),
+                                io.ballerina.stdlib.time.util.Constants.DATE_RECORD_DAY),
                                 dateTimeObj.getDayOfMonth());
-                        civilMap.put(StringUtils.fromString(org.ballerinalang.stdlib.time.util.Constants
+                        civilMap.put(StringUtils.fromString(io.ballerina.stdlib.time.util.Constants
                                 .TIME_OF_DAY_RECORD_HOUR), dateTimeObj.getHour());
-                        civilMap.put(StringUtils.fromString(org.ballerinalang.stdlib.time.util.Constants
+                        civilMap.put(StringUtils.fromString(io.ballerina.stdlib.time.util.Constants
                                 .TIME_OF_DAY_RECORD_MINUTE), dateTimeObj.getMinute());
                         BigDecimal second = new BigDecimal(dateTimeObj.getSecond());
                         second = second.add(new BigDecimal(dateTimeObj.getNano())
                                 .divide(ANALOG_GIGA, MathContext.DECIMAL128));
-                        civilMap.put(StringUtils.fromString(org.ballerinalang.stdlib.time.util.Constants
+                        civilMap.put(StringUtils.fromString(io.ballerina.stdlib.time.util.Constants
                                 .TIME_OF_DAY_RECORD_SECOND), ValueCreator.createDecimalValue(second));
                         return civilMap;
                     } else {

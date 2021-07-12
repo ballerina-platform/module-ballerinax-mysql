@@ -62,11 +62,10 @@ ballerina {
     packageOrganization = packageOrg
     module = packageName
     langVersion = ballerinaLangVersion
-    testCoverageParam = '--code-coverage --coverage-format=xml --includes=org.ballerinalang.mysql.*:ballerinax.mysql.*'
 }
 
 dependencies {
-    externalJars(group: 'org.ballerinalang', name: 'sql-native', version: "${stdlibSqlVersion}") {
+    externalJars(group: 'io.ballerina.stdlib', name: 'sql-native', version: "${stdlibSqlVersion}") {
         transitive = false
     }
 }

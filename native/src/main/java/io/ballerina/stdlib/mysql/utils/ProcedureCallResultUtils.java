@@ -15,17 +15,17 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package org.ballerinalang.mysql.utils;
+package io.ballerina.stdlib.mysql.utils;
 
 import io.ballerina.runtime.api.values.BObject;
-import org.ballerinalang.mysql.parameterprocessor.MysqlResultParameterProcessor;
+import io.ballerina.stdlib.mysql.parameterprocessor.MysqlResultParameterProcessor;
 
 /**
  * This class provides functionality for the `ProcedureCallResult` to iterate through the PostgreSQL result sets.
  */
 public class ProcedureCallResultUtils {
     public static Object getNextQueryResult(BObject procedureCallResultset, BObject procedureCallResult) {
-        return org.ballerinalang.sql.utils.ProcedureCallResultUtils
+        return io.ballerina.stdlib.sql.utils.ProcedureCallResultUtils
                 .getNextQueryResult(procedureCallResult, MysqlResultParameterProcessor.getInstance());
     }
 }

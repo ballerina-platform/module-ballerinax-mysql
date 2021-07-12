@@ -16,12 +16,12 @@
  * under the License.
  */
 
-package org.ballerinalang.mysql.nativeimpl;
+package io.ballerina.stdlib.mysql.nativeimpl;
 
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BObject;
-import org.ballerinalang.mysql.parameterprocessor.MysqlResultParameterProcessor;
-import org.ballerinalang.sql.parameterprocessor.DefaultStatementParameterProcessor;
+import io.ballerina.stdlib.mysql.parameterprocessor.MysqlResultParameterProcessor;
+import io.ballerina.stdlib.sql.parameterprocessor.DefaultStatementParameterProcessor;
 
 /**
  * This class holds the utility methods involved with executing the call statements.
@@ -33,7 +33,7 @@ public class CallProcessor {
     }
     
     public static Object nativeCall(BObject client, Object paramSQLString, BArray recordTypes) {
-        return org.ballerinalang.sql.nativeimpl.CallProcessor.nativeCall(client, paramSQLString,
+        return io.ballerina.stdlib.sql.nativeimpl.CallProcessor.nativeCall(client, paramSQLString,
             recordTypes, DefaultStatementParameterProcessor.getInstance(),
             MysqlResultParameterProcessor.getInstance());
     }

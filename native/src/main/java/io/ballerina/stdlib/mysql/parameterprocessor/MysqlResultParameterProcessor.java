@@ -15,7 +15,7 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-package org.ballerinalang.mysql.parameterprocessor;
+package io.ballerina.stdlib.mysql.parameterprocessor;
 
 import io.ballerina.runtime.api.TypeTags;
 import io.ballerina.runtime.api.creators.ValueCreator;
@@ -25,12 +25,12 @@ import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
-import org.ballerinalang.mysql.utils.ModuleUtils;
-import org.ballerinalang.sql.Constants;
-import org.ballerinalang.sql.exception.ApplicationError;
-import org.ballerinalang.sql.parameterprocessor.DefaultResultParameterProcessor;
-import org.ballerinalang.sql.utils.ColumnDefinition;
-import org.ballerinalang.sql.utils.Utils;
+import io.ballerina.stdlib.mysql.utils.ModuleUtils;
+import io.ballerina.stdlib.sql.Constants;
+import io.ballerina.stdlib.sql.exception.ApplicationError;
+import io.ballerina.stdlib.sql.parameterprocessor.DefaultResultParameterProcessor;
+import io.ballerina.stdlib.sql.utils.ColumnDefinition;
+import io.ballerina.stdlib.sql.utils.Utils;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -47,7 +47,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import static io.ballerina.runtime.api.utils.StringUtils.fromString;
-import static org.ballerinalang.stdlib.time.util.Constants.ANALOG_GIGA;
+import static io.ballerina.stdlib.time.util.Constants.ANALOG_GIGA;
 
 /**
  * This class implements methods required convert mysql specific SQL types into ballerina types and
@@ -86,19 +86,19 @@ public class MysqlResultParameterProcessor extends DefaultResultParameterProcess
                     return fromString(sqlTime.toString());
                 case TypeTags.OBJECT_TYPE_TAG:
                 case TypeTags.RECORD_TYPE_TAG:
-                    if (type.getName().equals(org.ballerinalang.stdlib.time.util.Constants.TIME_OF_DAY_RECORD)) {
+                    if (type.getName().equals(io.ballerina.stdlib.time.util.Constants.TIME_OF_DAY_RECORD)) {
                         LocalTime timeObj = sqlTime.toLocalTime();
                         BMap<BString, Object> timeMap = ValueCreator.createRecordValue(
-                            org.ballerinalang.stdlib.time.util.ModuleUtils.getModule(),
-                            org.ballerinalang.stdlib.time.util.Constants.TIME_OF_DAY_RECORD);
-                        timeMap.put(StringUtils.fromString(org.ballerinalang.stdlib.time.util.Constants
+                            io.ballerina.stdlib.time.util.ModuleUtils.getModule(),
+                            io.ballerina.stdlib.time.util.Constants.TIME_OF_DAY_RECORD);
+                        timeMap.put(StringUtils.fromString(io.ballerina.stdlib.time.util.Constants
                             .TIME_OF_DAY_RECORD_HOUR), timeObj.getHour());
-                        timeMap.put(StringUtils.fromString(org.ballerinalang.stdlib.time.util.Constants
+                        timeMap.put(StringUtils.fromString(io.ballerina.stdlib.time.util.Constants
                             .TIME_OF_DAY_RECORD_MINUTE) , timeObj.getMinute());
                         BigDecimal second = new BigDecimal(timeObj.getSecond());
                         second = second.add(new BigDecimal(timeObj.getNano())
                             .divide(ANALOG_GIGA, MathContext.DECIMAL128));
-                        timeMap.put(StringUtils.fromString(org.ballerinalang.stdlib.time.util.Constants
+                        timeMap.put(StringUtils.fromString(io.ballerina.stdlib.time.util.Constants
                             .TIME_OF_DAY_RECORD_SECOND), ValueCreator.createDecimalValue(second));
                         return timeMap;
                     } else {
@@ -132,27 +132,27 @@ public class MysqlResultParameterProcessor extends DefaultResultParameterProcess
                     return fromString(sqlTimestamp.toString());
                 case TypeTags.OBJECT_TYPE_TAG:
                 case TypeTags.RECORD_TYPE_TAG:
-                    if (type.getName().equalsIgnoreCase(org.ballerinalang.stdlib.time.util.Constants.CIVIL_RECORD)) {
+                    if (type.getName().equalsIgnoreCase(io.ballerina.stdlib.time.util.Constants.CIVIL_RECORD)) {
                         LocalDateTime dateTimeObj = sqlTimestamp.toLocalDateTime();
                         BMap<BString, Object> civilMap = ValueCreator.createRecordValue(
-                                org.ballerinalang.stdlib.time.util.ModuleUtils.getModule(),
-                                org.ballerinalang.stdlib.time.util.Constants.CIVIL_RECORD);
+                                io.ballerina.stdlib.time.util.ModuleUtils.getModule(),
+                                io.ballerina.stdlib.time.util.Constants.CIVIL_RECORD);
                         civilMap.put(StringUtils.fromString(
-                                org.ballerinalang.stdlib.time.util.Constants.DATE_RECORD_YEAR), dateTimeObj.getYear());
+                                io.ballerina.stdlib.time.util.Constants.DATE_RECORD_YEAR), dateTimeObj.getYear());
                         civilMap.put(StringUtils.fromString(
-                                org.ballerinalang.stdlib.time.util.Constants.DATE_RECORD_MONTH),
+                                io.ballerina.stdlib.time.util.Constants.DATE_RECORD_MONTH),
                                 dateTimeObj.getMonthValue());
                         civilMap.put(StringUtils.fromString(
-                                org.ballerinalang.stdlib.time.util.Constants.DATE_RECORD_DAY),
+                                io.ballerina.stdlib.time.util.Constants.DATE_RECORD_DAY),
                                 dateTimeObj.getDayOfMonth());
-                        civilMap.put(StringUtils.fromString(org.ballerinalang.stdlib.time.util.Constants
+                        civilMap.put(StringUtils.fromString(io.ballerina.stdlib.time.util.Constants
                                 .TIME_OF_DAY_RECORD_HOUR), dateTimeObj.getHour());
-                        civilMap.put(StringUtils.fromString(org.ballerinalang.stdlib.time.util.Constants
+                        civilMap.put(StringUtils.fromString(io.ballerina.stdlib.time.util.Constants
                                 .TIME_OF_DAY_RECORD_MINUTE), dateTimeObj.getMinute());
                         BigDecimal second = new BigDecimal(dateTimeObj.getSecond());
                         second = second.add(new BigDecimal(dateTimeObj.getNano())
                                 .divide(ANALOG_GIGA, MathContext.DECIMAL128));
-                        civilMap.put(StringUtils.fromString(org.ballerinalang.stdlib.time.util.Constants
+                        civilMap.put(StringUtils.fromString(io.ballerina.stdlib.time.util.Constants
                                 .TIME_OF_DAY_RECORD_SECOND), ValueCreator.createDecimalValue(second));
                         return civilMap;
                     } else {
@@ -172,13 +172,14 @@ public class MysqlResultParameterProcessor extends DefaultResultParameterProcess
     public BObject createRecordIterator(ResultSet resultSet, Statement statement, Connection connection,
                                         List<ColumnDefinition> columnDefinitions, StructureType streamConstraint) {
         BObject iteratorObject = this.getIteratorObject();
-        BObject resultIterator = ValueCreator.createObjectValue(org.ballerinalang.sql.utils.ModuleUtils.getModule(),
-                org.ballerinalang.sql.Constants.RESULT_ITERATOR_OBJECT, new Object[]{null, iteratorObject});
-        resultIterator.addNativeData(org.ballerinalang.sql.Constants.RESULT_SET_NATIVE_DATA_FIELD, resultSet);
-        resultIterator.addNativeData(org.ballerinalang.sql.Constants.STATEMENT_NATIVE_DATA_FIELD, statement);
-        resultIterator.addNativeData(org.ballerinalang.sql.Constants.CONNECTION_NATIVE_DATA_FIELD, connection);
-        resultIterator.addNativeData(org.ballerinalang.sql.Constants.COLUMN_DEFINITIONS_DATA_FIELD, columnDefinitions);
-        resultIterator.addNativeData(org.ballerinalang.sql.Constants.RECORD_TYPE_DATA_FIELD, streamConstraint);
+        BObject resultIterator = ValueCreator.createObjectValue(io.ballerina.stdlib.sql.utils.ModuleUtils.getModule(),
+                io.ballerina.stdlib.sql.Constants.RESULT_ITERATOR_OBJECT, new Object[]{null, iteratorObject});
+        resultIterator.addNativeData(io.ballerina.stdlib.sql.Constants.RESULT_SET_NATIVE_DATA_FIELD, resultSet);
+        resultIterator.addNativeData(io.ballerina.stdlib.sql.Constants.STATEMENT_NATIVE_DATA_FIELD, statement);
+        resultIterator.addNativeData(io.ballerina.stdlib.sql.Constants.CONNECTION_NATIVE_DATA_FIELD, connection);
+        resultIterator.addNativeData(io.ballerina.stdlib.sql.Constants.COLUMN_DEFINITIONS_DATA_FIELD,
+                columnDefinitions);
+        resultIterator.addNativeData(io.ballerina.stdlib.sql.Constants.RECORD_TYPE_DATA_FIELD, streamConstraint);
         return resultIterator;
     }
 

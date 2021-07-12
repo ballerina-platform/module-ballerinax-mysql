@@ -23,12 +23,12 @@ public distinct class CustomResultIterator {
     *sql:CustomResultIterator;
 
     public isolated function nextResult(sql:ResultIterator iterator) returns record {}|sql:Error? = @java:Method {
-        'class: "org.ballerinalang.mysql.utils.MysqlRecordIteratorUtils",
+        'class: "io.ballerina.stdlib.mysql.utils.MysqlRecordIteratorUtils",
         paramTypes: ["io.ballerina.runtime.api.values.BObject", "io.ballerina.runtime.api.values.BObject"]
     } external;
 
     public isolated function getNextQueryResult(sql:ProcedureCallResult callResult) returns boolean|sql:Error = @java:Method {
-        'class: "org.ballerinalang.mysql.utils.ProcedureCallResultUtils",
+        'class: "io.ballerina.stdlib.mysql.utils.ProcedureCallResultUtils",
         paramTypes: ["io.ballerina.runtime.api.values.BObject", "io.ballerina.runtime.api.values.BObject"]
         } external;
 }

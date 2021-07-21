@@ -19,7 +19,6 @@ package io.ballerina.stdlib.mysql.parameterprocessor;
 
 import io.ballerina.runtime.api.TypeTags;
 import io.ballerina.runtime.api.creators.ValueCreator;
-import io.ballerina.runtime.api.types.StructureType;
 import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BMap;
@@ -29,21 +28,16 @@ import io.ballerina.stdlib.mysql.utils.ModuleUtils;
 import io.ballerina.stdlib.sql.Constants;
 import io.ballerina.stdlib.sql.exception.ApplicationError;
 import io.ballerina.stdlib.sql.parameterprocessor.DefaultResultParameterProcessor;
-import io.ballerina.stdlib.sql.utils.ColumnDefinition;
 import io.ballerina.stdlib.sql.utils.Utils;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Calendar;
-import java.util.List;
 import java.util.TimeZone;
 
 import static io.ballerina.runtime.api.utils.StringUtils.fromString;
@@ -57,8 +51,8 @@ import static io.ballerina.stdlib.time.util.Constants.ANALOG_GIGA;
  */
 public class MysqlResultParameterProcessor extends DefaultResultParameterProcessor {
     private static final MysqlResultParameterProcessor instance = new MysqlResultParameterProcessor();
-    private static volatile BObject iteratorObject = ValueCreator.createObjectValue(
-            ModuleUtils.getModule(), "CustomResultIterator", new Object[0]);
+    private static final BObject iteratorObject = ValueCreator.createObjectValue(
+            ModuleUtils.getModule(), "CustomResultIterator");
 
     private MysqlResultParameterProcessor(){
     }
@@ -79,7 +73,7 @@ public class MysqlResultParameterProcessor extends DefaultResultParameterProcess
     @Override
     public Object convertTime(java.util.Date time, int sqlType, Type type) throws ApplicationError {
         Utils.validatedInvalidFieldAssignment(sqlType, type, "SQL Date/Time");
-        if (time != null && time instanceof Time) {
+        if (time instanceof Time) {
             Time sqlTime = adjustTime(time);
             switch (type.getTag()) {
                 case TypeTags.STRING_TAG:
@@ -125,7 +119,7 @@ public class MysqlResultParameterProcessor extends DefaultResultParameterProcess
     @Override
     public Object convertTimeStamp(java.util.Date timestamp, int sqlType, Type type) throws ApplicationError {
         Utils.validatedInvalidFieldAssignment(sqlType, type, "SQL Date/Time");
-        if (timestamp != null && timestamp instanceof Timestamp) {
+        if (timestamp instanceof Timestamp) {
             Timestamp sqlTimestamp = adjustTimestamp(timestamp);
             switch (type.getTag()) {
                 case TypeTags.STRING_TAG:
@@ -169,27 +163,8 @@ public class MysqlResultParameterProcessor extends DefaultResultParameterProcess
     }
 
     @Override
-    public BObject createRecordIterator(ResultSet resultSet, Statement statement, Connection connection,
-                                        List<ColumnDefinition> columnDefinitions, StructureType streamConstraint) {
-        BObject iteratorObject = this.getIteratorObject();
-        BObject resultIterator = ValueCreator.createObjectValue(io.ballerina.stdlib.sql.utils.ModuleUtils.getModule(),
-                io.ballerina.stdlib.sql.Constants.RESULT_ITERATOR_OBJECT, new Object[]{null, iteratorObject});
-        resultIterator.addNativeData(io.ballerina.stdlib.sql.Constants.RESULT_SET_NATIVE_DATA_FIELD, resultSet);
-        resultIterator.addNativeData(io.ballerina.stdlib.sql.Constants.STATEMENT_NATIVE_DATA_FIELD, statement);
-        resultIterator.addNativeData(io.ballerina.stdlib.sql.Constants.CONNECTION_NATIVE_DATA_FIELD, connection);
-        resultIterator.addNativeData(io.ballerina.stdlib.sql.Constants.COLUMN_DEFINITIONS_DATA_FIELD,
-                columnDefinitions);
-        resultIterator.addNativeData(io.ballerina.stdlib.sql.Constants.RECORD_TYPE_DATA_FIELD, streamConstraint);
-        return resultIterator;
-    }
-
-    @Override
-    public BObject getCustomProcedureCallObject() {
-        return this.getIteratorObject();
-    }
-
-    @Override
-    protected BObject getIteratorObject() {
+    public BObject getBalStreamResultIterator() {
         return iteratorObject;
     }
+
 }

@@ -89,7 +89,7 @@ function testCallWithStringTypesInParams() {
 function testCallWithStringTypesReturnsData() {
     Client dbClient = checkpanic new (host, user, password, proceduresDb, port);
     sql:ProcedureCallResult ret = checkpanic dbClient->call("{call SelectStringData()}", [StringDataForCall]);
-    stream<record{}, sql:Error>? qResult = ret.queryResult;
+    stream<record{}, sql:Error?>? qResult = ret.queryResult;
     if (qResult is ()) {
         test:assertFail("Empty result set returned.");
     } else {
@@ -119,7 +119,7 @@ function testCallWithStringTypesReturnsDataMultiple() {
     Client dbClient = checkpanic new (host, user, password, proceduresDb, port);
     sql:ProcedureCallResult ret = checkpanic dbClient->call("{call SelectStringDataMultiple()}", [StringDataForCall, StringDataSingle]);
 
-    stream<record{}, sql:Error>? qResult = ret.queryResult;
+    stream<record{}, sql:Error?>? qResult = ret.queryResult;
     if (qResult is ()) {
         test:assertFail("First result set is empty.");
     } else {
@@ -225,7 +225,7 @@ function testCallWithNumericTypesOutParams() {
 
 isolated function queryMySQLClient(Client dbClient, string|sql:ParameterizedQuery sqlQuery)
 returns record {} {
-    stream<record{}, error> streamData = dbClient->query(sqlQuery);
+    stream<record{}, error?> streamData = dbClient->query(sqlQuery);
     record {|record {} value;|}? data = checkpanic streamData.next();
     checkpanic streamData.close();
     record {}? value = data?.value;

@@ -467,8 +467,8 @@ isolated function testLocalTransactionSuccessWithFailedHelper(string status,Clie
 }
 
 isolated function getCount(Client dbClient, string id) returns int|error {
-    stream<TransactionResultCount, sql:Error> streamData = <stream<TransactionResultCount, sql:Error>> dbClient->query("Select COUNT(*) as " +
-        "countval from Customers where registrationID = "+ id, TransactionResultCount);
+    stream<TransactionResultCount, sql:Error?> streamData = dbClient->query("Select COUNT(*) as " +
+        "countval from Customers where registrationID = " + id);
         record {|TransactionResultCount value;|}? data = check streamData.next();
         check streamData.close();
         TransactionResultCount? value = data?.value;

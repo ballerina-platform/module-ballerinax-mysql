@@ -48,27 +48,27 @@ function testGlobalConnectionPoolsMultipleDestinations() {
     groups: ["pool"]
 }
 function testGlobalConnectionPoolSingleDestinationConcurrent() {
-    worker w1 returns [stream<record{}, error>, stream<record{}, error>]|error {
+    worker w1 returns [stream<record{}, error?>, stream<record{}, error?>]|error {
         return testGlobalConnectionPoolConcurrentHelper1(poolDB_1);
     }
 
-    worker w2 returns [stream<record{}, error>, stream<record{}, error>]|error {
+    worker w2 returns [stream<record{}, error?>, stream<record{}, error?>]|error {
         return testGlobalConnectionPoolConcurrentHelper1(poolDB_1);
     }
 
-    worker w3 returns [stream<record{}, error>, stream<record{}, error>]|error {
+    worker w3 returns [stream<record{}, error?>, stream<record{}, error?>]|error {
         return testGlobalConnectionPoolConcurrentHelper1(poolDB_1);
     }
 
-    worker w4 returns [stream<record{}, error>, stream<record{}, error>]|error {
+    worker w4 returns [stream<record{}, error?>, stream<record{}, error?>]|error {
         return testGlobalConnectionPoolConcurrentHelper1(poolDB_1);
     }
 
     record {
-        [stream<record{}, error>, stream<record{}, error>]|error w1;
-        [stream<record{}, error>, stream<record{}, error>]|error w2;
-        [stream<record{}, error>, stream<record{}, error>]|error w3;
-        [stream<record{}, error>, stream<record{}, error>]|error w4;
+        [stream<record{}, error?>, stream<record{}, error?>]|error w1;
+        [stream<record{}, error?>, stream<record{}, error?>]|error w2;
+        [stream<record{}, error?>, stream<record{}, error?>]|error w3;
+        [stream<record{}, error?>, stream<record{}, error?>]|error w4;
     } results = wait {w1, w2, w3, w4};
 
     var result2 = testGlobalConnectionPoolConcurrentHelper2(poolDB_1);
@@ -112,7 +112,7 @@ function testLocalSharedConnectionPoolConfigSingleDestination() {
     Client dbClient4 = checkpanic new (host, user, password, poolDB_1, port, options, pool);
     Client dbClient5 = checkpanic new (host, user, password, poolDB_1, port, options, pool);
     
-    (stream<record{}, error>)[] resultArray = [];
+    (stream<record{}, error?>)[] resultArray = [];
     resultArray[0] = dbClient1->query("select count(*) as val from Customers where registrationID = 1", Result);
     resultArray[1] = dbClient2->query("select count(*) as val from Customers where registrationID = 1", Result);
     resultArray[2] = dbClient3->query("select count(*) as val from Customers where registrationID = 2", Result);
@@ -163,7 +163,7 @@ function testLocalSharedConnectionPoolConfigDifferentDbOptions() {
     Client dbClient6 = checkpanic new (host, user, password, poolDB_1, port,
         {connectTimeout: 1}, pool);
 
-    stream<record {} , error>[] resultArray = [];
+    stream<record {} , error?>[] resultArray = [];
     resultArray[0] = dbClient1->query("select count(*) as val from Customers where registrationID = 1", Result);
     resultArray[1] = dbClient2->query("select count(*) as val from Customers where registrationID = 1", Result);
     resultArray[2] = dbClient3->query("select count(*) as val from Customers where registrationID = 2", Result);
@@ -213,7 +213,7 @@ function testLocalSharedConnectionPoolConfigMultipleDestinations() {
     Client dbClient5 = checkpanic new (host, user, password, poolDB_2, port, options, pool);
     Client dbClient6 = checkpanic new (host, user, password, poolDB_2, port, options, pool);
 
-    stream<record {} , error>[] resultArray = [];
+    stream<record {} , error?>[] resultArray = [];
     resultArray[0] = dbClient1->query("select count(*) as val from Customers where registrationID = 1", Result);
     resultArray[1] = dbClient2->query("select count(*) as val from Customers where registrationID = 1", Result);
     resultArray[2] = dbClient3->query("select count(*) as val from Customers where registrationID = 2", Result);
@@ -465,7 +465,7 @@ function getOpenConnectionCount(string database) returns (int|error) {
 }
 
 function testGlobalConnectionPoolConcurrentHelper1(string database) returns
-    [stream<record{}, error>, stream<record{}, error>]|error {
+    [stream<record{}, error?>, stream<record{}, error?>]|error {
     Client dbClient = check new (host, user, password, database, port, options);
     var dt1 = dbClient->query("select count(*) as val from Customers where registrationID = 1", Result);
     var dt2 = dbClient->query("select count(*) as val from Customers where registrationID = 2", Result);
@@ -486,13 +486,13 @@ function testGlobalConnectionPoolConcurrentHelper2(string database) returns (int
     return returnArray;
 }
 
-isolated function getCombinedReturnValue([stream<record{}, error>, stream<record{}, error>]|error queryResult) returns
+isolated function getCombinedReturnValue([stream<record{}, error?>, stream<record{}, error?>]|error queryResult) returns
  (int|error)[]|error {
     if (queryResult is error) {
         return queryResult;
     } else {
-        stream<record{}, error> x;
-        stream<record{}, error> y;
+        stream<record{}, error?> x;
+        stream<record{}, error?> y;
         [x, y] = queryResult;
         (int|error)[] returnArray = [];
         returnArray[0] = getReturnValue(x);
@@ -501,7 +501,7 @@ isolated function getCombinedReturnValue([stream<record{}, error>, stream<record
     }
 }
 
-isolated function getIntVariableValue(stream<record{}, error> queryResult) returns int|error {
+isolated function getIntVariableValue(stream<record{}, error?> queryResult) returns int|error {
     int count = -1;
     record {|record {} value;|}? data = check queryResult.next();
     if (data is record {|record {} value;|}) {
@@ -522,7 +522,7 @@ function drainGlobalPool(string database) {
     Client dbClient4 = checkpanic new (host, user, password, database, port, options);
     Client dbClient5 = checkpanic new (host, user, password, database, port, options);
 
-    stream<record{}, error>[] resultArray = [];
+    stream<record{}, error?>[] resultArray = [];
 
     resultArray[0] = dbClient1->query("select count(*) as val from Customers where registrationID = 1", Result);
     resultArray[1] = dbClient1->query("select count(*) as val from Customers where registrationID = 2", Result);
@@ -560,7 +560,7 @@ function drainGlobalPool(string database) {
     validateConnectionTimeoutError(returnArray[10]);
 }
 
-isolated function getReturnValue(stream<record{}, error> queryResult) returns int|error {
+isolated function getReturnValue(stream<record{}, error?> queryResult) returns int|error {
     int count = -1;
     record {|record {} value;|}? data = check queryResult.next();
     if (data is record {|record {} value;|}) {

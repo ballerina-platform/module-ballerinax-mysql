@@ -56,7 +56,7 @@ public isolated client class Client {
     # + return - Stream of records in the type of `rowType`. If the `rowType` is not provided, the column names of     
     #                  the query are used as record fields and all record fields are optional
     remote isolated function query(string|sql:ParameterizedQuery sqlQuery, typedesc<record {}> rowType = <>)
-    returns stream <rowType, sql:Error> = @java:Method {
+    returns stream <rowType, sql:Error?> = @java:Method {
         'class: "io.ballerina.stdlib.mysql.nativeimpl.QueryProcessor",
         name: "nativeQuery"
     } external;

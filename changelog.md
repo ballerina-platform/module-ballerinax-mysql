@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - [Change default rowType of the query remote method from `nil` to `<>`](https://github.com/ballerina-platform/ballerina-standard-library/issues/1445)
+ 
+### Added 
 - [Add support for queryRow](https://github.com/ballerina-platform/ballerina-standard-library/issues/1604)
 
 ## [0.7.0-beta.1] - 2021-06-02

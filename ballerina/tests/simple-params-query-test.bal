@@ -674,24 +674,26 @@ function queryJsonParam3() returns record {}|error? {
 }
 
 @test:Config {
-    groups: ["queryRow","query-simple-params"]
+    groups: ["query", "query-simple-params"]
 }
 function queryRecord() returns sql:Error? {
     int rowId = 1;
     sql:ParameterizedQuery sqlQuery = `SELECT * from DataTable WHERE row_id = ${rowId}`;
     Client dbClient = check new (host, user, password, simpleParamsDb, port);
     record {} queryResult = check dbClient->queryRow(sqlQuery);
+    check dbClient.close();
     validateDataTableResult(queryResult);
 }
 
 @test:Config {
-    groups: ["queryRow","query-simple-params"]
+    groups: ["query", "query-simple-params"]
 }
 function queryRecordNegative() returns sql:Error? {
     int rowId = 999;
     sql:ParameterizedQuery sqlQuery = `SELECT * from DataTable WHERE row_id = ${rowId}`;
     Client dbClient = check new (host, user, password, simpleParamsDb, port);
     record {}|sql:Error queryResult = dbClient->queryRow(sqlQuery);
+    check dbClient.close();
     if queryResult is sql:Error {
         test:assertTrue(queryResult is sql:NoRowsError);
         test:assertTrue(queryResult.message().endsWith("Query did not retrieve any rows."), "Incorrect error message");
@@ -701,13 +703,14 @@ function queryRecordNegative() returns sql:Error? {
 }
 
 @test:Config {
-    groups: ["queryRow", "query-simple-params"]
+    groups: ["query", "query-simple-params"]
 }
 function queryRecordNegative2() returns error? {
     int rowId = 1;
     Client dbClient = check new (host, user, password, simpleParamsDb, port);
     sql:ParameterizedQuery sqlQuery = `SELECT * from DataTable WHERE row_id = ${rowId}`;
     record{}|int|error queryResult = dbClient->queryRow(sqlQuery);
+    check dbClient.close();
     if queryResult is error {
         test:assertEquals(queryResult.message(), "Return type cannot be a union.");
     } else {
@@ -716,7 +719,7 @@ function queryRecordNegative2() returns error? {
 }
 
 @test:Config {
-    groups: ["queryRow", "query-simple-params"]
+    groups: ["query", "query-simple-params"]
 }
 function queryRecordNegative3() returns error? {
     int rowId = 1;
@@ -733,7 +736,7 @@ function queryRecordNegative3() returns error? {
 }
 
 @test:Config {
-    groups: ["queryRow", "query-simple-params"]
+    groups: ["query", "query-simple-params"]
 }
 function queryValue() returns error? {
     Client dbClient = check new (host, user, password, simpleParamsDb, port);
@@ -744,7 +747,7 @@ function queryValue() returns error? {
 }
 
 @test:Config {
-    groups: ["queryRow", "query-simple-params"]
+    groups: ["query", "query-simple-params"]
 }
 function queryValueNegative1() returns error? {
     Client dbClient = check new (host, user, password, simpleParamsDb, port);
@@ -761,7 +764,7 @@ function queryValueNegative1() returns error? {
 }
 
 @test:Config {
-    groups: ["queryRow", "query-simple-params"]
+    groups: ["query", "query-simple-params"]
 }
 function queryValueNegative2() returns error? {
     Client dbClient = check new (host, user, password, simpleParamsDb, port);

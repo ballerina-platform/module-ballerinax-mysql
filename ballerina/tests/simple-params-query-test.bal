@@ -673,6 +673,113 @@ function queryJsonParam3() returns record {}|error? {
     validateJsonTable(queryMysqlClient(sqlQuery, resultType = JsonResult));
 }
 
+@test:Config {
+    groups: ["query", "query-simple-params"]
+}
+function queryRecord() returns sql:Error? {
+    int rowId = 1;
+    sql:ParameterizedQuery sqlQuery = `SELECT * from DataTable WHERE row_id = ${rowId}`;
+    Client dbClient = check new (host, user, password, simpleParamsDb, port);
+    record {} queryResult = check dbClient->queryRow(sqlQuery);
+    check dbClient.close();
+    validateDataTableResult(queryResult);
+}
+
+@test:Config {
+    groups: ["query", "query-simple-params"]
+}
+function queryRecordNegative() returns sql:Error? {
+    int rowId = 999;
+    sql:ParameterizedQuery sqlQuery = `SELECT * from DataTable WHERE row_id = ${rowId}`;
+    Client dbClient = check new (host, user, password, simpleParamsDb, port);
+    record {}|sql:Error queryResult = dbClient->queryRow(sqlQuery);
+    check dbClient.close();
+    if queryResult is sql:Error {
+        test:assertTrue(queryResult is sql:NoRowsError);
+        test:assertTrue(queryResult.message().endsWith("Query did not retrieve any rows."), "Incorrect error message");
+   } else {
+       test:assertFail("Expected no rows error with empty query result.");
+   }
+}
+
+@test:Config {
+    groups: ["query", "query-simple-params"]
+}
+function queryRecordNegative2() returns error? {
+    int rowId = 1;
+    Client dbClient = check new (host, user, password, simpleParamsDb, port);
+    sql:ParameterizedQuery sqlQuery = `SELECT * from DataTable WHERE row_id = ${rowId}`;
+    record{}|int|error queryResult = dbClient->queryRow(sqlQuery);
+    check dbClient.close();
+    if queryResult is error {
+        test:assertEquals(queryResult.message(), "Return type cannot be a union.");
+    } else {
+        test:assertFail("Expected error when querying with union return type.");
+    }
+}
+
+@test:Config {
+    groups: ["query", "query-simple-params"]
+}
+function queryRecordNegative3() returns error? {
+    int rowId = 1;
+    Client dbClient = check new (host, user, password, simpleParamsDb, port);
+    sql:ParameterizedQuery sqlQuery = `SELECT row_id, invalid_column_name from DataTable WHERE row_id = ${rowId}`;
+    record{}|error queryResult = dbClient->queryRow(sqlQuery);
+    check dbClient.close();
+    if queryResult is error {
+        test:assertTrue(queryResult.message().endsWith("Unknown column 'invalid_column_name' in 'field list'."),
+                        "Incorrect error message");
+    } else {
+        test:assertFail("Expected error when querying with invalid column name.");
+    }
+}
+
+@test:Config {
+    groups: ["query", "query-simple-params"]
+}
+function queryValue() returns error? {
+    Client dbClient = check new (host, user, password, simpleParamsDb, port);
+    string sqlQuery = "SELECT COUNT(*) FROM DataTable";
+    int count = check dbClient->queryRow(sqlQuery);
+    check dbClient.close();
+    test:assertEquals(count, 3);
+}
+
+@test:Config {
+    groups: ["query", "query-simple-params"]
+}
+function queryValueNegative1() returns error? {
+    Client dbClient = check new (host, user, password, simpleParamsDb, port);
+    int rowId = 1;
+    sql:ParameterizedQuery sqlQuery = `SELECT * from DataTable WHERE row_id = ${rowId}`;
+    int|error queryResult = dbClient->queryRow(sqlQuery);
+    check dbClient.close();
+    if queryResult is error {
+        test:assertTrue(queryResult is sql:TypeMismatchError, "Incorrect error type");
+        test:assertEquals(queryResult.message(), "Expected type to be 'int' but found 'record{}'");
+    } else {
+        test:assertFail("Expected error when query result contains multiple columns.");
+    }
+}
+
+@test:Config {
+    groups: ["query", "query-simple-params"]
+}
+function queryValueNegative2() returns error? {
+    Client dbClient = check new (host, user, password, simpleParamsDb, port);
+    int rowId = 1;
+    sql:ParameterizedQuery sqlQuery = `SELECT string_type from DataTable WHERE row_id = ${rowId}`;
+    int|error queryResult = dbClient->queryRow(sqlQuery);
+    check dbClient.close();
+    if queryResult is error {
+        test:assertTrue(queryResult.message().endsWith("Retrieved SQL type field cannot be converted to ballerina type : int"),
+                                                       "Incorrect error message");
+    } else {
+        test:assertFail("Expected error when query returns unexpected result type.");
+    }
+}
+
 function queryMysqlClient(string|sql:ParameterizedQuery sqlQuery, typedesc<record {}>? resultType = ())
 returns record {}? {
     Client dbClient = checkpanic new (host, user, password, simpleParamsDb, port);

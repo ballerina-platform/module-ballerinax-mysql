@@ -18,6 +18,7 @@
 
 package io.ballerina.stdlib.mysql.nativeimpl;
 
+import io.ballerina.runtime.api.Environment;
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.stdlib.mysql.parameterprocessor.MysqlResultParameterProcessor;
@@ -32,8 +33,8 @@ public class CallProcessor {
     private CallProcessor() { 
     }
     
-    public static Object nativeCall(BObject client, Object paramSQLString, BArray recordTypes) {
-        return io.ballerina.stdlib.sql.nativeimpl.CallProcessor.nativeCall(client, paramSQLString,
+    public static Object nativeCall(Environment env, BObject client, Object paramSQLString, BArray recordTypes) {
+        return io.ballerina.stdlib.sql.nativeimpl.CallProcessor.nativeCall(env, client, paramSQLString,
             recordTypes, DefaultStatementParameterProcessor.getInstance(),
             MysqlResultParameterProcessor.getInstance());
     }

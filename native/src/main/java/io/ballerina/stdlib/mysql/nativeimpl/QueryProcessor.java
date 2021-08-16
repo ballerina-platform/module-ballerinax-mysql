@@ -18,6 +18,7 @@
 
 package io.ballerina.stdlib.mysql.nativeimpl;
 
+import io.ballerina.runtime.api.Environment;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BStream;
 import io.ballerina.runtime.api.values.BTypedesc;
@@ -33,20 +34,20 @@ public class QueryProcessor {
     private QueryProcessor() {
     }
 
-    public static BStream nativeQuery(BObject client, Object paramSQLString,
+    public static BStream nativeQuery(Environment env, BObject client, Object paramSQLString,
                                       BTypedesc recordType) {
         DefaultStatementParameterProcessor statementParametersProcessor = DefaultStatementParameterProcessor
                 .getInstance();
         MysqlResultParameterProcessor resultParametersProcessor = MysqlResultParameterProcessor.getInstance();
-        return io.ballerina.stdlib.sql.nativeimpl.QueryProcessor.nativeQuery(client, paramSQLString, recordType,
+        return io.ballerina.stdlib.sql.nativeimpl.QueryProcessor.nativeQuery(env, client, paramSQLString, recordType,
                 statementParametersProcessor, resultParametersProcessor);
     }
 
-    public static Object nativeQueryRow(BObject client, Object paramSQLString, BTypedesc recordType) {
+    public static Object nativeQueryRow(Environment env, BObject client, Object paramSQLString, BTypedesc recordType) {
         DefaultStatementParameterProcessor statementParametersProcessor = DefaultStatementParameterProcessor
                 .getInstance();
         MysqlResultParameterProcessor resultParametersProcessor = MysqlResultParameterProcessor.getInstance();
-        return io.ballerina.stdlib.sql.nativeimpl.QueryProcessor.nativeQueryRow(client, paramSQLString, recordType,
+        return io.ballerina.stdlib.sql.nativeimpl.QueryProcessor.nativeQueryRow(env, client, paramSQLString, recordType,
                 statementParametersProcessor, resultParametersProcessor);
     }
 }

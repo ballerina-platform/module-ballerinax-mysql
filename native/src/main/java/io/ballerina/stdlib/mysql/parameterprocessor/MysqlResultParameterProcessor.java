@@ -26,7 +26,7 @@ import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
 import io.ballerina.stdlib.mysql.utils.ModuleUtils;
 import io.ballerina.stdlib.sql.Constants;
-import io.ballerina.stdlib.sql.exception.ApplicationError;
+import io.ballerina.stdlib.sql.exception.DataError;
 import io.ballerina.stdlib.sql.parameterprocessor.DefaultResultParameterProcessor;
 import io.ballerina.stdlib.sql.utils.Utils;
 
@@ -71,7 +71,7 @@ public class MysqlResultParameterProcessor extends DefaultResultParameterProcess
     }
 
     @Override
-    public Object convertTime(java.util.Date time, int sqlType, Type type) throws ApplicationError {
+    public Object convertTime(java.util.Date time, int sqlType, Type type) throws DataError {
         Utils.validatedInvalidFieldAssignment(sqlType, type, "SQL Date/Time");
         if (time instanceof Time) {
             Time sqlTime = adjustTime(time);
@@ -96,7 +96,7 @@ public class MysqlResultParameterProcessor extends DefaultResultParameterProcess
                             .TIME_OF_DAY_RECORD_SECOND), ValueCreator.createDecimalValue(second));
                         return timeMap;
                     } else {
-                        throw new ApplicationError("Unsupported Ballerina type:" +
+                        throw new DataError("Unsupported Ballerina type:" +
                             type.getName() + " for SQL Time data type.");
                     }
                 case TypeTags.INT_TAG:
@@ -117,7 +117,7 @@ public class MysqlResultParameterProcessor extends DefaultResultParameterProcess
         return Timestamp.valueOf(LocalDateTime.of(localDate, localTime));
     }
     @Override
-    public Object convertTimeStamp(java.util.Date timestamp, int sqlType, Type type) throws ApplicationError {
+    public Object convertTimeStamp(java.util.Date timestamp, int sqlType, Type type) throws DataError {
         Utils.validatedInvalidFieldAssignment(sqlType, type, "SQL Date/Time");
         if (timestamp instanceof Timestamp) {
             Timestamp sqlTimestamp = adjustTimestamp(timestamp);
@@ -150,7 +150,7 @@ public class MysqlResultParameterProcessor extends DefaultResultParameterProcess
                                 .TIME_OF_DAY_RECORD_SECOND), ValueCreator.createDecimalValue(second));
                         return civilMap;
                     } else {
-                        throw new ApplicationError("Unsupported Ballerina type:" +
+                        throw new DataError("Unsupported Ballerina type:" +
                                 type.getName() + " for SQL Timestamp data type.");
                     }
                 case TypeTags.INT_TAG:

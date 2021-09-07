@@ -27,6 +27,7 @@ import io.ballerina.runtime.api.values.BString;
 import io.ballerina.stdlib.mysql.utils.ModuleUtils;
 import io.ballerina.stdlib.sql.Constants;
 import io.ballerina.stdlib.sql.exception.DataError;
+import io.ballerina.stdlib.sql.exception.TypeMismatchError;
 import io.ballerina.stdlib.sql.parameterprocessor.DefaultResultParameterProcessor;
 import io.ballerina.stdlib.sql.utils.Utils;
 
@@ -96,8 +97,7 @@ public class MysqlResultParameterProcessor extends DefaultResultParameterProcess
                             .TIME_OF_DAY_RECORD_SECOND), ValueCreator.createDecimalValue(second));
                         return timeMap;
                     } else {
-                        throw new DataError("Unsupported Ballerina type:" +
-                            type.getName() + " for SQL Time data type.");
+                        throw new TypeMismatchError("SQL Time", type.getName(), "time:TimeOfDay");
                     }
                 case TypeTags.INT_TAG:
                     return sqlTime.getTime();
@@ -150,8 +150,7 @@ public class MysqlResultParameterProcessor extends DefaultResultParameterProcess
                                 .TIME_OF_DAY_RECORD_SECOND), ValueCreator.createDecimalValue(second));
                         return civilMap;
                     } else {
-                        throw new DataError("Unsupported Ballerina type:" +
-                                type.getName() + " for SQL Timestamp data type.");
+                        throw new TypeMismatchError("SQL Timestamp", type.getName(), "time:Civil");
                     }
                 case TypeTags.INT_TAG:
                     return sqlTimestamp.getTime();

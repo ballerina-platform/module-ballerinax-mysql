@@ -37,8 +37,8 @@ description = 'Ballerina - MySQL Ballerina Generator'
 def packageName = 'mysql'
 def packageOrg = 'ballerinax'
 def tomlVersion = stripBallerinaExtensionVersion("${project.version}")
-def ballerinaConfigFile = new File("$project.projectDir/Ballerina.toml")
-def originalConfig = ballerinaConfigFile.text
+def ballerinaTomlFilePlaceHolder = new File("${project.rootDir}/build-config/resources/Ballerina.toml")
+def ballerinaTomlFile = new File("$project.projectDir/Ballerina.toml")
 
 def stripBallerinaExtensionVersion(String extVersion) {
     if (extVersion.matches(project.ext.timestampedVersionRegex)) {
@@ -72,19 +72,26 @@ task updateTomlFiles {
     doLast {
         def stdlibDependentSqlVersion = stripBallerinaExtensionVersion(project.stdlibSqlVersion)
 
-        def newConfig = ballerinaConfigFile.text.replace('@project.version@', project.version.toString())
+        def newConfig = ballerinaTomlFilePlaceHolder.text.replace('@project.version@', project.version.toString())
         newConfig = newConfig.replace('@toml.version@', tomlVersion)
         newConfig = newConfig.replace('@sql.native.version@', project.stdlibSqlVersion)
         newConfig = newConfig.replace('@mysql.driver.version@', project.mySQLDriverVersion)
         newConfig = newConfig.replace('@stdlib.sql.version@', stdlibDependentSqlVersion)
 
-        ballerinaConfigFile.text = newConfig
+        ballerinaTomlFile.text = newConfig
     }
 }
 
-task revertTomlFiles {
+task commitTomlFiles {
     doLast {
-        ballerinaConfigFile.text = originalConfig
+        project.exec {
+            ignoreExitValue true
+            if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+                commandLine 'cmd', '/c', "git commit Ballerina.toml Dependencies.toml -m \"[Automated] Update the native jar versions\""
+            } else {
+                commandLine 'sh', '-c', "git commit Ballerina.toml Dependencies.toml -m '[Automated] Update the native jar versions'"
+            }
+        }
     }
 }
 

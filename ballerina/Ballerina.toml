@@ -1,15 +1,15 @@
 [package]
 org = "ballerinax"
 name = "mysql"
-version = "@toml.version@"
+version = "1.0.0"
 distribution = "slbeta3"
 
 [[platform.java11.dependency]]
-path = "../native/build/libs/mysql-native-@project.version@.jar"
+path = "../native/build/libs/mysql-native-1.0.0-SNAPSHOT.jar"
 
 [[platform.java11.dependency]]
-path = "./lib/sql-native-@sql.native.version@.jar"
+path = "./lib/sql-native-1.0.0-20210911-122200-3cb1d5f.jar"
 
 [[platform.java11.dependency]]
-path = "./lib/mysql-connector-java-@mysql.driver.version@.jar"
+path = "./lib/mysql-connector-java-8.0.21.jar"
 scope = "testOnly"

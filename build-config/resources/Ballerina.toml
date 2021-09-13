@@ -1,0 +1,15 @@
+[package]
+org = "ballerinax"
+name = "mysql"
+version = "@toml.version@"
+distribution = "slbeta3"
+
+[[platform.java11.dependency]]
+path = "../native/build/libs/mysql-native-@project.version@.jar"
+
+[[platform.java11.dependency]]
+path = "./lib/sql-native-@sql.native.version@.jar"
+
+[[platform.java11.dependency]]
+path = "./lib/mysql-connector-java-@mysql.driver.version@.jar"
+scope = "testOnly"

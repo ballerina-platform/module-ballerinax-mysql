@@ -65,7 +65,8 @@ Execute the commands below to build from the source.
 
         ./gradlew clean build -Pgroups=<Comma separated groups/test cases>
 
-   **Tip:** The following groups of test cases are available.<br>
+   **Tip:** The following groups of test cases are available.
+
    Groups | Test Cases
    ---| ---
    connection | connection-init<br> ssl

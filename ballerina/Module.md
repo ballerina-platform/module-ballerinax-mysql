@@ -238,6 +238,35 @@ string|int? generatedKey = result.lastInsertId;
 These samples show how to demonstrate the different usages of the `query` operation and query the
 database table and obtain the results.
 
+The `sql:ParameterizedQuery` is used to construct the dynamic query to execute by the client. So, you can create a simple query like below.
+```
+int id = 10;
+int age = 12;
+sql:ParameterizedQuery query = `SELECT * FROM students WHERE id < ${id} AND age > ${age}`;
+```
+
+The `sql:queryConcat()` makes it easier to create a dynamic complex query by concatenating sub-dynamic queries.
+The following sample shows how to concatenate queries:
+
+```
+int intType = 2147483647;
+int bigIntType = 9223372036854774807;
+int smallIntType = 32767;
+sql:ParameterizedQuery query = `INSERT INTO NumericTypes (int_type, bigint_type, smallint_type)`;
+sql:ParameterizedQuery query1 = ` VALUES(${intType},${bigIntType},${smallIntType})`;
+sql:ParameterizedQuery sqlQuery = sql:queryConcat(query, query1);
+```
+
+Another util function is `arrayFlattenQuery()`, which accepts the array value and returns parameterized query.
+So by using both functions, you can construct the complex dynamic query like below,
+
+```
+sql:VarcharValue stringValue1 = new("Hello");
+sql:VarcharValue stringValue2 = new("1");
+sql:VarcharValue[] values = [stringValue1, stringValue2];
+sql:ParameterizedQuery sqlQuery = sql:queryConcat(`SELECT count(*) as total FROM DataTable WHERE string_type IN (`, sql:arrayFlattenQuery(values), `)`);
+```
+
 This sample demonstrates querying data from a table in a database.
 First, a type is created to represent the returned result set. This record can be defined as an open or a closed record
 according to the requirement. If an open record is defined, the returned stream type will include both defined fields

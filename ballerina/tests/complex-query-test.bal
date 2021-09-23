@@ -55,15 +55,15 @@ type ResultDatesRecord record {
 @test:Config {
     groups: ["query","query-complex-params"]
 }
-function testGetPrimitiveTypes() {
-    Client dbClient = checkpanic new (host, user, password, complexQueryDb, port);
+function testGetPrimitiveTypes() returns error? {
+    Client dbClient = check new (host, user, password, complexQueryDb, port);
     stream<record{}, error?> streamData = dbClient->query(
         `SELECT INT_TYPE, LONG_TYPE, FORMAT(FLOAT_TYPE, 2) as FLOAT_TYPE, DOUBLE_TYPE,
          BOOLEAN_TYPE, STRING_TYPE from DataTable WHERE ROW_ID = 1`);
-    record {|record {} value;|}? data = checkpanic streamData.next();
-    checkpanic streamData.close();
+    record {|record {} value;|}? data = check streamData.next();
+    check streamData.close();
     record {}? value = data?.value;
-    checkpanic dbClient.close();
+    check dbClient.close();
 
     SelectTestAlias expectedData = {
         INT_TYPE: 1,
@@ -80,15 +80,15 @@ function testGetPrimitiveTypes() {
 @test:Config {
     groups: ["query","query-complex-params"]
 }
-function testToJson() {
-    Client dbClient = checkpanic new (host, user, password, complexQueryDb, port);
+function testToJson() returns error? {
+    Client dbClient = check new (host, user, password, complexQueryDb, port);
     stream<record{}, error?> streamData = dbClient->query(
         `SELECT INT_TYPE, LONG_TYPE, FORMAT(FLOAT_TYPE, 2) as FLOAT_TYPE, DOUBLE_TYPE,
         BOOLEAN_TYPE, STRING_TYPE from DataTable WHERE ROW_ID = 1`);
-    record {|record {} value;|}? data = checkpanic streamData.next();
-    checkpanic streamData.close();
+    record {|record {} value;|}? data = check streamData.next();
+    check streamData.close();
     record {}? value = data?.value;
-    json retVal = checkpanic value.cloneWithType(json);
+    json retVal = check value.cloneWithType(json);
 
     SelectTestAlias expectedData = {
         INT_TYPE: 1,
@@ -105,20 +105,20 @@ function testToJson() {
          test:assertFail("Error in cloning record to JSON" + expectedDataJson.message());
      }
 
-    checkpanic dbClient.close();
+    check dbClient.close();
 }
 
 @test:Config {
     groups: ["query","query-complex-params"]
 }
-function testToJsonComplexTypes() {
-    Client dbClient = checkpanic new (host, user, password, complexQueryDb, port);
+function testToJsonComplexTypes() returns error? {
+    Client dbClient = check new (host, user, password, complexQueryDb, port);
     stream<record{}, error?> streamData = dbClient->query(`SELECT BLOB_TYPE as blobType,CLOB_TYPE as clobType,BINARY_TYPE as binaryType from
          ComplexTypes where ROW_ID = 1`);
-    record {|record {} value;|}? data = checkpanic streamData.next();
-    checkpanic streamData.close();
+    record {|record {} value;|}? data = check streamData.next();
+    check streamData.close();
     record {}? value = data?.value;
-    checkpanic dbClient.close();
+    check dbClient.close();
 
     var complexStringType = {
         blobType: "wso2 ballerina blob test.".toBytes(),
@@ -131,14 +131,14 @@ function testToJsonComplexTypes() {
 @test:Config {
     groups: ["query","query-complex-params"]
 }
-function testComplexTypesNil() {
-    Client dbClient = checkpanic new (host, user, password, complexQueryDb, port);
+function testComplexTypesNil() returns error? {
+    Client dbClient = check new (host, user, password, complexQueryDb, port);
     stream<record{}, error?> streamData = dbClient->query(`SELECT BLOB_TYPE,CLOB_TYPE,BINARY_TYPE from
          ComplexTypes where ROW_ID = 2`);
-    record {|record {} value;|}? data = checkpanic streamData.next();
-    checkpanic streamData.close();
+    record {|record {} value;|}? data = check streamData.next();
+    check streamData.close();
     record {}? value = data?.value;
-    checkpanic dbClient.close();
+    check dbClient.close();
 
     var complexStringType = {
         BLOB_TYPE: (),
@@ -151,16 +151,16 @@ function testComplexTypesNil() {
 @test:Config {
     groups: ["query","query-complex-params"]
 }
-function testDateTimeStrings() {
-    Client dbClient = checkpanic new (host, user, password, complexQueryDb, port);
+function testDateTimeStrings() returns error? {
+    Client dbClient = check new (host, user, password, complexQueryDb, port);
     sql:ParameterizedQuery insertQuery = `Insert into DateTimeTypes (ROW_ID, DATE_TYPE, TIME_TYPE, TIMESTAMP_TYPE, DATETIME_TYPE)
                                    values (1,'2017-05-23','14:15:23','2017-01-25 16:33:55','2017-01-25 22:33:55')`;
-    sql:ExecutionResult? result = checkpanic dbClient->execute(insertQuery);
-    stream<record{}, error?> queryResult = dbClient->query(`SELECT DATE_TYPE, TIME_TYPE, TIMESTAMP_TYPE, DATETIME_TYPE
-        from DateTimeTypes where ROW_ID = 1`, ResultDates);
-    record{| record{} value; |}? data =  checkpanic queryResult.next();
+    sql:ExecutionResult? result = check dbClient->execute(insertQuery);
+    stream<ResultDates, error?> queryResult = dbClient->query(`SELECT DATE_TYPE, TIME_TYPE, TIMESTAMP_TYPE, DATETIME_TYPE
+        from DateTimeTypes where ROW_ID = 1`);
+    record{| ResultDates value; |}? data =  check queryResult.next();
     record{}? value = data?.value;
-    checkpanic dbClient.close();
+    check dbClient.close();
 
     string dateType = "2017-05-23";
     string timeTypeString = "14:15:23";
@@ -179,16 +179,16 @@ function testDateTimeStrings() {
 @test:Config {
     groups: ["query","query-complex-params"]
 }
-function testDateTimeRecords() {
-    Client dbClient = checkpanic new (host, user, password, complexQueryDb, port);
+function testDateTimeRecords() returns error? {
+    Client dbClient = check new (host, user, password, complexQueryDb, port);
     sql:ParameterizedQuery insertQuery = `Insert into DateTimeTypes (ROW_ID, DATE_TYPE, TIME_TYPE, TIMESTAMP_TYPE, DATETIME_TYPE)
          values (2,'2017-05-23','14:15:23','2017-01-25 16:33:55','2017-01-25 22:33:55')`;
-    sql:ExecutionResult? result = checkpanic dbClient->execute(insertQuery);
-    stream<record{}, error?> queryResult = dbClient->query(`SELECT DATE_TYPE, TIME_TYPE, TIMESTAMP_TYPE, DATETIME_TYPE
-        from DateTimeTypes where ROW_ID = 2`, ResultDatesRecord);
-    record{| record{} value; |}? data =  checkpanic queryResult.next();
+    sql:ExecutionResult? result = check dbClient->execute(insertQuery);
+    stream<ResultDatesRecord, error?> queryResult = dbClient->query(`SELECT DATE_TYPE, TIME_TYPE, TIMESTAMP_TYPE, DATETIME_TYPE
+        from DateTimeTypes where ROW_ID = 2`);
+    record{| ResultDatesRecord value; |}? data =  check queryResult.next();
     record{}? value = data?.value;
-    checkpanic dbClient.close();
+    check dbClient.close();
 
     time:Date dateRecord = {"year":2017,"month":5,"day":23};
     time:TimeOfDay timeRecord = {"hour":14,"minute":15,"second":23};
@@ -207,11 +207,11 @@ function testDateTimeRecords() {
 @test:Config {
     groups: ["query","query-complex-params"]
 }
-function testColumnAlias() {
-    Client dbClient = checkpanic new (host, user, password, complexQueryDb, port);
-    stream<record{}, error?> queryResult = dbClient->query(`SELECT dt1.INT_TYPE, dt1.LONG_TYPE, FORMAT(dt1.FLOAT_TYPE, 2) as FLOAT_TYPE,
+function testColumnAlias() returns error? {
+    Client dbClient = check new (host, user, password, complexQueryDb, port);
+    stream<ResultSetTestAlias, error?> queryResult = dbClient->query(`SELECT dt1.INT_TYPE, dt1.LONG_TYPE, FORMAT(dt1.FLOAT_TYPE, 2) as FLOAT_TYPE,
            dt1.DOUBLE_TYPE,dt1.BOOLEAN_TYPE, dt1.STRING_TYPE,dt2.INT_TYPE as dt2INT_TYPE from DataTable dt1
-           left join DataTableRep dt2 on dt1.ROW_ID = dt2.ROW_ID WHERE dt1.ROW_ID = 1`, ResultSetTestAlias);
+           left join DataTableRep dt2 on dt1.ROW_ID = dt2.ROW_ID WHERE dt1.ROW_ID = 1`);
 
     ResultSetTestAlias expectedData = {
         INT_TYPE: 1,
@@ -235,5 +235,5 @@ function testColumnAlias() {
         test:assertFail("Query failed");
     }
     test:assertEquals(counter, 1, "Expected only one data row.");
-    checkpanic dbClient.close();
+    check dbClient.close();
 }

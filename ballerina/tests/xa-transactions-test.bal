@@ -34,9 +34,9 @@ function testXATransactionSuccess() {
     connectionPool = {maxOpenConnections: 1});
 
     transaction {
-        var e1 = checkpanic dbClient1->execute("insert into Customers (customerId, name, creditLimit, country) " +
-                                "values (1, 'Anne', 1000, 'UK')");
-        var e2 = checkpanic dbClient2->execute("insert into Salary (id, value ) values (1, 1000)");
+        var e1 = checkpanic dbClient1->execute(`insert into Customers (customerId, name, creditLimit, country)
+                                values (1, 'Anne', 1000, 'UK')`);
+        var e2 = checkpanic dbClient2->execute(`insert into Salary (id, value ) values (1, 1000)`);
         checkpanic commit;
     }
 
@@ -57,9 +57,9 @@ function testXATransactionSuccessWithDataSource() {
     Client dbClient2 = checkpanic new (host, user, password, xaTransactionDB2, port);
     
     transaction {
-        var e1 = checkpanic dbClient1->execute("insert into Customers (customerId, name, creditLimit, country) " +
-                                "values (10, 'Anne', 1000, 'UK')");
-        var e2 = checkpanic dbClient2->execute("insert into Salary (id, value ) values (10, 1000)");
+        var e1 = checkpanic dbClient1->execute(`insert into Customers (customerId, name, creditLimit, country)
+                                values (10, 'Anne', 1000, 'UK')`);
+        var e2 = checkpanic dbClient2->execute(`insert into Salary (id, value ) values (10, 1000)`);
         checkpanic commit;
     }
     
@@ -73,14 +73,14 @@ function testXATransactionSuccessWithDataSource() {
 }
 
 isolated function getCustomerCount(Client dbClient, string id) returns int|error{
-    stream<XAResultCount,  sql:Error?> streamData = dbClient->query("Select COUNT(*) as " +
-        "countval from Customers where customerId = " + id);
+    stream<XAResultCount,  sql:Error?> streamData = dbClient->query(`Select COUNT(*) as
+        countval from Customers where customerId = ${id}`);
     return getResult(streamData);
 }
 
 isolated function getSalaryCount(Client dbClient, string id) returns int|error{
-    stream<XAResultCount,  sql:Error?> streamData = dbClient->query("Select COUNT(*) as countval " +
-    "from Salary where id = " + id);
+    stream<XAResultCount,  sql:Error?> streamData = dbClient->query(`Select COUNT(*) as countval
+    from Salary where id = ${id}`);
     return getResult(streamData);
 }
 

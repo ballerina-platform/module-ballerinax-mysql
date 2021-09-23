@@ -148,7 +148,7 @@ function deleteDataTable3() {
     dependsOn: [deleteDataTable3]
 }
 function insertIntoComplexTable() {
-    record {}|error? value = queryMysqlClient("Select * from ComplexTypes where row_id = 1");
+    record {}|error? value = queryMysqlClient(`Select * from ComplexTypes where row_id = 1`);
     byte[] binaryData = <byte[]>getUntaintedData(value, "blob_type");
     int rowId = 5;
     string stringType = "very long text";
@@ -196,7 +196,7 @@ function insertIntoComplexTable3() {
     dependsOn: [insertIntoComplexTable3]
 }
 function deleteComplexTable() {
-    record {}|error? value = queryMysqlClient("Select * from ComplexTypes where row_id = 1");
+    record {}|error? value = queryMysqlClient(`Select * from ComplexTypes where row_id = 1`);
     byte[] binaryData = <byte[]>getUntaintedData(value, "blob_type");
 
     int rowId = 2;

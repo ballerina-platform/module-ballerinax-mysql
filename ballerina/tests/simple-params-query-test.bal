@@ -378,7 +378,7 @@ function queryTypeDecimalDecimalParam() {
     groups: ["query","query-simple-params"]
 }
 function queryByteArrayParam() {
-    record {}|error? value = queryMysqlClient("Select * from ComplexTypes where row_id = 1");
+    record {}|error? value = queryMysqlClient(`Select * from ComplexTypes where row_id = 1`);
     byte[] binaryData = <byte[]>getUntaintedData(value, "binary_type");
 
     sql:ParameterizedQuery sqlQuery = `SELECT * from ComplexTypes WHERE binary_type = ${binaryData}`;
@@ -389,7 +389,7 @@ function queryByteArrayParam() {
     groups: ["query","query-simple-params"]
 }
 function queryTypeBinaryByteParam() {
-    record {}|error? value = queryMysqlClient("Select * from ComplexTypes where row_id = 1");
+    record {}|error? value = queryMysqlClient(`Select * from ComplexTypes where row_id = 1`);
     byte[] binaryData = <byte[]>getUntaintedData(value, "binary_type");
     sql:BinaryValue typeVal = new (binaryData);
     sql:ParameterizedQuery sqlQuery = `SELECT * from ComplexTypes WHERE binary_type = ${typeVal}`;
@@ -420,7 +420,7 @@ function queryTypeVarBinaryReadableByteChannelParam() {
     groups: ["query","query-simple-params"]
 }
 function queryTypeTinyBlobByteParam() {
-    record {}|error? value = queryMysqlClient("Select * from ComplexTypes where row_id = 1");
+    record {}|error? value = queryMysqlClient(`Select * from ComplexTypes where row_id = 1`);
     byte[] binaryData = <byte[]>getUntaintedData(value, "tinyblob_type");
     sql:BinaryValue typeVal = new (binaryData);
     sql:ParameterizedQuery sqlQuery = `SELECT * from ComplexTypes WHERE tinyblob_type = ${typeVal}`;
@@ -431,7 +431,7 @@ function queryTypeTinyBlobByteParam() {
     groups: ["query","query-simple-params"]
 }
 function queryTypeBlobByteParam() {
-    record {}|error? value = queryMysqlClient("Select * from ComplexTypes where row_id = 1");
+    record {}|error? value = queryMysqlClient(`Select * from ComplexTypes where row_id = 1`);
     byte[] binaryData = <byte[]>getUntaintedData(value, "blob_type");
     sql:BlobValue typeVal = new (binaryData);
     sql:ParameterizedQuery sqlQuery = `SELECT * from ComplexTypes WHERE blob_type = ${typeVal}`;
@@ -442,7 +442,7 @@ function queryTypeBlobByteParam() {
     groups: ["query","query-simple-params"]
 }
 function queryTypeMediumBlobByteParam() {
-    record {}|error? value = queryMysqlClient("Select * from ComplexTypes where row_id = 1");
+    record {}|error? value = queryMysqlClient(`Select * from ComplexTypes where row_id = 1`);
     byte[] binaryData = <byte[]>getUntaintedData(value, "mediumblob_type");
     sql:BlobValue typeVal = new (binaryData);
     sql:ParameterizedQuery sqlQuery = `SELECT * from ComplexTypes WHERE mediumblob_type = ${typeVal}`;
@@ -453,7 +453,7 @@ function queryTypeMediumBlobByteParam() {
     groups: ["query","query-simple-params"]
 }
 function queryTypeLongBlobByteParam() {
-    record {}|error? value = queryMysqlClient("Select * from ComplexTypes where row_id = 1");
+    record {}|error? value = queryMysqlClient(`Select * from ComplexTypes where row_id = 1`);
     byte[] binaryData = <byte[]>getUntaintedData(value, "longblob_type");
     sql:BlobValue typeVal = new (binaryData);
     sql:ParameterizedQuery sqlQuery = `SELECT * from ComplexTypes WHERE longblob_type = ${typeVal}`;

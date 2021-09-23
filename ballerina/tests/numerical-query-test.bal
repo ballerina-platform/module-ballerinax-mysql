@@ -36,7 +36,7 @@ type NumericTypeForQuery record {
 }
 function testQuery() {
     Client dbClient = checkpanic new (host, user, password, database, port);
-    stream<record{}, sql:Error?> streamData = dbClient->query("SELECT * FROM NumericTypes");
+    stream<record{}, sql:Error?> streamData = dbClient->query(`SELECT * FROM NumericTypes`);
     record {}? returnData = ();
     error? e = streamData.forEach(function(record {} data) {
         returnData = data;
@@ -65,7 +65,7 @@ function testQuery() {
 }
 function testQueryNumericTypeRecord() {
     Client dbClient = checkpanic new (host, user, password, database, port);
-    stream<NumericTypeForQuery, sql:Error?> streamData = dbClient->query("SELECT * FROM NumericTypes");
+    stream<NumericTypeForQuery, sql:Error?> streamData = dbClient->query(`SELECT * FROM NumericTypes`);
     NumericTypeForQuery? returnData = ();
     error? e = streamData.forEach(function(NumericTypeForQuery data) {
         returnData = data;
@@ -102,7 +102,7 @@ type NumericInvalidColumn record {|
 }
 function testQueryNumericInvalidColumnRecord() {
     Client dbClient = checkpanic new (host, user, password, database, port);
-    stream<NumericInvalidColumn, sql:Error?> streamData = dbClient->query("SELECT * FROM NumericTypes");
+    stream<NumericInvalidColumn, sql:Error?> streamData = dbClient->query(`SELECT * FROM NumericTypes`);
     record {|NumericInvalidColumn value;|}|sql:Error? data = streamData.next();
     checkpanic streamData.close();
     checkpanic dbClient.close();
@@ -130,7 +130,7 @@ type NumericOptionalType record {
 }
 function testQueryNumericOptionalTypeRecord() {
     Client dbClient = checkpanic new (host, user, password, database, port);
-    stream<NumericOptionalType, sql:Error?> streamData = dbClient->query("SELECT * FROM NumericTypes");
+    stream<NumericOptionalType, sql:Error?> streamData = dbClient->query(`SELECT * FROM NumericTypes`);
     record {|NumericOptionalType value;|}? data = checkpanic streamData.next();
     checkpanic streamData.close();
     NumericOptionalType? returnData = data?.value;
@@ -166,7 +166,7 @@ type NumericUnionType record {
 }
 function testQueryNumericUnionTypeRecord() {
     Client dbClient = checkpanic new (host, user, password, database, port);
-    stream<NumericUnionType, sql:Error?> streamData = dbClient->query("SELECT * FROM NumericTypes");
+    stream<NumericUnionType, sql:Error?> streamData = dbClient->query(`SELECT * FROM NumericTypes`);
     record {|NumericUnionType value;|}? data = checkpanic streamData.next();
     checkpanic streamData.close();
     NumericUnionType? returnData = data?.value;
@@ -203,7 +203,7 @@ type NumericStringType record {
 }
 function testQueryNumericStringTypeRecord() {
     Client dbClient = checkpanic new (host, user, password, database, port);
-    stream<NumericStringType, sql:Error?> streamData= dbClient->query("SELECT * FROM NumericTypes");
+    stream<NumericStringType, sql:Error?> streamData= dbClient->query(`SELECT * FROM NumericTypes`);
     record {|NumericStringType value;|}? data = checkpanic streamData.next();
     checkpanic streamData.close();
     NumericStringType? returnData = data?.value;
@@ -241,7 +241,7 @@ type NumericCustomType record {
 }
 function testQueryNumericCustomTypeRecord() {
     Client dbClient = checkpanic new (host, user, password, database, port);
-    stream<NumericCustomType, sql:Error?> streamData= dbClient->query("SELECT * FROM NumericTypes");
+    stream<NumericCustomType, sql:Error?> streamData= dbClient->query(`SELECT * FROM NumericTypes`);
     record {|NumericCustomType value;|}? data = checkpanic streamData.next();
     checkpanic streamData.close();
     NumericCustomType? returnData = data?.value;
@@ -265,7 +265,7 @@ function testQueryNumericCustomTypeRecord() {
 }
 function testQueryFromNullTable() {
     Client dbClient = checkpanic new (host, user, password, database, port);
-    stream<record{}, sql:Error?> streamData = dbClient->query("SELECT * FROM NumericNullTypes");
+    stream<record{}, sql:Error?> streamData = dbClient->query(`SELECT * FROM NumericNullTypes`);
     record {} returnData = {};
     int count = 0;
     error? e = streamData.forEach(function(record {} data) {

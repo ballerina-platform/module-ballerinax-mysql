@@ -36,10 +36,10 @@ type StringDataSingle record {
 }
 function testCallWithStringTypes() returns record {}|error? {
     Client dbClient = checkpanic new (host, user, password, proceduresDb, port);
-    sql:ProcedureCallResult ret = checkpanic dbClient->call("{call InsertStringData(2,'test1', 'test2', 'c', 'test3', 'd', 'test4')};");
+    sql:ProcedureCallResult ret = checkpanic dbClient->call(`{call InsertStringData(2,'test1', 'test2', 'c', 'test3', 'd', 'test4')};`);
 
-    string sqlQuery = "SELECT varchar_type, charmax_type, char_type, charactermax_type, character_type," +
-                   "nvarcharmax_type from StringTypes where id = 2";
+    sql:ParameterizedQuery sqlQuery = `SELECT varchar_type, charmax_type, char_type, charactermax_type, character_type,
+                   nvarcharmax_type from StringTypes where id = 2`;
 
     StringDataForCall expectedDataRow = {
         varchar_type: "test1",
@@ -68,8 +68,8 @@ function testCallWithStringTypesInParams() {
     var ret = checkpanic dbClient->call(`{call InsertStringData(3, ${varcharType}, ${charmaxType}, ${charType},
                             ${charactermaxType}, ${characterType}, ${nvarcharmaxType})}`);
 
-    string sqlQuery = "SELECT varchar_type, charmax_type, char_type, charactermax_type, character_type," +
-                   "nvarcharmax_type from StringTypes where id = 2";
+    sql:ParameterizedQuery sqlQuery = `SELECT varchar_type, charmax_type, char_type, charactermax_type, character_type,
+                   nvarcharmax_type from StringTypes where id = 2`;
 
     StringDataForCall expectedDataRow = {
         varchar_type: "test1",
@@ -88,7 +88,7 @@ function testCallWithStringTypesInParams() {
 }
 function testCallWithStringTypesReturnsData() {
     Client dbClient = checkpanic new (host, user, password, proceduresDb, port);
-    sql:ProcedureCallResult ret = checkpanic dbClient->call("{call SelectStringData()}", [StringDataForCall]);
+    sql:ProcedureCallResult ret = checkpanic dbClient->call(`{call SelectStringData()}`, [StringDataForCall]);
     stream<record{}, sql:Error?>? qResult = ret.queryResult;
     if (qResult is ()) {
         test:assertFail("Empty result set returned.");
@@ -117,7 +117,7 @@ function testCallWithStringTypesReturnsData() {
 }
 function testCallWithStringTypesReturnsDataMultiple() {
     Client dbClient = checkpanic new (host, user, password, proceduresDb, port);
-    sql:ProcedureCallResult ret = checkpanic dbClient->call("{call SelectStringDataMultiple()}", [StringDataForCall, StringDataSingle]);
+    sql:ProcedureCallResult ret = checkpanic dbClient->call(`{call SelectStringDataMultiple()}`, [StringDataForCall, StringDataSingle]);
 
     stream<record{}, sql:Error?>? qResult = ret.queryResult;
     if (qResult is ()) {

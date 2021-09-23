@@ -95,22 +95,22 @@ mysql:Options mysqlOptions = {
 ```
 #### Connection Pool Handling
 
-All ballerina database modules share the same connection pooling concept and there are three possible scenarios for 
+All database modules share the same connection pooling concept and there are three possible scenarios for
 connection pool handling.  For its properties and possible values, see the [`sql:ConnectionPool`](https://docs.central.ballerina.io/ballerina/sql/latest/records/ConnectionPool).
 
-1. Global shareable default connection pool
+1. Global, shareable, default connection pool
 
-    If you do not provide the `poolOptions` field when creating the database client, a globally-shareable pool will be
-    created for your database unless a connection pool matching with the properties you provided already exists.
+   If you do not provide the `poolOptions` field when creating the database client, a globally-shareable pool will be
+   created for your database unless a connection pool matching with the properties you provided already exists.
 
     ```ballerina
     mysql:Client|sql:Error dbClient = new ("localhost", "rootUser", "rootPass");
     ```
 
-2. Client owned, unsharable connection pool
+2. Client-owned, unsharable connection pool
 
-    If you define the `connectionPool` field inline when creating the database client with the `sql:ConnectionPool` type, 
-    an unsharable connection pool will be created.
+   If you define the `connectionPool` field inline when creating the database client with the `sql:ConnectionPool` type,
+   an unsharable connection pool will be created.
 
     ```ballerina
     mysql:Client|sql:Error dbClient = new ("localhost", "rootUser", "rootPass",
@@ -119,9 +119,9 @@ connection pool handling.  For its properties and possible values, see the [`sql
 
 3. Local, shareable connection pool
 
-    If you create a record of type `sql:ConnectionPool` and reuse that in the configuration of multiple clients, 
-    for each set of clients that connects to the same database instance with the same set of properties, a shared 
-    connection pool will be created.
+   If you create a record of the `sql:ConnectionPool` type and reuse that in the configuration of multiple clients,
+   for each set of clients that connects to the same database instance with the same set of properties, a shared
+   connection pool will be created.
 
     ```ballerina
     sql:ConnectionPool connPool = {maxOpenConnections: 5};
@@ -146,7 +146,7 @@ defined by the `sql:Client` will be supported by the `mysql:Client` as well.
 #### Closing the Client
 
 Once all the database operations are performed, you can close the database client you have created by invoking the `close()`
-operation. This will close the corresponding connection pool if it is not shared by any other database clients. 
+operation. This will close the corresponding connection pool if it is not shared by any other database clients.
 
 ```ballerina
 error? e = dbClient.close();
@@ -158,9 +158,9 @@ check dbClient.close();
 
 ### Database Operations
 
-Once the client is created, database operations can be executed through that client. This module defines the interface 
-and common properties that are shared among multiple database clients.  It also supports querying, inserting, deleting, 
-updating, and batch updating data. 
+Once the client is created, database operations can be executed through that client. This module defines the interface
+and common properties that are shared among multiple database clients.  It also supports querying, inserting, deleting,
+updating, and batch updating data.
 
 #### Parameterized Query
 
@@ -170,8 +170,8 @@ You can create a query with constant or dynamic input data as follows.
 *Query with constant values*
 
 ```ballerina
-sql:ParameterizedQuery query = `SELECT * FROM students WHERE 
-                                id < 10 AND age > 12`;
+sql:ParameterizedQuery query = `SELECT * FROM students 
+                                WHERE id < 10 AND age > 12`;
 ```
 
 *Query with dynamic values*
@@ -179,8 +179,8 @@ sql:ParameterizedQuery query = `SELECT * FROM students WHERE
 ```ballerina
 int[] ids = [10, 50];
 int age = 12;
-sql:ParameterizedQuery query = `SELECT * FROM students WHERE 
-                                id < ${ids[0]} AND age > ${age}`;
+sql:ParameterizedQuery query = `SELECT * FROM students 
+                                WHERE id < ${ids[0]} AND age > ${age}`;
 ```
 
 Moreover, the SQL package has `sql:queryConcat()` and `sql:arrayFlattenQuery()` util functions which make it easier
@@ -202,16 +202,16 @@ The query with the `IN` operator can be created using the `sql:ParameterizedQuer
 ```ballerina
 int[] ids = [1, 2, 3];
 sql:ParameterizedQuery query = `SELECT count(*) as total FROM DataTable 
-                                WHERE row_id in (${ids[0]}, ${ids[1]}, ${ids[2]})`
+                                WHERE row_id in (${ids[0]}, ${ids[1]}, ${ids[2]})`;
 ```
 
 The util function `sql:arrayFlattenQuery()` is introduced to make the array flatten easier. It makes the inclusion of varying array elements into the query easier by flattening the array to return a parameterized query. You can construct the complex dynamic query with the `IN` operator by using both functions like below.
 
 ```ballerina
 int[] ids = [1, 2];
-sql:ParameterizedQuery sqlQuery = sql:queryConcat(
-                                `SELECT * FROM DataTable WHERE id IN (`, 
-                                 sql:arrayFlattenQuery(ids), `)`);
+sql:ParameterizedQuery sqlQuery = 
+                         sql:queryConcat(`SELECT * FROM DataTable WHERE id IN (`, 
+                                          sql:arrayFlattenQuery(ids), `)`);
 ```
 
 #### Creating Tables
@@ -221,39 +221,45 @@ The `CREATE` statement is executed via the `execute` remote function of the clie
 
 ```ballerina
 // Create the ‘Students’ table with the  ‘id’, 'name', and ‘age’ fields.
-sql:ExecutionResult result = check dbClient->execute(`CREATE TABLE student(id INT AUTO_INCREMENT, 
-                         age INT, name VARCHAR(255), PRIMARY KEY (id))`);
-//A value of the`sql:ExecutionResult` type is returned for 'result'. 
+sql:ExecutionResult result = 
+                check dbClient->execute(`CREATE TABLE student (
+                                           id INT AUTO_INCREMENT,
+                                           age INT, 
+                                           name VARCHAR(255), 
+                                           PRIMARY KEY (id)
+                                         )`);
+//A value of the sql:ExecutionResult type is returned for 'result'. 
 ```
 
 #### Inserting Data
 
-These samples show the data insertion by executing an `INSERT` statement using the `execute` remote function 
+These samples show the data insertion by executing an `INSERT` statement using the `execute` remote function
 of the client.
 
-In this sample, the query parameter values are passed directly into the query statement of the `execute` 
+In this sample, the query parameter values are passed directly into the query statement of the `execute`
 remote function.
 
 ```ballerina
-sql:ExecutionResult result = check dbClient->execute(`INSERT INTO student(age, name) values (23, 'john')`);
+sql:ExecutionResult result = check dbClient->execute(`INSERT INTO student(age, name)
+                                                        VALUES (23, 'john')`);
 ```
 
-In this sample, the parameter values, which are in local variables are used to parameterize the SQL query in 
-the `execute` remote function. This type of parameterized SQL query can be used with any primitive Ballerina type 
-like `string`, `int`, `float`, or `boolean` and in that case, the corresponding SQL type of the parameter is derived 
-from the type of the Ballerina variable that is passed in. 
+In this sample, the parameter values, which are in local variables are used to parameterize the SQL query in
+the `execute` remote function. This type of a parameterized SQL query can be used with any primitive Ballerina type
+like `string`, `int`, `float`, or `boolean` and in that case, the corresponding SQL type of the parameter is derived
+from the type of the Ballerina variable that is passed in.
 
 ```ballerina
 string name = "Anne";
 int age = 8;
 
 sql:ParameterizedQuery query = `INSERT INTO student(age, name)
-                                values (${age}, ${name})`;
+                                  VALUES (${age}, ${name})`;
 sql:ExecutionResult result = check dbClient->execute(query);
 ```
 
-In this sample, the parameter values are passed as a `sql:TypedValue` to the `execute` remote function. Use the 
-corresponding subtype of the `sql:TypedValue` such as `sql:Varchar`, `sql:Char`, `sql:Integer`, etc., when you need to 
+In this sample, the parameter values are passed as a `sql:TypedValue` to the `execute` remote function. Use the
+corresponding subtype of the `sql:TypedValue` such as `sql:VarcharValue`, `sql:CharValue`, `sql:IntegerValue`, etc., when you need to
 provide more details such as the exact SQL type of the parameter.
 
 ```ballerina
@@ -261,13 +267,13 @@ sql:VarcharValue name = new ("James");
 sql:IntegerValue age = new (10);
 
 sql:ParameterizedQuery query = `INSERT INTO student(age, name)
-                                values (${age}, ${name})`;
+                                  VALUES (${age}, ${name})`;
 sql:ExecutionResult result = check dbClient->execute(query);
 ```
 
 #### Inserting Data With Auto-generated Keys
 
-This sample demonstrates inserting data while returning the auto-generated keys. It achieves this by using the 
+This sample demonstrates inserting data while returning the auto-generated keys. It achieves this by using the
 `execute` remote function to execute the `INSERT` statement.
 
 ```ballerina
@@ -275,18 +281,17 @@ int age = 31;
 string name = "Kate";
 
 sql:ParameterizedQuery query = `INSERT INTO student(age, name)
-                                values (${age}, ${name})`;
+                                  VALUES (${age}, ${name})`;
 sql:ExecutionResult result = check dbClient->execute(query);
 //Number of rows affected by the execution of the query.
 int? count = result.affectedRowCount;
 //The integer or string generated by the database in response to a query execution.
 string|int? generatedKey = result.lastInsertId;
-}
 ```
 
 #### Querying Data
 
-These samples show how to demonstrate the different usages of the `query` operation and query the
+These samples show how to demonstrate the different usages of the `query` operation to query the
 database table and obtain the results.
 
 This sample demonstrates querying data from a table in a database.
@@ -320,7 +325,7 @@ stream<Student, sql:Error?> resultStream = dbClient->query(query);
 
 // Iterating the returned table.
 error? e = resultStream.forEach(function(Student student) {
-   //Can perform any operations using 'student' and can access any fields in the returned record of type Student.
+   //Can perform operations using the record 'student' of type `Student`.
 });
 ```
 
@@ -340,13 +345,13 @@ stream<record{}, sql:Error?> resultStream = dbClient->query(query);
 
 // Iterating the returned table.
 error? e = resultStream.forEach(function(record{} student) {
-    //Can perform any operations using the 'student' and can access any fields in the returned record.
+    // Can perform operations using the record 'student'.
     io:println("Student name: ", student.value["name"]);
 });
 ```
 
 There are situations in which you may not want to iterate through the database and in that case, you may decide
-to use the `queryRow()` operation. If the provided return type is a record, this method returns only the first row
+to use the `sql:queryRow()` operation. If the provided return type is a record, this method returns only the first row
 retrieved by the query as a record.
 
 ```ballerina
@@ -355,7 +360,7 @@ sql:ParameterizedQuery query = `SELECT * FROM students WHERE id = ${id}`;
 Student retrievedStudent = check dbClient->queryRow(query);
 ```
 
-The `queryRow()` operation can also be used to retrieve a single value from the database (e.g., when querying using
+The `sql:queryRow()` operation can also be used to retrieve a single value from the database (e.g., when querying using
 `COUNT()` and other SQL aggregation functions). If the provided return type is not a record (i.e., a primitive data type)
 , this operation will return the value of the first column of the first row retrieved by the query.
 
@@ -367,19 +372,18 @@ int youngStudents = check dbClient->queryRow(query);
 
 #### Updating Data
 
-This sample demonstrates modifying data by executing an `UPDATE` statement via the `execute` remote function of 
+This sample demonstrates modifying data by executing an `UPDATE` statement via the `execute` remote function of
 the client.
 
 ```ballerina
 int age = 23;
-sql:ParameterizedQuery query = `UPDATE students SET name = 'John' 
-                                WHERE age = ${age}`;
+sql:ParameterizedQuery query = `UPDATE students SET name = 'John' WHERE age = ${age}`;
 sql:ExecutionResult result = check dbClient->execute(query);
 ```
 
 #### Deleting Data
 
-This sample demonstrates deleting data by executing a `DELETE` statement via the `execute` remote function of 
+This sample demonstrates deleting data by executing a `DELETE` statement via the `execute` remote function of
 the client.
 
 ```ballerina
@@ -390,9 +394,9 @@ sql:ExecutionResult result = check dbClient->execute(query);
 
 #### Batch Updating Data
 
-This sample demonstrates how to insert multiple records with a single `INSERT` statement that is executed via the 
-`batchExecute` remote function of the client. This is done by creating a `table` with multiple records and 
-parameterized SQL query as same as the  above `execute` operations.
+This sample demonstrates how to insert multiple records with a single `INSERT` statement that is executed via the
+`batchExecute` remote function of the client. This is done by creating a `table` with multiple records and
+parameterized SQL query as same as the above `execute` operations.
 
 ```ballerina
 // Create the table with the records that need to be inserted.
@@ -405,33 +409,29 @@ var data = [
 // Do the batch update by passing the batches.
 sql:ParameterizedQuery[] batch = from var row in data
                                  select `INSERT INTO students ('name', 'age')
-                                 VALUES (${row.name}, ${row.age})`;
+                                           VALUES (${row.name}, ${row.age})`;
 sql:ExecutionResult[] result = check dbClient->batchExecute(batch);
 ```
 
 #### Execute SQL Stored Procedures
 
-This sample demonstrates how to execute a stored procedure with a single `INSERT` statement that is executed via the 
+This sample demonstrates how to execute a stored procedure with a single `INSERT` statement that is executed via the
 `call` remote function of the client.
 
 ```ballerina
 int uid = 10;
 sql:IntegerOutParameter insertId = new;
 
-sql:ProcedureCallResult|sql:Error result = dbClient->call(`call InsertPerson(${uid}, ${insertId})`);
-if result is error {
-    //An error returned
-} else {
-    stream<record{}, sql:Error?>? resultStr = result.queryResult;
-    if resultStr is stream<record{}, sql:Error?> {
-        sql:Error? e = resultStr.forEach(function(record{} result) {
-        //can perform operations using 'result'.
-      });
-    }
-    check result.close();
+sql:ProcedureCallResult result = 
+                         check dbClient->call(`call InsertPerson(${uid}, ${insertId})`);
+stream<record{}, sql:Error?>? resultStr = result.queryResult;
+if resultStr is stream<record{}, sql:Error?> {
+    sql:Error? e = resultStr.forEach(function(record{} result) {
+      // Can perform operations using the record 'result'.
+    });
 }
+check result.close();
 ```
-Note that you have to explicitly invoke the close operation on the `sql:ProcedureCallResult` to release the connection resources and avoid a connection leak as shown above.
+Note that you have to invoke the close operation explicitly on the `sql:ProcedureCallResult` to release the connection resources and avoid a connection leak as shown above.
 
 >**Note:** The default thread pool size used in Ballerina is: `the number of processors available * 2`. You can configure the thread pool size by using the `BALLERINA_MAX_POOL_SIZE` environment variable.
-

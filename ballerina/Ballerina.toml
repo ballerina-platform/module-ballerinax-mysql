@@ -1,14 +1,14 @@
 [package]
 org = "ballerinax"
 name = "mysql"
-version = "1.0.1"
+version = "1.0.0"
 distribution = "slbeta3"
 
 [[platform.java11.dependency]]
-path = "../native/build/libs/mysql-native-1.0.1-SNAPSHOT.jar"
+path = "../native/build/libs/mysql-native-1.0.0-SNAPSHOT.jar"
 
 [[platform.java11.dependency]]
-path = "./lib/sql-native-1.0.0-20210930-153000-651bd9d.jar"
+path = "./lib/sql-native-1.0.0-20211004-223000-bb6a41f.jar"
 
 [[platform.java11.dependency]]
 path = "./lib/mysql-connector-java-8.0.21.jar"

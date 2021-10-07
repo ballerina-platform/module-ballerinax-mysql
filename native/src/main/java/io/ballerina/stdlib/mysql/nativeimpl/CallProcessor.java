@@ -33,7 +33,7 @@ public class CallProcessor {
     private CallProcessor() { 
     }
     
-    public static Object nativeCall(Environment env, BObject client, Object paramSQLString, BArray recordTypes) {
+    public static Object nativeCall(Environment env, BObject client, BObject paramSQLString, BArray recordTypes) {
         return io.ballerina.stdlib.sql.nativeimpl.CallProcessor.nativeCall(env, client, paramSQLString,
             recordTypes, DefaultStatementParameterProcessor.getInstance(),
             MysqlResultParameterProcessor.getInstance());

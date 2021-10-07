@@ -34,7 +34,7 @@ public class QueryProcessor {
     private QueryProcessor() {
     }
 
-    public static BStream nativeQuery(Environment env, BObject client, Object paramSQLString,
+    public static BStream nativeQuery(Environment env, BObject client, BObject paramSQLString,
                                       BTypedesc recordType) {
         DefaultStatementParameterProcessor statementParametersProcessor = DefaultStatementParameterProcessor
                 .getInstance();

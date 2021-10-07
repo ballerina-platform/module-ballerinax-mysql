@@ -780,7 +780,7 @@ function queryValueNegative2() returns error? {
     }
 }
 
-function queryMysqlClient(string|sql:ParameterizedQuery sqlQuery, typedesc<record {}>? resultType = ())
+function queryMysqlClient(sql:ParameterizedQuery sqlQuery, typedesc<record {}>? resultType = ())
 returns record {}? {
     Client dbClient = checkpanic new (host, user, password, simpleParamsDb, port);
     stream<record {}, error?> streamData;

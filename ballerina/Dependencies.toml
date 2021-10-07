@@ -184,6 +184,7 @@ modules = [
 org = "ballerina"
 name = "lang.string"
 version = "0.0.0"
+scope = "testOnly"
 dependencies = [
 	{org = "ballerina", name = "jballerina.java"}
 ]
@@ -219,6 +220,7 @@ scope = "testOnly"
 dependencies = [
 	{org = "ballerina", name = "io"},
 	{org = "ballerina", name = "jballerina.java"},
+	{org = "ballerina", name = "lang.value"},
 	{org = "ballerina", name = "observe"}
 ]
 
@@ -281,7 +283,6 @@ dependencies = [
 	{org = "ballerina", name = "io"},
 	{org = "ballerina", name = "jballerina.java"},
 	{org = "ballerina", name = "lang.object"},
-	{org = "ballerina", name = "lang.string"},
 	{org = "ballerina", name = "time"}
 ]
 modules = [
@@ -367,7 +368,7 @@ modules = [
 [[package]]
 org = "ballerinax"
 name = "mysql"
-version = "1.0.1"
+version = "1.0.0"
 dependencies = [
 	{org = "ballerina", name = "crypto"},
 	{org = "ballerina", name = "file"},

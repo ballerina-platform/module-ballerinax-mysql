@@ -15,7 +15,6 @@
 // under the License.
 
 import ballerina/lang.'transaction as transactions;
-import ballerina/io;
 import ballerina/sql;
 import ballerina/test;
 
@@ -241,7 +240,7 @@ function testTransactionErrorPanic() returns error? {
     int returnVal = 0;
     int catchValue = 0;
     var ret = trap testTransactionErrorPanicHelper(dbClient);
-    io:println(ret);
+
     if (ret is error) {
         catchValue = -1;
     }
@@ -268,7 +267,6 @@ function testTransactionErrorPanicHelper(Client dbClient) returns error? {
             var r = check commit;
         }
     }
-    io:println("exec");
     testTransactionErrorPanicRetVal = transInfo.retryNumber;
 }
 

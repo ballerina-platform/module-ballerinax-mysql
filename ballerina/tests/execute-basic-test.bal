@@ -15,7 +15,6 @@
 
 import ballerina/sql;
 import ballerina/test;
-import ballerina/io;
 
 string executeDb = "EXECUTE_DB";
 
@@ -294,7 +293,6 @@ function testInsertTableWithDataTypeError() {
     sql:ExecutionResult|sql:Error result = dbClient->execute(`Insert into NumericTypes (int_type) values ('This is wrong type')`);
 
     if (result is sql:DatabaseError) {
-        io:println(result);
         test:assertTrue(result.message().startsWith("Error while executing SQL query: Insert into NumericTypes" +
         " (int_type) values ('This is wrong type'). Incorrect integer value: 'This is wrong type' for column 'int_type'"),
                     "Error message does not match, actual :'" + result.message() + "'");

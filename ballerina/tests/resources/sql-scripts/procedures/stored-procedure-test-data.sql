@@ -98,3 +98,8 @@ SELECT float_type INTO p_float_type FROM NumericTypes where id = p_id;
 SELECT real_type INTO p_real_type FROM NumericTypes where id = p_id;
 SELECT double_type INTO p_double_type FROM NumericTypes where id = p_id;
 END$
+
+CREATE USER 'newuser'@'%' IDENTIFIED BY 'Test123#';
+GRANT SELECT ON PROCEDURES_DB.StringTypes TO 'newuser'@'%';
+GRANT EXECUTE ON PROCEDURE PROCEDURES_DB.InsertStringData TO 'newuser'@'%';
+FLUSH PRIVILEGES;

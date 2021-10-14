@@ -115,6 +115,37 @@ function testCallWithStringTypesReturnsData() {
     groups: ["procedures"],
     dependsOn: [testCallWithStringTypesReturnsData]
 }
+function testCallWithStringTypesWithAnotherUser() returns error? {
+
+    Options opt = {
+        ssl: {
+           allowPublicKeyRetrieval: true
+        },
+        noAccessToProcedureBodies: true
+    };
+
+    Client dbClient = check new (host, user1, password, proceduresDb, port, opt);
+    
+    sql:ProcedureCallResult ret = check dbClient->call(`{call InsertStringData(4,'test1', 'test2', 'c', 'test3', 'd', 'test4')};`);
+
+    sql:ParameterizedQuery sqlQuery = `SELECT varchar_type, charmax_type, char_type, charactermax_type, character_type,
+                   nvarcharmax_type from StringTypes where id = 4`;
+
+    StringDataForCall expectedDataRow = {
+        varchar_type: "test1",
+        charmax_type: "test2",
+        char_type: "c",
+        charactermax_type: "test3",
+        character_type: "d",
+        nvarcharmax_type: "test4"
+    };
+    test:assertEquals(queryMySQLClient(dbClient, sqlQuery), expectedDataRow, "Call procedure insert and query did not match.");
+}
+
+@test:Config {
+    groups: ["procedures"],
+    dependsOn: [testCallWithStringTypesWithAnotherUser]
+}
 function testCallWithStringTypesReturnsDataMultiple() {
     Client dbClient = checkpanic new (host, user, password, proceduresDb, port);
     sql:ProcedureCallResult ret = checkpanic dbClient->call(`{call SelectStringDataMultiple()}`, [StringDataForCall, StringDataSingle]);

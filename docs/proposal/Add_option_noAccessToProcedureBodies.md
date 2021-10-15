@@ -14,6 +14,10 @@ Only the user who created the MySQL stored procedure can access the procedure's 
 
 This option allows a lesser privileged user to evoke stored procedures through the ballerina SQL module.
 
+## Goals
+
+Allow users to connect to MySQL replication servers to take advantage of Server Failover behaviour.
+
 ## Description
 
 This feature adds the below option,

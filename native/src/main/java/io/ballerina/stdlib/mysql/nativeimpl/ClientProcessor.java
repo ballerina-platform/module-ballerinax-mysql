@@ -79,23 +79,24 @@ public class ClientProcessor {
             }
         }
 
-        String url = "jdbc:mysql://" + clientConfig.getStringValue(Constants.ClientConfiguration.HOST);
+        StringBuilder url = new StringBuilder("jdbc:mysql://")
+                .append(clientConfig.getStringValue(Constants.ClientConfiguration.HOST));
         Long portValue = clientConfig.getIntValue(Constants.ClientConfiguration.PORT);
         if (portValue > 0) {
-            url += ":" + portValue.intValue();
+            url.append(":").append(portValue.intValue());
         }
         if (serverFailover) {
-            url += ",";
+            url.append(",");
             int hostSize = secondaryHosts.size();
             for (int i = 0; i < hostSize - 1; i++) {
-                url += secondaryHosts.get(i) + ",";
+                url.append(secondaryHosts.get(i)).append(",");
             }
-            url += secondaryHosts.get(hostSize - 1);
+            url.append(secondaryHosts.get(hostSize - 1));
         }
         BString databaseVal = clientConfig.getStringValue(Constants.ClientConfiguration.DATABASE);
         String database = databaseVal == null ? null : databaseVal.getValue();
         if (database != null && !database.isEmpty()) {
-            url += "/" + database;
+            url.append("/").append(database);
         }
 
         BString userVal = clientConfig.getStringValue(Constants.ClientConfiguration.USER);
@@ -106,7 +107,7 @@ public class ClientProcessor {
         BMap connectionPool = clientConfig.getMapValue(Constants.ClientConfiguration.CONNECTION_POOL_OPTIONS);
 
         SQLDatasource.SQLDatasourceParams sqlDatasourceParams = new SQLDatasource.SQLDatasourceParams()
-                .setUrl(url).setUser(user)
+                .setUrl(url.toString()).setUser(user)
                 .setPassword(password)
                 .setDatasourceName(datasourceName)
                 .setOptions(properties)

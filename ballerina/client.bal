@@ -144,6 +144,7 @@ type ClientConfiguration record {|
 # MySQL database options.
 #
 # + ssl - SSL Configuration to be used
+# + failover - Server Failover configurations to be used
 # + useXADatasource - Boolean value to enable XADatasource
 # + connectTimeout - Timeout (in seconds) to be used when connecting to the mysql server
 # + socketTimeout - Socket timeout (in seconds) during the read/write operations with the MySQL server
@@ -152,10 +153,22 @@ type ClientConfiguration record {|
 #                    application and a target time zone is needed when preserving instant temporal values
 public type Options record {|
     SecureSocket ssl?;
+    ServerFailover failover?; 
     boolean useXADatasource = false;
     decimal connectTimeout = 30;
     decimal socketTimeout = 0;
     string serverTimezone?;
+|};
+
+# Configuration to be used for Server Failover.
+# 
+# + secondaries - Array of host & port tuple for the secondary databases
+# + timeBeforeRetry - Time the driver waits before trying to fall back to the primary host
+# + queriesBeforeRetry - Number of queries that are executed before the driver tries to fall back to the primary host
+public type ServerFailover record {|
+    [string, int][] secondaries;
+    decimal timeBeforeRetry?;
+    int queriesBeforeRetry?;
 |};
 
 # Establish an encrypted connection if the server supports encrypted connections falling back to an unencrypted

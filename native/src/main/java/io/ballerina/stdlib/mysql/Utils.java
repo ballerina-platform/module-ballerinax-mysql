@@ -30,24 +30,21 @@ import io.ballerina.runtime.api.values.BString;
 public class Utils {
 
     public static BMap<BString, Object> generateOptionsMap(BMap mysqlOptions, BMap<BString, Object> options) {
-        if (mysqlOptions != null) {
-            addSSLOptions(mysqlOptions.getMapValue(Constants.Options.SSL), options);
+        addSSLOptions(mysqlOptions.getMapValue(Constants.Options.SSL), options);
 
-            long connectTimeout = getTimeout(mysqlOptions.get(Constants.Options.CONNECT_TIMEOUT));
-            if (connectTimeout > 0) {
-                options.put(Constants.DatabaseProps.CONNECT_TIMEOUT, connectTimeout);
-            }
+        long connectTimeout = getTimeout(mysqlOptions.get(Constants.Options.CONNECT_TIMEOUT));
+        if (connectTimeout > 0) {
+            options.put(Constants.DatabaseProps.CONNECT_TIMEOUT, connectTimeout);
+        }
 
-            long socketTimeout = getTimeout(mysqlOptions.get(Constants.Options.SOCKET_TIMEOUT));
-            if (socketTimeout > 0) {
-                options.put(Constants.DatabaseProps.SOCKET_TIMEOUT, socketTimeout);
-            }
-            
-            BString serverTimezone = mysqlOptions.getStringValue(Constants.Options.SERVER_TIMEZONE);
-            if (serverTimezone != null) {
-                options.put(Constants.DatabaseProps.SERVER_TIMEZONE, serverTimezone);
-            }
-            return options;
+        long socketTimeout = getTimeout(mysqlOptions.get(Constants.Options.SOCKET_TIMEOUT));
+        if (socketTimeout > 0) {
+            options.put(Constants.DatabaseProps.SOCKET_TIMEOUT, socketTimeout);
+        }
+
+        BString serverTimezone = mysqlOptions.getStringValue(Constants.Options.SERVER_TIMEZONE);
+        if (serverTimezone != null) {
+            options.put(Constants.DatabaseProps.SERVER_TIMEZONE, serverTimezone);
         }
         return options;
     }

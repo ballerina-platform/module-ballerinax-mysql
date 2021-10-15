@@ -85,3 +85,19 @@ function testWithConnectionParams() {
     var exitCode = dbClient.close();
     test:assertExactEquals(exitCode, (), "Initialising connection with connection params fails.");
 }
+
+@test:Config {
+    groups: ["connection", "connection-init"]
+}
+function testServerFailover() returns error? {
+    Options options = {
+        failover: {
+            secondaries: [["localhost", 5506], ["localhost", 3305]],
+            timeBeforeRetry: 10,
+            queriesBeforeRetry: 10
+        }
+    };
+    Client dbClient = check new (host, user, password, connectDB, port, options);
+    error? exitCode = dbClient.close();
+    test:assertExactEquals(exitCode, (), "Initialising connection with server failover params fails.");
+}

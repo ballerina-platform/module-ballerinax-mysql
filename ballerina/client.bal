@@ -167,7 +167,7 @@ public type Options record {|
 # + queriesBeforeRetry - Number of queries that are executed before the driver tries to fall back to the primary host
 public type ServerFailover record {|
     [string, int][] secondaries;
-    decimal timeBeforeRetry?;
+    int timeBeforeRetry?;
     int queriesBeforeRetry?;
 |};
 

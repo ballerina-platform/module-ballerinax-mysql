@@ -77,6 +77,17 @@ public class ClientProcessor {
                 return ErrorGenerator.getSQLApplicationError(
                         "Failover configuration 'secondaries' cannot be an empty array.");
             }
+
+            if (failover.containsKey(Constants.ServerFailover.TIME_BEFORE_RETRY)) {
+                properties.put(Constants.DatabaseProps.TIME_BEFORE_RETRY,
+                        failover.getIntValue(Constants.ServerFailover.TIME_BEFORE_RETRY));
+            }
+
+            if (failover.containsKey(Constants.ServerFailover.QUERIES_BEFORE_RETRY)) {
+                properties.put(Constants.DatabaseProps.QUERIES_BEFORE_RETRY,
+                        failover.getIntValue(Constants.ServerFailover.QUERIES_BEFORE_RETRY));
+            }
+
         }
 
         StringBuilder url = new StringBuilder("jdbc:mysql://")

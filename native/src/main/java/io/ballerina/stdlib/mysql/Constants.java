@@ -85,7 +85,8 @@ public final class Constants {
      */
     public static final class ServerFailover {
         public static final BString SECONDARIES = StringUtils.fromString("secondaries");
-
+        public static final BString TIME_BEFORE_RETRY = StringUtils.fromString("timeBeforeRetry");
+        public static final BString QUERIES_BEFORE_RETRY = StringUtils.fromString("queriesBeforeRetry");
     }
 
     /**
@@ -111,6 +112,9 @@ public final class Constants {
         public static final BString USE_CONFIGS = StringUtils.fromString("useConfigs");
         public static final BString ALLOW_PUBLICKEY_RETRIEVAL = StringUtils.fromString("allowPublicKeyRetrieval");
         public static final BString SERVER_TIMEZONE = StringUtils.fromString("serverTimezone");
+
+        public static final BString TIME_BEFORE_RETRY = StringUtils.fromString("secondsBeforeRetryMaster");
+        public static final BString QUERIES_BEFORE_RETRY = StringUtils.fromString("queriesBeforeRetryMaster");
     }
 
     public static final String MYSQL_DATASOURCE_NAME = "com.mysql.cj.jdbc.MysqlDataSource";

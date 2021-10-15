@@ -101,3 +101,20 @@ function testServerFailover() returns error? {
     error? exitCode = dbClient.close();
     test:assertExactEquals(exitCode, (), "Initialising connection with server failover params fails.");
 }
+
+@test:Config {
+    groups: ["connection", "connection-init"]
+}
+function testServerFailoverFailure() returns error? {
+    Options options = {
+        failover: {
+            secondaries: []
+        }
+    };
+    Client|sql:Error applicationError = new (host, user, password, connectDB, port, options);
+    if applicationError is sql:Error {
+        test:assertEquals(applicationError.message(), "Failover configuration 'secondaries' cannot be an empty array.");
+    } else {
+        test:assertFail("Initialising connection with server failover params failure expected.");
+    }
+}

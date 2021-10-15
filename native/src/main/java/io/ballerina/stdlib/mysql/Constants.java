@@ -26,10 +26,18 @@ import io.ballerina.runtime.api.values.BString;
  * @since 1.2.0
  */
 public final class Constants {
+
+    private Constants(){
+    }
+
     /**
      * Constants for Client Configs.
      */
     public static final class ClientConfiguration {
+
+        private ClientConfiguration() {
+        }
+
         public static final BString HOST = StringUtils.fromString("host");
         public static final BString PORT = StringUtils.fromString("port");
         public static final BString USER = StringUtils.fromString("user");
@@ -43,6 +51,10 @@ public final class Constants {
      * Constants for database options.
      */
     public static final class Options {
+
+        private Options() {
+        }
+
         public static final BString SSL = StringUtils.fromString("ssl");
         public static final BString USE_XA_DATASOURCE = StringUtils.fromString("useXADatasource");
         public static final BString CONNECT_TIMEOUT = StringUtils.fromString("connectTimeout");
@@ -59,6 +71,10 @@ public final class Constants {
      * Constants for ssl configuration.
      */
     public static final class SecureSocket {
+
+        private SecureSocket() {
+        }
+
         public static final BString MODE = StringUtils.fromString("mode");
         public static final BString CLIENT_KEY = StringUtils.fromString("key");
         public static final BString CLIENT_CERT = StringUtils.fromString("cert");
@@ -67,6 +83,10 @@ public final class Constants {
         * Constants for processing ballerina `crypto:KeyStore`.
         */
         public static final class CryptoKeyStoreRecord {
+
+            private CryptoKeyStoreRecord() {
+            }
+
             public static final BString KEY_STORE_RECORD_PATH_FIELD = StringUtils.fromString("path");
             public static final BString KEY_STORE_RECORD_PASSWORD_FIELD = StringUtils.fromString("password");
         }
@@ -75,6 +95,10 @@ public final class Constants {
         * Constants for processing ballerina `crypto:TrustStore`.
         */
         public static final class CryptoTrustStoreRecord {
+
+            private CryptoTrustStoreRecord() {
+            }
+
             public static final BString TRUST_STORE_RECORD_PATH_FIELD = StringUtils.fromString("path");
             public static final BString TRUST_STORE_RECORD_PASSWORD_FIELD = StringUtils.fromString("password");
         }
@@ -84,6 +108,10 @@ public final class Constants {
      * Constants for Server Failover.
      */
     public static final class ServerFailover {
+
+        private ServerFailover() {
+        }
+
         public static final BString SECONDARIES = StringUtils.fromString("secondaries");
         public static final BString TIME_BEFORE_RETRY = StringUtils.fromString("timeBeforeRetry");
         public static final BString QUERIES_BEFORE_RETRY = StringUtils.fromString("queriesBeforeRetry");
@@ -93,6 +121,10 @@ public final class Constants {
     * Constants for database specific properties.
     */
     public static final class DatabaseProps {
+
+        private DatabaseProps() {
+        }
+
         public static final BString SSL_MODE = StringUtils.fromString("sslMode");
         public static final BString SSL_MODE_DISABLED = StringUtils.fromString("DISABLED");
 

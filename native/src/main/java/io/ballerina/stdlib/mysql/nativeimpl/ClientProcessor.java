@@ -41,19 +41,30 @@ public class ClientProcessor {
 
     public static Object createClient(BObject client, BMap<BString, Object> clientConfig,
                                       BMap<BString, Object> globalPool) {
-        String url = "jdbc:mysql://" + clientConfig.getStringValue(Constants.ClientConfiguration.HOST);
-        Long portValue = clientConfig.getIntValue(Constants.ClientConfiguration.PORT);
-        if (portValue > 0) {
-            url += ":" + portValue.intValue();
-        }
+        boolean serverFailover;
+        List<String> secondaryHosts = new ArrayList<>();
+        BMap<BString, Object> properties = ValueCreator.createMapValue();
+        Properties poolProperties = null;
+        String datasourceName = Constants.MYSQL_DATASOURCE_NAME;
 
         BMap options = clientConfig.getMapValue(Constants.ClientConfiguration.OPTIONS);
         if (options == null) {
             options = ValueCreator.createMapValue();
         }
-        if (options.containsKey(Constants.Options.SERVER_FAILOVER)) {
+        if (!options.isEmpty()) {
+            properties = Utils.generateOptionsMap(options, properties);
+            if (properties.containsKey(Constants.DatabaseProps.CONNECT_TIMEOUT)) {
+                poolProperties = new Properties();
+                poolProperties.setProperty(Constants.POOL_CONNECT_TIMEOUT,
+                        properties.get(Constants.DatabaseProps.CONNECT_TIMEOUT).toString());
+            }
+            if (options.getBooleanValue(Constants.Options.USE_XA_DATASOURCE)) {
+                datasourceName = Constants.MYSQL_XA_DATASOURCE_NAME;
+            }
+        }
+        serverFailover = options.containsKey(Constants.Options.SERVER_FAILOVER);
+        if (serverFailover) {
             BMap failover = options.getMapValue(Constants.Options.SERVER_FAILOVER);
-            List<String> secondaryHosts = new ArrayList<>();
 
             //secondaries is a mandatory param
             BArray secondaries = failover.getArrayValue(Constants.ServerFailover.SECONDARIES);
@@ -66,7 +77,14 @@ public class ClientProcessor {
                 return ErrorGenerator.getSQLApplicationError(
                         "Failover configuration 'secondaries' cannot be an empty array.");
             }
+        }
 
+        String url = "jdbc:mysql://" + clientConfig.getStringValue(Constants.ClientConfiguration.HOST);
+        Long portValue = clientConfig.getIntValue(Constants.ClientConfiguration.PORT);
+        if (portValue > 0) {
+            url += ":" + portValue.intValue();
+        }
+        if (serverFailover) {
             url += ",";
             int hostSize = secondaryHosts.size();
             for (int i = 0; i < hostSize - 1; i++) {
@@ -74,34 +92,18 @@ public class ClientProcessor {
             }
             url += secondaryHosts.get(hostSize - 1);
         }
-
-        BString userVal = clientConfig.getStringValue(Constants.ClientConfiguration.USER);
-        String user = userVal == null ? null : userVal.getValue();
-        BString passwordVal = clientConfig.getStringValue(Constants.ClientConfiguration.PASSWORD);
-        String password = passwordVal == null ? null : passwordVal.getValue();
         BString databaseVal = clientConfig.getStringValue(Constants.ClientConfiguration.DATABASE);
         String database = databaseVal == null ? null : databaseVal.getValue();
         if (database != null && !database.isEmpty()) {
             url += "/" + database;
         }
 
-        BMap properties = null;
-        Properties poolProperties = null;
-        if (!options.isEmpty()) {
-            properties = Utils.generateOptionsMap(options);
-            Object connectTimeout = properties.get(Constants.DatabaseProps.CONNECT_TIMEOUT);
-            if (connectTimeout != null) {
-                poolProperties = new Properties();
-                poolProperties.setProperty(Constants.POOL_CONNECT_TIMEOUT, connectTimeout.toString());
-            }
-        }
+        BString userVal = clientConfig.getStringValue(Constants.ClientConfiguration.USER);
+        String user = userVal == null ? null : userVal.getValue();
+        BString passwordVal = clientConfig.getStringValue(Constants.ClientConfiguration.PASSWORD);
+        String password = passwordVal == null ? null : passwordVal.getValue();
 
         BMap connectionPool = clientConfig.getMapValue(Constants.ClientConfiguration.CONNECTION_POOL_OPTIONS);
-
-        String datasourceName = Constants.MYSQL_DATASOURCE_NAME;
-        if (!options.isEmpty() && options.getBooleanValue(Constants.Options.USE_XA_DATASOURCE)) {
-            datasourceName = Constants.MYSQL_XA_DATASOURCE_NAME;
-        }
 
         SQLDatasource.SQLDatasourceParams sqlDatasourceParams = new SQLDatasource.SQLDatasourceParams()
                 .setUrl(url).setUser(user)

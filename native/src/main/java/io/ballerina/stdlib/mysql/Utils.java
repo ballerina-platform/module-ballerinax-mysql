@@ -17,7 +17,6 @@
  */
 package io.ballerina.stdlib.mysql;
 
-import io.ballerina.runtime.api.creators.ValueCreator;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BDecimal;
 import io.ballerina.runtime.api.values.BMap;
@@ -30,9 +29,8 @@ import io.ballerina.runtime.api.values.BString;
  */
 public class Utils {
 
-    public static BMap generateOptionsMap(BMap mysqlOptions) {
+    public static BMap<BString, Object> generateOptionsMap(BMap mysqlOptions, BMap<BString, Object> options) {
         if (mysqlOptions != null) {
-            BMap<BString, Object> options = ValueCreator.createMapValue();
             addSSLOptions(mysqlOptions.getMapValue(Constants.Options.SSL), options);
 
             long connectTimeout = getTimeout(mysqlOptions.get(Constants.Options.CONNECT_TIMEOUT));
@@ -51,7 +49,7 @@ public class Utils {
             }
             return options;
         }
-        return null;
+        return options;
     }
 
     public static long getTimeout(Object secondsDecimal) {

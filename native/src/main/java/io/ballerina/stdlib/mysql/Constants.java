@@ -51,6 +51,8 @@ public final class Constants {
         public static final BString USE_CONFIGS = StringUtils.fromString("useConfigs");
         public static final BString ALLOW_PUBLICKEY_RETRIEVAL = StringUtils.fromString("allowPublicKeyRetrieval");
         public static final BString SERVER_TIMEZONE = StringUtils.fromString("serverTimezone");
+        public static final BString SERVER_FAILOVER = StringUtils.fromString("failover");
+
     }
 
     /**
@@ -76,6 +78,14 @@ public final class Constants {
             public static final BString TRUST_STORE_RECORD_PATH_FIELD = StringUtils.fromString("path");
             public static final BString TRUST_STORE_RECORD_PASSWORD_FIELD = StringUtils.fromString("password");
         }
+    }
+
+    /**
+     * Constants for Server Failover.
+     */
+    public static final class ServerFailover {
+        public static final BString SECONDARIES = StringUtils.fromString("secondaries");
+
     }
 
     /**

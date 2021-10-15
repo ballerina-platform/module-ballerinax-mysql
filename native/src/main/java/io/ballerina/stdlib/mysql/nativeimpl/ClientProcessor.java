@@ -18,13 +18,18 @@
 
 package io.ballerina.stdlib.mysql.nativeimpl;
 
+import io.ballerina.runtime.api.creators.ValueCreator;
+import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
 import io.ballerina.stdlib.mysql.Constants;
 import io.ballerina.stdlib.mysql.Utils;
 import io.ballerina.stdlib.sql.datasource.SQLDatasource;
+import io.ballerina.stdlib.sql.utils.ErrorGenerator;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -41,6 +46,35 @@ public class ClientProcessor {
         if (portValue > 0) {
             url += ":" + portValue.intValue();
         }
+
+        BMap options = clientConfig.getMapValue(Constants.ClientConfiguration.OPTIONS);
+        if (options == null) {
+            options = ValueCreator.createMapValue();
+        }
+        if (options.containsKey(Constants.Options.SERVER_FAILOVER)) {
+            BMap failover = options.getMapValue(Constants.Options.SERVER_FAILOVER);
+            List<String> secondaryHosts = new ArrayList<>();
+
+            //secondaries is a mandatory param
+            BArray secondaries = failover.getArrayValue(Constants.ServerFailover.SECONDARIES);
+            if (!secondaries.isEmpty()) {
+                for (long i = 0; i < secondaries.getLength(); i++) {
+                    BArray tuple = (BArray) secondaries.get(i);
+                    secondaryHosts.add(tuple.getBString(0).getValue() + ":" + tuple.getInt(1));
+                }
+            } else {
+                return ErrorGenerator.getSQLApplicationError(
+                        "Failover configuration 'secondaries' cannot be an empty array.");
+            }
+
+            url += ",";
+            int hostSize = secondaryHosts.size();
+            for (int i = 0; i < hostSize - 1; i++) {
+                url += secondaryHosts.get(i) + ",";
+            }
+            url += secondaryHosts.get(hostSize - 1);
+        }
+
         BString userVal = clientConfig.getStringValue(Constants.ClientConfiguration.USER);
         String user = userVal == null ? null : userVal.getValue();
         BString passwordVal = clientConfig.getStringValue(Constants.ClientConfiguration.PASSWORD);
@@ -50,10 +84,10 @@ public class ClientProcessor {
         if (database != null && !database.isEmpty()) {
             url += "/" + database;
         }
-        BMap options = clientConfig.getMapValue(Constants.ClientConfiguration.OPTIONS);
+
         BMap properties = null;
         Properties poolProperties = null;
-        if (options != null) {
+        if (!options.isEmpty()) {
             properties = Utils.generateOptionsMap(options);
             Object connectTimeout = properties.get(Constants.DatabaseProps.CONNECT_TIMEOUT);
             if (connectTimeout != null) {
@@ -65,7 +99,7 @@ public class ClientProcessor {
         BMap connectionPool = clientConfig.getMapValue(Constants.ClientConfiguration.CONNECTION_POOL_OPTIONS);
 
         String datasourceName = Constants.MYSQL_DATASOURCE_NAME;
-        if (options != null && options.getBooleanValue(Constants.Options.USE_XA_DATASOURCE)) {
+        if (!options.isEmpty() && options.getBooleanValue(Constants.Options.USE_XA_DATASOURCE)) {
             datasourceName = Constants.MYSQL_XA_DATASOURCE_NAME;
         }
 

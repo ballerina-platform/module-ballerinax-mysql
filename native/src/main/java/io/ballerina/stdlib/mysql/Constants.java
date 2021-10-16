@@ -51,6 +51,7 @@ public final class Constants {
         public static final BString USE_CONFIGS = StringUtils.fromString("useConfigs");
         public static final BString ALLOW_PUBLICKEY_RETRIEVAL = StringUtils.fromString("allowPublicKeyRetrieval");
         public static final BString SERVER_TIMEZONE = StringUtils.fromString("serverTimezone");
+        public static final BString ACCESS_TO_PROCEDURE_BODIES = StringUtils.fromString("noAccessToProcedureBodies");
     }
 
     /**
@@ -101,6 +102,7 @@ public final class Constants {
         public static final BString USE_CONFIGS = StringUtils.fromString("useConfigs");
         public static final BString ALLOW_PUBLICKEY_RETRIEVAL = StringUtils.fromString("allowPublicKeyRetrieval");
         public static final BString SERVER_TIMEZONE = StringUtils.fromString("serverTimezone");
+        public static final BString ACCESS_TO_PROCEDURE_BODIES = StringUtils.fromString("noAccessToProcedureBodies");
     }
 
     public static final String MYSQL_DATASOURCE_NAME = "com.mysql.cj.jdbc.MysqlDataSource";

@@ -55,7 +55,7 @@ public class ClientProcessor {
             options = ValueCreator.createMapValue();
         }
         if (!options.isEmpty()) {
-            properties = Utils.generateOptionsMap(options, properties);
+            Utils.processOptionsMap(options, properties);
             if (properties.containsKey(Constants.DatabaseProps.CONNECT_TIMEOUT)) {
                 poolProperties = new Properties();
                 poolProperties.setProperty(Constants.POOL_CONNECT_TIMEOUT,

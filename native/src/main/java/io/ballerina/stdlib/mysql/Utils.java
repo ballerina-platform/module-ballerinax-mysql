@@ -31,7 +31,7 @@ import static io.ballerina.stdlib.mysql.Constants.Options.ACCESS_TO_PROCEDURE_BO
  */
 public class Utils {
 
-    public static BMap<BString, Object> generateOptionsMap(BMap mysqlOptions, BMap<BString, Object> options) {
+    public static void processOptionsMap(BMap mysqlOptions, BMap<BString, Object> options) {
         addSSLOptions(mysqlOptions.getMapValue(Constants.Options.SSL), options);
 
         long connectTimeout = getTimeout(mysqlOptions.get(Constants.Options.CONNECT_TIMEOUT));
@@ -51,8 +51,6 @@ public class Utils {
 
         boolean noAccessToProcedureBodies = mysqlOptions.getBooleanValue(ACCESS_TO_PROCEDURE_BODIES);
         options.put(Constants.DatabaseProps.ACCESS_TO_PROCEDURE_BODIES, noAccessToProcedureBodies);
-
-        return options;
     }
 
     public static long getTimeout(Object secondsDecimal) {

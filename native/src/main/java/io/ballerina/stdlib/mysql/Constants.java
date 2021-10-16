@@ -63,6 +63,7 @@ public final class Constants {
         public static final BString USE_CONFIGS = StringUtils.fromString("useConfigs");
         public static final BString ALLOW_PUBLICKEY_RETRIEVAL = StringUtils.fromString("allowPublicKeyRetrieval");
         public static final BString SERVER_TIMEZONE = StringUtils.fromString("serverTimezone");
+        public static final BString ACCESS_TO_PROCEDURE_BODIES = StringUtils.fromString("noAccessToProcedureBodies");
         public static final BString SERVER_FAILOVER = StringUtils.fromString("failover");
 
     }
@@ -144,7 +145,7 @@ public final class Constants {
         public static final BString USE_CONFIGS = StringUtils.fromString("useConfigs");
         public static final BString ALLOW_PUBLICKEY_RETRIEVAL = StringUtils.fromString("allowPublicKeyRetrieval");
         public static final BString SERVER_TIMEZONE = StringUtils.fromString("serverTimezone");
-
+        public static final BString ACCESS_TO_PROCEDURE_BODIES = StringUtils.fromString("noAccessToProcedureBodies");
         public static final BString TIME_BEFORE_RETRY = StringUtils.fromString("secondsBeforeRetryMaster");
         public static final BString QUERIES_BEFORE_RETRY = StringUtils.fromString("queriesBeforeRetryMaster");
     }

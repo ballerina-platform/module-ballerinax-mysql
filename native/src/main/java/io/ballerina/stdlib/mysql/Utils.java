@@ -22,6 +22,8 @@ import io.ballerina.runtime.api.values.BDecimal;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BString;
 
+import static io.ballerina.stdlib.mysql.Constants.Options.ACCESS_TO_PROCEDURE_BODIES;
+
 /**
  * This class includes utility functions.
  *
@@ -46,6 +48,10 @@ public class Utils {
         if (serverTimezone != null) {
             options.put(Constants.DatabaseProps.SERVER_TIMEZONE, serverTimezone);
         }
+
+        boolean noAccessToProcedureBodies = mysqlOptions.getBooleanValue(ACCESS_TO_PROCEDURE_BODIES);
+        options.put(Constants.DatabaseProps.ACCESS_TO_PROCEDURE_BODIES, noAccessToProcedureBodies);
+
         return options;
     }
 

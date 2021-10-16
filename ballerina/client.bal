@@ -151,6 +151,7 @@ type ClientConfiguration record {|
 #                   (0 means no socket timeout)
 # + serverTimezone - Configures the connection time zone, which is used by the `Connector/J` if the conversion between a Ballerina
 #                    application and a target time zone is needed when preserving instant temporal values
+# + noAccessToProcedureBodies - With this option the user is allowed to invoke procedures to whose metadata access is denied
 public type Options record {|
     SecureSocket ssl?;
     ServerFailover failover?; 
@@ -158,6 +159,7 @@ public type Options record {|
     decimal connectTimeout = 30;
     decimal socketTimeout = 0;
     string serverTimezone?;
+    boolean noAccessToProcedureBodies = false;
 |};
 
 # Configuration to be used for Server Failover.

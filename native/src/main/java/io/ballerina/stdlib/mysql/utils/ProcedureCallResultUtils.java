@@ -24,6 +24,10 @@ import io.ballerina.stdlib.mysql.parameterprocessor.MysqlResultParameterProcesso
  * This class provides functionality for the `ProcedureCallResult` to iterate through the PostgreSQL result sets.
  */
 public class ProcedureCallResultUtils {
+
+    private ProcedureCallResultUtils() {
+    }
+
     public static Object getNextQueryResult(BObject procedureCallResultset, BObject procedureCallResult) {
         return io.ballerina.stdlib.sql.utils.ProcedureCallResultUtils
                 .getNextQueryResult(procedureCallResult, MysqlResultParameterProcessor.getInstance());

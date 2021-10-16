@@ -39,6 +39,9 @@ import java.util.Properties;
  */
 public class ClientProcessor {
 
+    private ClientProcessor() {
+    }
+
     public static Object createClient(BObject client, BMap<BString, Object> clientConfig,
                                       BMap<BString, Object> globalPool) {
         boolean serverFailover;

@@ -2,6 +2,10 @@
 org = "ballerinax"
 name = "mysql"
 version = "1.0.1"
+authors = ["Ballerina"]
+keywords = ["MySQL", "SQL", "RDBMS"]
+repository = "https://github.com/ballerina-platform/module-ballerinax-mysql"
+license = ["Apache-2.0"]
 distribution = "slbeta3"
 
 [[platform.java11.dependency]]

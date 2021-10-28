@@ -94,7 +94,8 @@ function testServerFailover() returns error? {
         failover: {
             secondaries: [["localhost", 5506], ["localhost", 3305]],
             timeBeforeRetry: 10,
-            queriesBeforeRetry: 10
+            queriesBeforeRetry: 10,
+            failOverReadOnly: false
         }
     };
     Client dbClient = check new (host, user, password, connectDB, port, options);

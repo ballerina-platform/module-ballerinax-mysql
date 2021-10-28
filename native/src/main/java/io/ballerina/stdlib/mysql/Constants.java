@@ -114,6 +114,7 @@ public final class Constants {
         public static final BString SECONDARIES = StringUtils.fromString("secondaries");
         public static final BString TIME_BEFORE_RETRY = StringUtils.fromString("timeBeforeRetry");
         public static final BString QUERIES_BEFORE_RETRY = StringUtils.fromString("queriesBeforeRetry");
+        public static final BString FAILOVER_READ_ONLY = StringUtils.fromString("failOverReadOnly");
     }
 
     /**
@@ -144,6 +145,8 @@ public final class Constants {
         public static final BString ACCESS_TO_PROCEDURE_BODIES = StringUtils.fromString("noAccessToProcedureBodies");
         public static final BString TIME_BEFORE_RETRY = StringUtils.fromString("secondsBeforeRetryMaster");
         public static final BString QUERIES_BEFORE_RETRY = StringUtils.fromString("queriesBeforeRetryMaster");
+        public static final BString FAILOVER_READONLY = StringUtils.fromString("failOverReadOnly");
+
     }
 
     public static final String MYSQL_DATASOURCE_NAME = "com.mysql.cj.jdbc.MysqlDataSource";

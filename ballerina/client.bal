@@ -167,10 +167,12 @@ public type Options record {|
 # + secondaries - Array of host & port tuple for the secondary databases
 # + timeBeforeRetry - Time the driver waits before trying to fall back to the primary host
 # + queriesBeforeRetry - Number of queries that are executed before the driver tries to fall back to the primary host
+# + failOverReadOnly - Open connection to secondary host with READ ONLY mode.
 public type ServerFailover record {|
     [string, int][] secondaries;
     int timeBeforeRetry?;
     int queriesBeforeRetry?;
+    boolean failOverReadOnly = true;
 |};
 
 # Establish an encrypted connection if the server supports encrypted connections falling back to an unencrypted

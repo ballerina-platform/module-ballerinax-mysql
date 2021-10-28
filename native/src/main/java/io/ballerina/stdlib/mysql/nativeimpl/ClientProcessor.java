@@ -91,6 +91,9 @@ public class ClientProcessor {
                         failover.getIntValue(Constants.ServerFailover.QUERIES_BEFORE_RETRY));
             }
 
+            Boolean failoverReadOnlyMode = failover.getBooleanValue(Constants.ServerFailover.FAILOVER_READ_ONLY);
+            properties.put(Constants.DatabaseProps.FAILOVER_READONLY, failoverReadOnlyMode);
+
         }
 
         StringBuilder url = new StringBuilder("jdbc:mysql://")

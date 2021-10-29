@@ -44,8 +44,6 @@ public class ClientProcessor {
 
     public static Object createClient(BObject client, BMap<BString, Object> clientConfig,
                                       BMap<BString, Object> globalPool) {
-        boolean serverFailover;
-        List<String> secondaryHosts = new ArrayList<>();
         BMap<BString, Object> properties = ValueCreator.createMapValue();
         Properties poolProperties = null;
         String datasourceName = Constants.MYSQL_DATASOURCE_NAME;
@@ -65,33 +63,35 @@ public class ClientProcessor {
                 datasourceName = Constants.MYSQL_XA_DATASOURCE_NAME;
             }
         }
-        serverFailover = options.containsKey(Constants.Options.SERVER_FAILOVER);
-        if (serverFailover) {
-            BMap failover = options.getMapValue(Constants.Options.SERVER_FAILOVER);
+        List<String> secondaryHosts = new ArrayList<>();
+        boolean isFailoverConfigPresent = options.containsKey(Constants.Options.FAILOVER_CONFIG);
+        if (isFailoverConfigPresent) {
+            BMap failover = options.getMapValue(Constants.Options.FAILOVER_CONFIG);
 
-            //secondaries is a mandatory param
-            BArray secondaries = failover.getArrayValue(Constants.ServerFailover.SECONDARIES);
-            if (!secondaries.isEmpty()) {
-                for (long i = 0; i < secondaries.getLength(); i++) {
-                    BArray tuple = (BArray) secondaries.get(i);
-                    secondaryHosts.add(tuple.getBString(0).getValue() + ":" + tuple.getInt(1));
+            //failoverServers is a mandatory param
+            BArray failoverServers = failover.getArrayValue(Constants.FailoverConfig.FAILOVER_SERVERS);
+            if (!failoverServers.isEmpty()) {
+                for (long i = 0; i < failoverServers.getLength(); i++) {
+                    BMap server = (BMap) failoverServers.get(i);
+                    secondaryHosts.add(server.getStringValue(Constants.FailoverConfig.FailoverServer.HOST).getValue() +
+                            ":" + server.getIntValue(Constants.FailoverConfig.FailoverServer.PORT));
                 }
             } else {
                 return ErrorGenerator.getSQLApplicationError(
-                        "Failover configuration 'secondaries' cannot be an empty array.");
+                        "FailoverConfig's 'failoverServers' field cannot be an empty array.");
             }
 
-            if (failover.containsKey(Constants.ServerFailover.TIME_BEFORE_RETRY)) {
+            if (failover.containsKey(Constants.FailoverConfig.TIME_BEFORE_RETRY)) {
                 properties.put(Constants.DatabaseProps.TIME_BEFORE_RETRY,
-                        failover.getIntValue(Constants.ServerFailover.TIME_BEFORE_RETRY));
+                        failover.getIntValue(Constants.FailoverConfig.TIME_BEFORE_RETRY));
             }
 
-            if (failover.containsKey(Constants.ServerFailover.QUERIES_BEFORE_RETRY)) {
+            if (failover.containsKey(Constants.FailoverConfig.QUERIES_BEFORE_RETRY)) {
                 properties.put(Constants.DatabaseProps.QUERIES_BEFORE_RETRY,
-                        failover.getIntValue(Constants.ServerFailover.QUERIES_BEFORE_RETRY));
+                        failover.getIntValue(Constants.FailoverConfig.QUERIES_BEFORE_RETRY));
             }
 
-            Boolean failoverReadOnlyMode = failover.getBooleanValue(Constants.ServerFailover.FAILOVER_READ_ONLY);
+            Boolean failoverReadOnlyMode = failover.getBooleanValue(Constants.FailoverConfig.FAILOVER_READ_ONLY);
             properties.put(Constants.DatabaseProps.FAILOVER_READONLY, failoverReadOnlyMode);
 
         }
@@ -102,7 +102,7 @@ public class ClientProcessor {
         if (portValue > 0) {
             url.append(":").append(portValue.intValue());
         }
-        if (serverFailover) {
+        if (isFailoverConfigPresent) {
             url.append(",");
             int hostSize = secondaryHosts.size();
             for (int i = 0; i < hostSize - 1; i++) {

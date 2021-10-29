@@ -91,11 +91,20 @@ function testWithConnectionParams() {
 }
 function testServerFailover() returns error? {
     Options options = {
-        failover: {
-            secondaries: [["localhost", 5506], ["localhost", 3305]],
+        failoverConfig: {
+            failoverServers: [
+                {
+                    host: "localhost",
+                    port: 5506
+                },
+                {
+                    host: "localhost",
+                    port: 3305
+                }
+            ],
             timeBeforeRetry: 10,
             queriesBeforeRetry: 10,
-            failOverReadOnly: false
+            failoverReadOnly: false
         }
     };
     Client dbClient = check new (host, user, password, connectDB, port, options);
@@ -108,13 +117,13 @@ function testServerFailover() returns error? {
 }
 function testServerFailoverFailure() returns error? {
     Options options = {
-        failover: {
-            secondaries: []
+        failoverConfig: {
+            failoverServers: []
         }
     };
     Client|sql:Error applicationError = new (host, user, password, connectDB, port, options);
     if applicationError is sql:Error {
-        test:assertEquals(applicationError.message(), "Failover configuration 'secondaries' cannot be an empty array.");
+        test:assertEquals(applicationError.message(), "FailoverConfig's 'failoverServers' field cannot be an empty array.");
     } else {
         test:assertFail("Initialising connection with server failover params failure expected.");
     }

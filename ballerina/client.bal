@@ -154,7 +154,7 @@ type ClientConfiguration record {|
 # + noAccessToProcedureBodies - With this option the user is allowed to invoke procedures to whose metadata access is denied
 public type Options record {|
     SecureSocket ssl?;
-    ServerFailover failover?; 
+    FailoverConfig failoverConfig?;
     boolean useXADatasource = false;
     decimal connectTimeout = 30;
     decimal socketTimeout = 0;
@@ -163,16 +163,25 @@ public type Options record {|
 |};
 
 # Configuration to be used for Server Failover.
-# 
+#
 # + secondaries - Array of host & port tuple for the secondary databases
 # + timeBeforeRetry - Time the driver waits before trying to fall back to the primary host
 # + queriesBeforeRetry - Number of queries that are executed before the driver tries to fall back to the primary host
-# + failOverReadOnly - Open connection to secondary host with READ ONLY mode.
-public type ServerFailover record {|
-    [string, int][] secondaries;
+# + failoverReadOnly - Open connection to secondary host with READ ONLY mode.
+public type FailoverConfig record {|
+    FailoverServer[] failoverServers;
     int timeBeforeRetry?;
     int queriesBeforeRetry?;
-    boolean failOverReadOnly = true;
+    boolean failoverReadOnly = true;
+|};
+
+# Configuration for failover servers
+#
+# + host - Hostname of the secondary database to be connected
+# + port - Port of the secondary database to connect
+public type FailoverServer record {|
+    string host;
+    int port;
 |};
 
 # Establish an encrypted connection if the server supports encrypted connections falling back to an unencrypted

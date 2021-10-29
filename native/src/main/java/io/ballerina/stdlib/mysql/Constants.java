@@ -62,7 +62,7 @@ public final class Constants {
         public static final BString ALLOW_PUBLICKEY_RETRIEVAL = StringUtils.fromString("allowPublicKeyRetrieval");
         public static final BString SERVER_TIMEZONE = StringUtils.fromString("serverTimezone");
         public static final BString ACCESS_TO_PROCEDURE_BODIES = StringUtils.fromString("noAccessToProcedureBodies");
-        public static final BString SERVER_FAILOVER = StringUtils.fromString("failover");
+        public static final BString FAILOVER_CONFIG = StringUtils.fromString("failoverConfig");
 
     }
 
@@ -106,15 +106,26 @@ public final class Constants {
     /**
      * Constants for Server Failover.
      */
-    public static final class ServerFailover {
+    public static final class FailoverConfig {
 
-        private ServerFailover() {
+        private FailoverConfig() {
         }
 
-        public static final BString SECONDARIES = StringUtils.fromString("secondaries");
+        public static final BString FAILOVER_SERVERS = StringUtils.fromString("failoverServers");
         public static final BString TIME_BEFORE_RETRY = StringUtils.fromString("timeBeforeRetry");
         public static final BString QUERIES_BEFORE_RETRY = StringUtils.fromString("queriesBeforeRetry");
-        public static final BString FAILOVER_READ_ONLY = StringUtils.fromString("failOverReadOnly");
+        public static final BString FAILOVER_READ_ONLY = StringUtils.fromString("failoverReadOnly");
+
+        /**
+         * Constants for FailoverServer record.
+         */
+        public static final class FailoverServer {
+            private FailoverServer() {
+            }
+
+            public static final BString HOST = StringUtils.fromString("host");
+            public static final BString PORT = StringUtils.fromString("port");
+        }
     }
 
     /**

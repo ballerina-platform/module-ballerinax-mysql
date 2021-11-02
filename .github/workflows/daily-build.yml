@@ -21,8 +21,8 @@ jobs:
       # Build the project with Gradle
       - name: Build with Gradle
         env:
-          packageUser: ${{ secrets.BALLERINA_BOT_USERNAME }}
-          packagePAT: ${{ secrets.BALLERINA_BOT_TOKEN }}
+          packageUser: ${{ github.actor }}
+          packagePAT: ${{ secrets.GITHUB_TOKEN }}
         run: |
           ./gradlew clean build
 

@@ -144,7 +144,7 @@ type ClientConfiguration record {|
 # MySQL database options.
 #
 # + ssl - SSL Configuration to be used
-# + failover - Server Failover configurations to be used
+# + failoverConfig - Server Failover configurations to be used
 # + useXADatasource - Boolean value to enable XADatasource
 # + connectTimeout - Timeout (in seconds) to be used when connecting to the mysql server
 # + socketTimeout - Socket timeout (in seconds) during the read/write operations with the MySQL server
@@ -164,7 +164,7 @@ public type Options record {|
 
 # Configuration to be used for Server Failover.
 #
-# + secondaries - Array of host & port tuple for the secondary databases
+# + failoverServers - Array of host & port tuple for the secondary databases
 # + timeBeforeRetry - Time the driver waits before trying to fall back to the primary host
 # + queriesBeforeRetry - Number of queries that are executed before the driver tries to fall back to the primary host
 # + failoverReadOnly - Open connection to secondary host with READ ONLY mode.

@@ -25,6 +25,9 @@ import io.ballerina.stdlib.sql.utils.RecordIteratorUtils;
  */
 public class MysqlRecordIteratorUtils extends RecordIteratorUtils {
 
+    private MysqlRecordIteratorUtils() {
+    }
+
     public static Object nextResult(BObject mysqlRecordIterator, BObject recordIterator) {
         return nextResult(recordIterator, MysqlResultParameterProcessor.getInstance());
     }

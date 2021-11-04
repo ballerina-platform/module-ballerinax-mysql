@@ -144,6 +144,7 @@ type ClientConfiguration record {|
 # MySQL database options.
 #
 # + ssl - SSL Configuration to be used
+# + failoverConfig - Server Failover configurations to be used
 # + useXADatasource - Boolean value to enable XADatasource
 # + connectTimeout - Timeout (in seconds) to be used when connecting to the mysql server
 # + socketTimeout - Socket timeout (in seconds) during the read/write operations with the MySQL server
@@ -153,11 +154,34 @@ type ClientConfiguration record {|
 # + noAccessToProcedureBodies - With this option the user is allowed to invoke procedures to whose metadata access is denied
 public type Options record {|
     SecureSocket ssl?;
+    FailoverConfig failoverConfig?;
     boolean useXADatasource = false;
     decimal connectTimeout = 30;
     decimal socketTimeout = 0;
     string serverTimezone?;
     boolean noAccessToProcedureBodies = false;
+|};
+
+# Configuration to be used for Server Failover.
+#
+# + failoverServers - Array of host & port tuple for the secondary databases
+# + timeBeforeRetry - Time the driver waits before trying to fall back to the primary host
+# + queriesBeforeRetry - Number of queries that are executed before the driver tries to fall back to the primary host
+# + failoverReadOnly - Open connection to secondary host with READ ONLY mode.
+public type FailoverConfig record {|
+    FailoverServer[] failoverServers;
+    int timeBeforeRetry?;
+    int queriesBeforeRetry?;
+    boolean failoverReadOnly = true;
+|};
+
+# Configuration for failover servers
+#
+# + host - Hostname of the secondary database to be connected
+# + port - Port of the secondary database to connect
+public type FailoverServer record {|
+    string host;
+    int port;
 |};
 
 # Establish an encrypted connection if the server supports encrypted connections falling back to an unencrypted

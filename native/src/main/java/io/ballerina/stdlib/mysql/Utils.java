@@ -17,7 +17,6 @@
  */
 package io.ballerina.stdlib.mysql;
 
-import io.ballerina.runtime.api.creators.ValueCreator;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BDecimal;
 import io.ballerina.runtime.api.values.BMap;
@@ -32,32 +31,26 @@ import static io.ballerina.stdlib.mysql.Constants.Options.ACCESS_TO_PROCEDURE_BO
  */
 public class Utils {
 
-    public static BMap generateOptionsMap(BMap mysqlOptions) {
-        if (mysqlOptions != null) {
-            BMap<BString, Object> options = ValueCreator.createMapValue();
-            addSSLOptions(mysqlOptions.getMapValue(Constants.Options.SSL), options);
+    public static void processOptionsMap(BMap mysqlOptions, BMap<BString, Object> options) {
+        addSSLOptions(mysqlOptions.getMapValue(Constants.Options.SSL), options);
 
-            long connectTimeout = getTimeout(mysqlOptions.get(Constants.Options.CONNECT_TIMEOUT));
-            if (connectTimeout > 0) {
-                options.put(Constants.DatabaseProps.CONNECT_TIMEOUT, connectTimeout);
-            }
-
-            long socketTimeout = getTimeout(mysqlOptions.get(Constants.Options.SOCKET_TIMEOUT));
-            if (socketTimeout > 0) {
-                options.put(Constants.DatabaseProps.SOCKET_TIMEOUT, socketTimeout);
-            }
-            
-            BString serverTimezone = mysqlOptions.getStringValue(Constants.Options.SERVER_TIMEZONE);
-            if (serverTimezone != null) {
-                options.put(Constants.DatabaseProps.SERVER_TIMEZONE, serverTimezone);
-            }
-
-            boolean noAccessToProcedureBodies = mysqlOptions.getBooleanValue(ACCESS_TO_PROCEDURE_BODIES);
-            options.put(Constants.DatabaseProps.ACCESS_TO_PROCEDURE_BODIES, noAccessToProcedureBodies);
-
-            return options;
+        long connectTimeout = getTimeout(mysqlOptions.get(Constants.Options.CONNECT_TIMEOUT));
+        if (connectTimeout > 0) {
+            options.put(Constants.DatabaseProps.CONNECT_TIMEOUT, connectTimeout);
         }
-        return null;
+
+        long socketTimeout = getTimeout(mysqlOptions.get(Constants.Options.SOCKET_TIMEOUT));
+        if (socketTimeout > 0) {
+            options.put(Constants.DatabaseProps.SOCKET_TIMEOUT, socketTimeout);
+        }
+
+        BString serverTimezone = mysqlOptions.getStringValue(Constants.Options.SERVER_TIMEZONE);
+        if (serverTimezone != null) {
+            options.put(Constants.DatabaseProps.SERVER_TIMEZONE, serverTimezone);
+        }
+
+        boolean noAccessToProcedureBodies = mysqlOptions.getBooleanValue(ACCESS_TO_PROCEDURE_BODIES);
+        options.put(Constants.DatabaseProps.ACCESS_TO_PROCEDURE_BODIES, noAccessToProcedureBodies);
     }
 
     public static long getTimeout(Object secondsDecimal) {

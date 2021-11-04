@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - [Support noAccessToProcedureBodies options in mysql connector](https://github.com/ballerina-platform/ballerina-standard-library/issues/1545)
+- [Support Mysql connector failover and retries](https://github.com/ballerina-platform/ballerina-standard-library/issues/1950)
 
 ## [1.0.0] - 2021-10-09
 

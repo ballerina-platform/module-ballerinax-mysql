@@ -705,22 +705,6 @@ function queryRecordNegative() returns sql:Error? {
 @test:Config {
     groups: ["query", "query-simple-params"]
 }
-function queryRecordNegative2() returns error? {
-    int rowId = 1;
-    Client dbClient = check new (host, user, password, simpleParamsDb, port);
-    sql:ParameterizedQuery sqlQuery = `SELECT * from DataTable WHERE row_id = ${rowId}`;
-    record{}|int|error queryResult = dbClient->queryRow(sqlQuery);
-    check dbClient.close();
-    if queryResult is error {
-        test:assertEquals(queryResult.message(), "Return type cannot be a union of multiple types.");
-    } else {
-        test:assertFail("Expected error when querying with union return type.");
-    }
-}
-
-@test:Config {
-    groups: ["query", "query-simple-params"]
-}
 function queryRecordNegative3() returns error? {
     int rowId = 1;
     Client dbClient = check new (host, user, password, simpleParamsDb, port);

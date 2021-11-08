@@ -34,9 +34,9 @@ function testXATransactionSuccess() {
     connectionPool = {maxOpenConnections: 1});
 
     transaction {
-        var e1 = checkpanic dbClient1->execute(`insert into Customers (customerId, name, creditLimit, country)
+        _ = checkpanic dbClient1->execute(`insert into Customers (customerId, name, creditLimit, country)
                                 values (1, 'Anne', 1000, 'UK')`);
-        var e2 = checkpanic dbClient2->execute(`insert into Salary (id, value ) values (1, 1000)`);
+        _ = checkpanic dbClient2->execute(`insert into Salary (id, value ) values (1, 1000)`);
         checkpanic commit;
     }
 
@@ -57,9 +57,9 @@ function testXATransactionSuccessWithDataSource() {
     Client dbClient2 = checkpanic new (host, user, password, xaTransactionDB2, port);
     
     transaction {
-        var e1 = checkpanic dbClient1->execute(`insert into Customers (customerId, name, creditLimit, country)
+        _ = checkpanic dbClient1->execute(`insert into Customers (customerId, name, creditLimit, country)
                                 values (10, 'Anne', 1000, 'UK')`);
-        var e2 = checkpanic dbClient2->execute(`insert into Salary (id, value ) values (10, 1000)`);
+        _ = checkpanic dbClient2->execute(`insert into Salary (id, value ) values (10, 1000)`);
         checkpanic commit;
     }
     

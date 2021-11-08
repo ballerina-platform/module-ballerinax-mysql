@@ -34,11 +34,11 @@ type NumericTypeForQuery record {
 @test:Config {
     groups: ["query","query-numeric-params"]
 }
-function testQuery() {
+function testQuery() returns error? {
     Client dbClient = checkpanic new (host, user, password, database, port);
     stream<record{}, sql:Error?> streamData = dbClient->query(`SELECT * FROM NumericTypes`);
     record {}? returnData = ();
-    error? e = streamData.forEach(function(record {} data) {
+    check streamData.forEach(function(record {} data) {
         returnData = data;
     });
     checkpanic dbClient.close();
@@ -63,11 +63,11 @@ function testQuery() {
 @test:Config {
     groups: ["query","query-numeric-params"]
 }
-function testQueryNumericTypeRecord() {
+function testQueryNumericTypeRecord() returns error? {
     Client dbClient = checkpanic new (host, user, password, database, port);
     stream<NumericTypeForQuery, sql:Error?> streamData = dbClient->query(`SELECT * FROM NumericTypes`);
     NumericTypeForQuery? returnData = ();
-    error? e = streamData.forEach(function(NumericTypeForQuery data) {
+    check streamData.forEach(function(NumericTypeForQuery data) {
         returnData = data;
     });
     checkpanic dbClient.close();
@@ -263,12 +263,12 @@ function testQueryNumericCustomTypeRecord() {
 @test:Config {
     groups: ["query","query-numeric-params"]
 }
-function testQueryFromNullTable() {
+function testQueryFromNullTable() returns error? {
     Client dbClient = checkpanic new (host, user, password, database, port);
     stream<record{}, sql:Error?> streamData = dbClient->query(`SELECT * FROM NumericNullTypes`);
     record {} returnData = {};
     int count = 0;
-    error? e = streamData.forEach(function(record {} data) {
+    check streamData.forEach(function(record {} data) {
         returnData = data;
         count += 1;
     });

@@ -36,13 +36,11 @@ isolated service /db on new http:Listener(9092) {
         error? output = resultStream.close();
         http:Response response = new;
         if result is error {
-            log:printError("Error at db_select", 'error = result);
             response.statusCode = 500;
             response.setPayload(result.toString());
         } else {
             response.statusCode = 200;
             if result is record {|record {} value;|} {
-                log:printInfo("Total count: " + result.value["total"].toString());
                 response.setPayload("Total count: " + result.value["total"].toString());
             } else {
                 response.setPayload("Total count: ");

@@ -22,8 +22,6 @@
         <stringProp name="ThreadGroup.ramp_time">${__P(rampUpPeriod,60)}</stringProp>
         <boolProp name="ThreadGroup.scheduler">true</boolProp>
         <stringProp name="ThreadGroup.duration">${__P(duration)}</stringProp>
-        <stringProp name="ThreadGroup.delay">10</stringProp>
-        <stringProp name="ThreadGroup.delay"></stringProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
       </ThreadGroup>
       <hashTree>

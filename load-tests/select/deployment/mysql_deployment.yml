@@ -46,7 +46,7 @@ spec:
           args:
             - "-o"
             - "/tmp/data/init.sql"
-            - "https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-nysql/main/load-tests/select/scripts/init.sql"
+            - "https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-mysql/main/load-tests/select/scripts/init.sql"
           volumeMounts:
             - name: init-script
               mountPath: /tmp/data

@@ -155,7 +155,7 @@ function testDateTimeStrings() returns error? {
     Client dbClient = check new (host, user, password, complexQueryDb, port);
     sql:ParameterizedQuery insertQuery = `Insert into DateTimeTypes (ROW_ID, DATE_TYPE, TIME_TYPE, TIMESTAMP_TYPE, DATETIME_TYPE)
                                    values (1,'2017-05-23','14:15:23','2017-01-25 16:33:55','2017-01-25 22:33:55')`;
-    sql:ExecutionResult? result = check dbClient->execute(insertQuery);
+    _ = check dbClient->execute(insertQuery);
     stream<ResultDates, error?> queryResult = dbClient->query(`SELECT DATE_TYPE, TIME_TYPE, TIMESTAMP_TYPE, DATETIME_TYPE
         from DateTimeTypes where ROW_ID = 1`);
     record{| ResultDates value; |}? data =  check queryResult.next();
@@ -183,7 +183,7 @@ function testDateTimeRecords() returns error? {
     Client dbClient = check new (host, user, password, complexQueryDb, port);
     sql:ParameterizedQuery insertQuery = `Insert into DateTimeTypes (ROW_ID, DATE_TYPE, TIME_TYPE, TIMESTAMP_TYPE, DATETIME_TYPE)
          values (2,'2017-05-23','14:15:23','2017-01-25 16:33:55','2017-01-25 22:33:55')`;
-    sql:ExecutionResult? result = check dbClient->execute(insertQuery);
+    _ = check dbClient->execute(insertQuery);
     stream<ResultDatesRecord, error?> queryResult = dbClient->query(`SELECT DATE_TYPE, TIME_TYPE, TIMESTAMP_TYPE, DATETIME_TYPE
         from DateTimeTypes where ROW_ID = 2`);
     record{| ResultDatesRecord value; |}? data =  check queryResult.next();

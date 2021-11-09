@@ -98,7 +98,6 @@ function deleteDataTable1() {
     int rowId = 1;
     int intType = 1;
     int longType = 9223372036854774807;
-    float floatType = 123.34;
     int doubleType = 2139095039;
     boolean boolType = true;
     string stringType = "Hello";
@@ -129,7 +128,6 @@ function deleteDataTable3() {
     sql:IntegerValue rowId = new (3);
     sql:IntegerValue intType = new (1);
     sql:BigIntValue longType = new (9372036854774807);
-    sql:FloatValue floatType = new (124.34);
     sql:DoubleValue doubleType = new (29095039);
     sql:BooleanValue boolType = new (false);
     sql:VarcharValue stringType = new ("1");
@@ -212,8 +210,6 @@ function deleteComplexTable() {
 function deleteComplexTable2() {
     sql:BlobValue blobType = new ();
     sql:TextValue textType = new ();
-    sql:BinaryValue binaryType = new ();
-    sql:VarBinaryValue varBinaryType = new ();
 
     int rowId = 4;
     sql:ParameterizedQuery sqlQuery =
@@ -289,8 +285,6 @@ function insertIntoDateTimeTable() {
     string timeType = "11:35:45";
     string dateTimeType = "2017-02-03 11:53:00";
     string timeStampType = "2017-02-03 11:53:00";
-    string timeType2 = "20:08:08-8:00";
-    string timeStampType2 = "2008-08-08 20:08:08+8:00";
 
     sql:ParameterizedQuery sqlQuery =
         `INSERT INTO DateTimeTypes (row_id, date_type, time_type, datetime_type, timestamp_type)

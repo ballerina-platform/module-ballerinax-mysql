@@ -23,144 +23,144 @@ string simpleParamsDb = "QUERY_SIMPLE_PARAMS_DB";
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function querySingleIntParam() {
+function querySingleIntParam() returns error? {
     int rowId = 1;
     sql:ParameterizedQuery sqlQuery = `SELECT * from DataTable WHERE row_id = ${rowId}`;
-    validateDataTableResult(queryMysqlClient(sqlQuery));
+    validateDataTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryDoubleIntParam() {
+function queryDoubleIntParam() returns error? {
     int rowId = 1;
     int intType = 1;
     sql:ParameterizedQuery sqlQuery = `SELECT * from DataTable WHERE row_id = ${rowId} AND int_type =  ${intType}`;
-    validateDataTableResult(queryMysqlClient(sqlQuery));
+    validateDataTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryIntAndLongParam() {
+function queryIntAndLongParam() returns error? {
     int rowId = 1;
     int longType = 9223372036854774807;
     sql:ParameterizedQuery sqlQuery = `SELECT * from DataTable WHERE row_id = ${rowId} AND long_type = ${longType}`;
-    validateDataTableResult(queryMysqlClient(sqlQuery));
+    validateDataTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryStringParam() {
+function queryStringParam() returns error? {
     string stringType = "Hello";
     sql:ParameterizedQuery sqlQuery = `SELECT * from DataTable WHERE string_type = ${stringType}`;
-    validateDataTableResult(queryMysqlClient(sqlQuery));
+    validateDataTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryIntAndStringParam() {
+function queryIntAndStringParam() returns error? {
     string stringType = "Hello";
     int rowId =1;
     sql:ParameterizedQuery sqlQuery = `SELECT * from DataTable WHERE string_type = ${stringType} AND row_id = ${rowId}`;
-    validateDataTableResult(queryMysqlClient(sqlQuery));
+    validateDataTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryDoubleParam() {
+function queryDoubleParam() returns error? {
     float doubleType = 2139095039.0;
     sql:ParameterizedQuery sqlQuery = `SELECT * from DataTable WHERE double_type = ${doubleType}`;
-    validateDataTableResult(queryMysqlClient(sqlQuery));
+    validateDataTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryFloatParam() {
+function queryFloatParam() returns error? {
     float floatType = 123.34;
     sql:ParameterizedQuery sqlQuery = `SELECT * from DataTable WHERE FORMAT(float_type,2) = ${floatType}`;
-    validateDataTableResult(queryMysqlClient(sqlQuery));
+    validateDataTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryDoubleAndFloatParam() {
+function queryDoubleAndFloatParam() returns error? {
     float floatType = 123.34;
     float doubleType = 2139095039.0;
     sql:ParameterizedQuery sqlQuery = `SELECT * from DataTable WHERE FORMAT(float_type,2) = ${floatType}
                                                                     and double_type = ${doubleType}`;
-    validateDataTableResult(queryMysqlClient(sqlQuery));
+    validateDataTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryDecimalParam() {
+function queryDecimalParam() returns error? {
     decimal decimalValue = 23.45;
     sql:ParameterizedQuery sqlQuery = `SELECT * from DataTable WHERE decimal_type = ${decimalValue}`;
-    validateDataTableResult(queryMysqlClient(sqlQuery));
+    validateDataTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryDecimalAnFloatParam() {
+function queryDecimalAnFloatParam() returns error? {
     decimal decimalValue = 23.45;
     sql:ParameterizedQuery sqlQuery = `SELECT * from DataTable WHERE decimal_type = ${decimalValue}
                                                                     and double_type = 2139095039.0`;
-    validateDataTableResult(queryMysqlClient(sqlQuery));
+    validateDataTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeVarcharStringParam() {
+function queryTypeVarcharStringParam() returns error? {
     sql:VarcharValue typeVal = new ("Hello");
     sql:ParameterizedQuery sqlQuery = `SELECT * from DataTable WHERE string_type = ${typeVal}`;
-    validateDataTableResult(queryMysqlClient(sqlQuery));
+    validateDataTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeCharStringParam() {
+function queryTypeCharStringParam() returns error? {
     sql:CharValue typeVal = new ("Hello");
     sql:ParameterizedQuery sqlQuery = `SELECT * from DataTable WHERE string_type = ${typeVal}`;
-    validateDataTableResult(queryMysqlClient(sqlQuery));
+    validateDataTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeNCharStringParam() {
+function queryTypeNCharStringParam() returns error? {
     sql:NCharValue typeVal = new ("Hello");
     sql:ParameterizedQuery sqlQuery = `SELECT * from DataTable WHERE string_type = ${typeVal}`;
-    validateDataTableResult(queryMysqlClient(sqlQuery));
+    validateDataTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeNVarCharStringParam() {
+function queryTypeNVarCharStringParam() returns error? {
     sql:NVarcharValue typeVal = new ("Hello");
     sql:ParameterizedQuery sqlQuery = `SELECT * from DataTable WHERE string_type = ${typeVal}`;
-    validateDataTableResult(queryMysqlClient(sqlQuery));
+    validateDataTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeVarCharIntegerParam() {
+function queryTypeVarCharIntegerParam() returns error? {
     sql:VarcharValue typeVal = new ("1");
     sql:ParameterizedQuery sqlQuery = `SELECT * from DataTable WHERE string_type = ${typeVal}`;
 
     decimal decimalVal = 25.45;
-    record {}? returnData = queryMysqlClient(sqlQuery);
+    record {}? returnData = check queryMysqlClient(sqlQuery);
     test:assertNotEquals(returnData, ());
     if (returnData is ()) {
         test:assertFail("Query returns ()");
@@ -179,34 +179,34 @@ function queryTypeVarCharIntegerParam() {
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypBooleanBooleanParam() {
+function queryTypBooleanBooleanParam() returns error? {
     sql:BooleanValue typeVal = new (true);
     sql:ParameterizedQuery sqlQuery = `SELECT * from DataTable WHERE boolean_type = ${typeVal}`;
-    validateDataTableResult(queryMysqlClient(sqlQuery));
+    validateDataTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypBitIntParam() {
+function queryTypBitIntParam() returns error? {
     sql:BitValue typeVal = new (1);
     sql:ParameterizedQuery sqlQuery = `SELECT * from DataTable WHERE boolean_type = ${typeVal}`;
-    validateDataTableResult(queryMysqlClient(sqlQuery));
+    validateDataTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypBitStringParam() {
+function queryTypBitStringParam() returns error? {
     sql:BitValue typeVal = new (true);
     sql:ParameterizedQuery sqlQuery = `SELECT * from DataTable WHERE boolean_type = ${typeVal}`;
-    validateDataTableResult(queryMysqlClient(sqlQuery));
+    validateDataTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypBitInvalidIntParam() {
+function queryTypBitInvalidIntParam() returns error? {
     sql:BitValue typeVal = new (12);
     sql:ParameterizedQuery sqlQuery = `SELECT * from DataTable WHERE boolean_type = ${typeVal}`;
     record{}|error? returnVal = trap queryMysqlClient(sqlQuery);
@@ -218,65 +218,65 @@ function queryTypBitInvalidIntParam() {
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeIntIntParam() {
+function queryTypeIntIntParam() returns error? {
     sql:IntegerValue typeVal = new (2147483647);
     sql:ParameterizedQuery sqlQuery = `SELECT * from NumericTypes WHERE int_type = ${typeVal}`;
-    validateNumericTableResult(queryMysqlClient(sqlQuery));
+    validateNumericTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeTinyIntIntParam() {
+function queryTypeTinyIntIntParam() returns error? {
     sql:SmallIntValue typeVal = new (127);
     sql:ParameterizedQuery sqlQuery = `SELECT * from NumericTypes WHERE tinyint_type = ${typeVal}`;
-    validateNumericTableResult(queryMysqlClient(sqlQuery));
+    validateNumericTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeSmallIntIntParam() {
+function queryTypeSmallIntIntParam() returns error? {
     sql:SmallIntValue typeVal = new (32767);
     sql:ParameterizedQuery sqlQuery = `SELECT * from NumericTypes WHERE smallint_type = ${typeVal}`;
-    validateNumericTableResult(queryMysqlClient(sqlQuery));
+    validateNumericTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeMediumIntIntParam() {
+function queryTypeMediumIntIntParam() returns error? {
     sql:IntegerValue typeVal = new (8388607);
     sql:ParameterizedQuery sqlQuery = `SELECT * from NumericTypes WHERE mediumint_type = ${typeVal}`;
-    validateNumericTableResult(queryMysqlClient(sqlQuery));
+    validateNumericTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeBigIntIntParam() {
+function queryTypeBigIntIntParam() returns error? {
     sql:BigIntValue typeVal = new (9223372036854774807);
     sql:ParameterizedQuery sqlQuery = `SELECT * from NumericTypes WHERE bigint_type = ${typeVal}`;
-    validateNumericTableResult(queryMysqlClient(sqlQuery));
+    validateNumericTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeDoubleDoubleParam() {
+function queryTypeDoubleDoubleParam() returns error? {
     sql:DoubleValue typeVal = new (1234.567);
     sql:DoubleValue typeVal2 = new (1234.57);
     sql:ParameterizedQuery sqlQuery = `SELECT * from NumericTypes WHERE float_type between ${typeVal} AND ${typeVal2}`;
-    validateNumericTableResult(queryMysqlClient(sqlQuery));
+    validateNumericTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeDoubleIntParam() {
+function queryTypeDoubleIntParam() returns error? {
     sql:DoubleValue typeVal = new (1234);
     sql:ParameterizedQuery sqlQuery = `SELECT * from NumericTypes WHERE float_type = ${typeVal}`;
-    record{}? returnData = queryMysqlClient(sqlQuery);
+    record{}? returnData = check queryMysqlClient(sqlQuery);
 
     if (returnData is ()) {
         test:assertFail("Returned data is nil");
@@ -291,50 +291,50 @@ function queryTypeDoubleIntParam() {
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeDoubleDecimalParam() {
+function queryTypeDoubleDecimalParam() returns error? {
     decimal decimalVal = 1234.567;
     decimal decimalVal2 = 1234.57;
     sql:DoubleValue typeVal = new (decimalVal);
     sql:DoubleValue typeVal2 = new (decimalVal2);
     sql:ParameterizedQuery sqlQuery = `SELECT * from NumericTypes WHERE float_type between ${typeVal} AND ${typeVal2}`;
-    validateNumericTableResult(queryMysqlClient(sqlQuery));
+    validateNumericTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeFloatDoubleParam() {
+function queryTypeFloatDoubleParam() returns error? {
     sql:DoubleValue typeVal1 = new (1234.567);
     sql:DoubleValue typeVal2 = new (1234.57);
     sql:ParameterizedQuery sqlQuery = `SELECT * from NumericTypes WHERE float_type between ${typeVal1} AND ${typeVal2}`;
-    validateNumericTableResult(queryMysqlClient(sqlQuery));
+    validateNumericTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeRealDoubleParam() {
+function queryTypeRealDoubleParam() returns error? {
     sql:RealValue typeVal = new (1234.567);
     sql:ParameterizedQuery sqlQuery = `SELECT * from NumericTypes WHERE real_type = ${typeVal}`;
-    validateNumericTableResult(queryMysqlClient(sqlQuery));
+    validateNumericTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeNumericDoubleParam() {
+function queryTypeNumericDoubleParam() returns error? {
     sql:NumericValue typeVal = new (1234.567);
     sql:ParameterizedQuery sqlQuery = `SELECT * from NumericTypes WHERE numeric_type = ${typeVal}`;
-    validateNumericTableResult(queryMysqlClient(sqlQuery));
+    validateNumericTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeNumericIntParam() {
+function queryTypeNumericIntParam() returns error? {
     sql:NumericValue typeVal = new (1234);
     sql:ParameterizedQuery sqlQuery = `SELECT * from NumericTypes WHERE numeric_type = ${typeVal}`;
-    record{}? returnData = queryMysqlClient(sqlQuery);
+    record{}? returnData = check queryMysqlClient(sqlQuery);
 
     if (returnData is ()) {
         test:assertFail("Returned data is nil");
@@ -348,235 +348,235 @@ function queryTypeNumericIntParam() {
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeNumericDecimalParam() {
+function queryTypeNumericDecimalParam() returns error? {
     decimal decimalVal = 1234.567;
     sql:NumericValue typeVal = new (decimalVal);
     sql:ParameterizedQuery sqlQuery = `SELECT * from NumericTypes WHERE numeric_type = ${typeVal}`;
-    validateNumericTableResult(queryMysqlClient(sqlQuery));
+    validateNumericTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeDecimalDoubleParam() {
+function queryTypeDecimalDoubleParam() returns error? {
     sql:DecimalValue typeVal = new (1234.567);
     sql:ParameterizedQuery sqlQuery = `SELECT * from NumericTypes WHERE decimal_type = ${typeVal}`;
-    validateNumericTableResult(queryMysqlClient(sqlQuery));
+    validateNumericTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeDecimalDecimalParam() {
+function queryTypeDecimalDecimalParam() returns error? {
     decimal decimalVal = 1234.567;
     sql:DecimalValue typeVal = new (decimalVal);
     sql:ParameterizedQuery sqlQuery = `SELECT * from NumericTypes WHERE decimal_type = ${typeVal}`;
-    validateNumericTableResult(queryMysqlClient(sqlQuery));
+    validateNumericTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryByteArrayParam() {
-    record {}|error? value = queryMysqlClient(`Select * from ComplexTypes where row_id = 1`);
+function queryByteArrayParam() returns error? {
+    record {}|error? value = check queryMysqlClient(`Select * from ComplexTypes where row_id = 1`);
     byte[] binaryData = <byte[]>getUntaintedData(value, "binary_type");
 
     sql:ParameterizedQuery sqlQuery = `SELECT * from ComplexTypes WHERE binary_type = ${binaryData}`;
-    validateComplexTableResult(queryMysqlClient(sqlQuery));
+    validateComplexTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeBinaryByteParam() {
-    record {}|error? value = queryMysqlClient(`Select * from ComplexTypes where row_id = 1`);
+function queryTypeBinaryByteParam() returns error? {
+    record {}|error? value = check queryMysqlClient(`Select * from ComplexTypes where row_id = 1`);
     byte[] binaryData = <byte[]>getUntaintedData(value, "binary_type");
     sql:BinaryValue typeVal = new (binaryData);
     sql:ParameterizedQuery sqlQuery = `SELECT * from ComplexTypes WHERE binary_type = ${typeVal}`;
-    validateComplexTableResult(queryMysqlClient(sqlQuery));
+    validateComplexTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeBinaryReadableByteChannelParam() {
+function queryTypeBinaryReadableByteChannelParam() returns error? {
     io:ReadableByteChannel byteChannel = getByteColumnChannel();
     sql:BinaryValue typeVal = new (byteChannel);
     sql:ParameterizedQuery sqlQuery = `SELECT * from ComplexTypes WHERE binary_type = ${typeVal}`;
-    validateComplexTableResult(queryMysqlClient(sqlQuery));
+    validateComplexTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeVarBinaryReadableByteChannelParam() {
+function queryTypeVarBinaryReadableByteChannelParam() returns error? {
     io:ReadableByteChannel byteChannel = getByteColumnChannel();
     sql:VarBinaryValue typeVal = new (byteChannel);
     sql:ParameterizedQuery sqlQuery = `SELECT * from ComplexTypes WHERE var_binary_type = ${typeVal}`;
-    validateComplexTableResult(queryMysqlClient(sqlQuery));
+    validateComplexTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeTinyBlobByteParam() {
-    record {}|error? value = queryMysqlClient(`Select * from ComplexTypes where row_id = 1`);
+function queryTypeTinyBlobByteParam() returns error? {
+    record {}|error? value = check queryMysqlClient(`Select * from ComplexTypes where row_id = 1`);
     byte[] binaryData = <byte[]>getUntaintedData(value, "tinyblob_type");
     sql:BinaryValue typeVal = new (binaryData);
     sql:ParameterizedQuery sqlQuery = `SELECT * from ComplexTypes WHERE tinyblob_type = ${typeVal}`;
-    validateComplexTableResult(queryMysqlClient(sqlQuery));
+    validateComplexTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeBlobByteParam() {
-    record {}|error? value = queryMysqlClient(`Select * from ComplexTypes where row_id = 1`);
+function queryTypeBlobByteParam() returns error? {
+    record {}|error? value = check queryMysqlClient(`Select * from ComplexTypes where row_id = 1`);
     byte[] binaryData = <byte[]>getUntaintedData(value, "blob_type");
     sql:BlobValue typeVal = new (binaryData);
     sql:ParameterizedQuery sqlQuery = `SELECT * from ComplexTypes WHERE blob_type = ${typeVal}`;
-    validateComplexTableResult(queryMysqlClient(sqlQuery));
+    validateComplexTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeMediumBlobByteParam() {
-    record {}|error? value = queryMysqlClient(`Select * from ComplexTypes where row_id = 1`);
+function queryTypeMediumBlobByteParam() returns error? {
+    record {}|error? value = check queryMysqlClient(`Select * from ComplexTypes where row_id = 1`);
     byte[] binaryData = <byte[]>getUntaintedData(value, "mediumblob_type");
     sql:BlobValue typeVal = new (binaryData);
     sql:ParameterizedQuery sqlQuery = `SELECT * from ComplexTypes WHERE mediumblob_type = ${typeVal}`;
-    validateComplexTableResult(queryMysqlClient(sqlQuery));
+    validateComplexTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeLongBlobByteParam() {
-    record {}|error? value = queryMysqlClient(`Select * from ComplexTypes where row_id = 1`);
+function queryTypeLongBlobByteParam() returns error? {
+    record {}|error? value = check queryMysqlClient(`Select * from ComplexTypes where row_id = 1`);
     byte[] binaryData = <byte[]>getUntaintedData(value, "longblob_type");
     sql:BlobValue typeVal = new (binaryData);
     sql:ParameterizedQuery sqlQuery = `SELECT * from ComplexTypes WHERE longblob_type = ${typeVal}`;
-    validateComplexTableResult(queryMysqlClient(sqlQuery));
+    validateComplexTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeBlobReadableByteChannelParam() {
+function queryTypeBlobReadableByteChannelParam() returns error? {
     io:ReadableByteChannel byteChannel = getBlobColumnChannel();
     sql:BlobValue typeVal = new (byteChannel);
     sql:ParameterizedQuery sqlQuery = `SELECT * from ComplexTypes WHERE blob_type = ${typeVal}`;
-    validateComplexTableResult(queryMysqlClient(sqlQuery));
+    validateComplexTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeTinyTextStringParam() {
+function queryTypeTinyTextStringParam() returns error? {
     sql:TextValue typeVal = new ("very long text");
     sql:ParameterizedQuery sqlQuery = `SELECT * from ComplexTypes WHERE tinytext_type = ${typeVal}`;
-    validateComplexTableResult(queryMysqlClient(sqlQuery));
+    validateComplexTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeTextStringParam() {
+function queryTypeTextStringParam() returns error? {
     sql:TextValue typeVal = new ("very long text");
     sql:ParameterizedQuery sqlQuery = `SELECT * from ComplexTypes WHERE text_type = ${typeVal}`;
-    validateComplexTableResult(queryMysqlClient(sqlQuery));
+    validateComplexTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeMediumTextStringParam() {
+function queryTypeMediumTextStringParam() returns error? {
     sql:TextValue typeVal = new ("very long text");
     sql:ParameterizedQuery sqlQuery = `SELECT * from ComplexTypes WHERE mediumtext_type = ${typeVal}`;
-    validateComplexTableResult(queryMysqlClient(sqlQuery));
+    validateComplexTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeLongTextStringParam() {
+function queryTypeLongTextStringParam() returns error? {
     sql:TextValue typeVal = new ("very long text");
     sql:ParameterizedQuery sqlQuery = `SELECT * from ComplexTypes WHERE longtext_type = ${typeVal}`;
-    validateComplexTableResult(queryMysqlClient(sqlQuery));
+    validateComplexTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeTextReadableCharChannelParam() {
+function queryTypeTextReadableCharChannelParam() returns error? {
     io:ReadableCharacterChannel clobChannel = getTextColumnChannel();
     sql:ClobValue typeVal = new (clobChannel);
     sql:ParameterizedQuery sqlQuery = `SELECT * from ComplexTypes WHERE text_type = ${typeVal}`;
-    validateComplexTableResult(queryMysqlClient(sqlQuery));
+    validateComplexTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTypeNTextReadableCharChannelParam() {
+function queryTypeNTextReadableCharChannelParam() returns error? {
     io:ReadableCharacterChannel clobChannel = getTextColumnChannel();
     sql:NClobValue typeVal = new (clobChannel);
     sql:ParameterizedQuery sqlQuery = `SELECT * from ComplexTypes WHERE text_type = ${typeVal}`;
-    validateComplexTableResult(queryMysqlClient(sqlQuery));
+    validateComplexTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryDateStringParam() {
+function queryDateStringParam() returns error? {
     //Setting this as var char since the test database seems not working with date type.
     sql:VarcharValue typeVal = new ("2017-02-03");
     sql:ParameterizedQuery sqlQuery = `SELECT * from DateTimeTypes WHERE date_type = ${typeVal}`;
-    validateDateTimeTypesTableResult(queryMysqlClient(sqlQuery));
+    validateDateTimeTypesTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryDateString2Param() {
+function queryDateString2Param() returns error? {
     sql:VarcharValue typeVal = new ("2017-2-3");
     sql:ParameterizedQuery sqlQuery = `SELECT * from DateTimeTypes WHERE date_type = ${typeVal}`;
-    validateDateTimeTypesTableResult(queryMysqlClient(sqlQuery));
+    validateDateTimeTypesTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTimeStringParam() {
+function queryTimeStringParam() returns error? {
     sql:VarcharValue typeVal = new ("11:35:45");
     sql:ParameterizedQuery sqlQuery = `SELECT * from DateTimeTypes WHERE time_type = ${typeVal}`;
-    validateDateTimeTypesTableResult(queryMysqlClient(sqlQuery));
+    validateDateTimeTypesTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTimeStringInvalidParam() {
+function queryTimeStringInvalidParam() returns error? {
     sql:TimeValue typeVal = new ("xx.xx.xx");
     sql:ParameterizedQuery sqlQuery = `SELECT * from DateTimeTypes WHERE time_type = ${typeVal}`;
-    record{}|error? returnVal = trap queryMysqlClient(sqlQuery);
+    record{}|error? returnVal = trap check queryMysqlClient(sqlQuery);
     test:assertTrue(returnVal is ());
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTimestampStringParam() {
+function queryTimestampStringParam() returns error? {
     sql:VarcharValue typeVal = new ("2017-02-03 11:53:00");
     sql:ParameterizedQuery sqlQuery = `SELECT * from DateTimeTypes WHERE timestamp_type = ${typeVal}`;
-    validateDateTimeTypesTableResult(queryMysqlClient(sqlQuery));
+    validateDateTimeTypesTableResult(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryTimestampStringInvalidParam() {
+function queryTimestampStringInvalidParam() returns error? {
     sql:TimestampValue typeVal = new ("11:53:00 2017/02/03");
     sql:ParameterizedQuery sqlQuery = `SELECT * from DateTimeTypes WHERE timestamp_type = ${typeVal}`;
     record{}|error? returnVal = trap queryMysqlClient(sqlQuery);
@@ -589,10 +589,10 @@ function queryTimestampStringInvalidParam() {
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryEnumStringParam() {
+function queryEnumStringParam() returns error? {
     string enumVal = "doctor";
     sql:ParameterizedQuery sqlQuery = `SELECT * from ENUMTable where enum_type= ${enumVal}`;
-    validateEnumTable(queryMysqlClient(sqlQuery));
+    validateEnumTable(check queryMysqlClient(sqlQuery));
 }
 
 type EnumResult record {|
@@ -603,19 +603,19 @@ type EnumResult record {|
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryEnumStringParam2() {
+function queryEnumStringParam2() returns error? {
     string enumVal = "doctor";
     sql:ParameterizedQuery sqlQuery = `SELECT * from ENUMTable where enum_type= ${enumVal}`;
-    validateEnumTable(queryMysqlClient(sqlQuery));
+    validateEnumTable(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function querySetStringParam() {
+function querySetStringParam() returns error? {
     string setType = "a,d";
     sql:ParameterizedQuery sqlQuery = `SELECT * from SetTable where set_type= ${setType}`;
-    record{}? returnData = queryMysqlClient(sqlQuery);
+    record{}? returnData = check queryMysqlClient(sqlQuery);
     if (returnData is ()) {
         test:assertFail("Returned data is nil");
     } else {
@@ -628,27 +628,27 @@ function querySetStringParam() {
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryGeoParam() {
+function queryGeoParam() returns error? {
     sql:ParameterizedQuery sqlQuery = `SELECT id, ST_AsText(geom) as geomText from GEOTable`;
-    validateGeoTable(queryMysqlClient(sqlQuery));
+    validateGeoTable(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryGeoParam2() {
+function queryGeoParam2() returns error? {
     string geoPoint = "POINT (7 52)";
     sql:ParameterizedQuery sqlQuery =
             `SELECT id, ST_AsText(geom) as geomText from GEOTable where geom = ST_GeomFromText(${geoPoint})`;
-    validateGeoTable(queryMysqlClient(sqlQuery));
+    validateGeoTable(check queryMysqlClient(sqlQuery));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryJsonParam() returns record {}|error? {
+function queryJsonParam() returns error? {
     sql:ParameterizedQuery sqlQuery = `SELECT * from JsonTable`;
-    validateJsonTableWithoutRequestType(queryMysqlClient(sqlQuery));
+    validateJsonTableWithoutRequestType(check queryMysqlClient(sqlQuery));
 }
 
 type JsonResult record {|
@@ -659,18 +659,18 @@ type JsonResult record {|
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryJsonParam2() returns record {}|error? {
+function queryJsonParam2() returns error? {
     sql:ParameterizedQuery sqlQuery = `SELECT * from JsonTable`;
-    validateJsonTable(queryMysqlClient(sqlQuery, resultType = JsonResult));
+    validateJsonTable(check queryMysqlClient(sqlQuery, resultType = JsonResult));
 }
 
 @test:Config {
     groups: ["query","query-simple-params"]
 }
-function queryJsonParam3() returns record {}|error? {
+function queryJsonParam3() returns error? {
     int id = 100;
     sql:ParameterizedQuery sqlQuery = `SELECT * from JsonTable where json_type->'$.id'=${id}`;
-    validateJsonTable(queryMysqlClient(sqlQuery, resultType = JsonResult));
+    validateJsonTable(check queryMysqlClient(sqlQuery, resultType = JsonResult));
 }
 
 @test:Config {
@@ -700,22 +700,6 @@ function queryRecordNegative() returns sql:Error? {
    } else {
        test:assertFail("Expected no rows error with empty query result.");
    }
-}
-
-@test:Config {
-    groups: ["query", "query-simple-params"]
-}
-function queryRecordNegative2() returns error? {
-    int rowId = 1;
-    Client dbClient = check new (host, user, password, simpleParamsDb, port);
-    sql:ParameterizedQuery sqlQuery = `SELECT * from DataTable WHERE row_id = ${rowId}`;
-    record{}|int|error queryResult = dbClient->queryRow(sqlQuery);
-    check dbClient.close();
-    if queryResult is error {
-        test:assertEquals(queryResult.message(), "Return type cannot be a union of multiple types.");
-    } else {
-        test:assertFail("Expected error when querying with union return type.");
-    }
 }
 
 @test:Config {
@@ -781,18 +765,18 @@ function queryValueNegative2() returns error? {
 }
 
 function queryMysqlClient(sql:ParameterizedQuery sqlQuery, typedesc<record {}>? resultType = ())
-returns record {}? {
-    Client dbClient = checkpanic new (host, user, password, simpleParamsDb, port);
+returns record {}|error? {
+    Client dbClient = check new (host, user, password, simpleParamsDb, port);
     stream<record {}, error?> streamData;
     if resultType is () {
         streamData = dbClient->query(sqlQuery);
     } else {
         streamData = dbClient->query(sqlQuery, resultType);
     }
-    record {|record {} value;|}? data = checkpanic streamData.next();
-    checkpanic streamData.close();
+    record {|record {} value;|}? data = check streamData.next();
+    check streamData.close();
     record {}? value = data?.value;
-    checkpanic dbClient.close();
+    check dbClient.close();
     return value;
 }
 

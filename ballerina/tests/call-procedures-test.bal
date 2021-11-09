@@ -34,9 +34,9 @@ type StringDataSingle record {
 @test:Config {
     groups: ["procedures"]
 }
-function testCallWithStringTypes() returns record {}|error? {
-    Client dbClient = checkpanic new (host, user, password, proceduresDb, port);
-    sql:ProcedureCallResult ret = checkpanic dbClient->call(`{call InsertStringData(2,'test1', 'test2', 'c', 'test3', 'd', 'test4')};`);
+function testCallWithStringTypes() returns error? {
+    Client dbClient = check new (host, user, password, proceduresDb, port);
+    _ = check dbClient->call(`{call InsertStringData(2,'test1', 'test2', 'c', 'test3', 'd', 'test4')};`);
 
     sql:ParameterizedQuery sqlQuery = `SELECT varchar_type, charmax_type, char_type, charactermax_type, character_type,
                    nvarcharmax_type from StringTypes where id = 2`;
@@ -65,7 +65,7 @@ function testCallWithStringTypesInParams() {
     string characterType = "d";
     string nvarcharmaxType = "test4";
 
-    var ret = checkpanic dbClient->call(`{call InsertStringData(3, ${varcharType}, ${charmaxType}, ${charType},
+    _ = checkpanic dbClient->call(`{call InsertStringData(3, ${varcharType}, ${charmaxType}, ${charType},
                             ${charactermaxType}, ${characterType}, ${nvarcharmaxType})}`);
 
     sql:ParameterizedQuery sqlQuery = `SELECT varchar_type, charmax_type, char_type, charactermax_type, character_type,
@@ -126,7 +126,7 @@ function testCallWithStringTypesWithAnotherUser() returns error? {
 
     Client dbClient = check new (host, user1, password, proceduresDb, port, opt);
     
-    sql:ProcedureCallResult ret = check dbClient->call(`{call InsertStringData(4,'test1', 'test2', 'c', 'test3', 'd', 'test4')};`);
+    _ = check dbClient->call(`{call InsertStringData(4,'test1', 'test2', 'c', 'test3', 'd', 'test4')};`);
 
     sql:ParameterizedQuery sqlQuery = `SELECT varchar_type, charmax_type, char_type, charactermax_type, character_type,
                    nvarcharmax_type from StringTypes where id = 4`;
@@ -236,7 +236,7 @@ function testCallWithNumericTypesOutParams() {
     sql:RealOutParameter paraReal = new;
     sql:DoubleOutParameter paraDouble = new;
 
-    var ret = checkpanic dbClient->call(
+    _ = checkpanic dbClient->call(
         `{call SelectNumericDataWithOutParams(${paraID}, ${paraInt}, ${paraBigInt}, ${paraSmallInt}, ${paraTinyInt}, ${paraBit}, ${paraDecimal}, ${paraNumeric}, ${paraFloat}, ${paraReal}, ${paraDouble})}`);
     checkpanic dbClient.close();
 

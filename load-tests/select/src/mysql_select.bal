@@ -15,7 +15,6 @@
 // under the License.
 
 import ballerina/http;
-import ballerina/log;
 import ballerinax/mysql;
 import ballerinax/mysql.driver as _;
 import ballerina/sql;

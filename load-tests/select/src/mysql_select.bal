@@ -27,12 +27,12 @@ configurable int port = ?;
 final mysql:Client dbClient = check new (host = host, user = username, password = password, port = port);
 
 isolated service /db on new http:Listener(9092) {
-    resource isolated function get .(http:Caller caller) {
+    resource isolated function get .(http:Caller caller) returns error? {
         sql:ParameterizedQuery query = `SELECT COUNT(*) AS total FROM petdb.pet`;
         stream<record {}, error?> resultStream = dbClient->query(query);
 
         record {|record {} value;|}|error? result = resultStream.next();
-        error? output = resultStream.close();
+        _ = check resultStream.close();
         http:Response response = new;
         if result is error {
             response.statusCode = 500;
@@ -45,6 +45,6 @@ isolated service /db on new http:Listener(9092) {
                 response.setPayload("Total count: ");
             }
         }
-        output = caller->respond(response);
+        _ = check caller->respond(response);
     }
 }

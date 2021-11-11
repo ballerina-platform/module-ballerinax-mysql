@@ -1,6 +1,6 @@
 [container.image]
 repository = "ballerina"
-name = "mysql_insert"
+name = "insert"
 
 [cloud.deployment]
 min_memory = "256Mi"

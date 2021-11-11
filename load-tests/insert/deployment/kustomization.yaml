@@ -1,5 +1,5 @@
 resources:
-  - mysql_insert.yaml
+  - insert.yaml
   - ingress.yaml
   - mysql_deployment.yml
 patches:

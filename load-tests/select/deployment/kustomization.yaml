@@ -1,4 +1,5 @@
 resources:
+  - mysql_select.yaml
   - ingress.yaml
   - mysql_deployment.yml
 patches:

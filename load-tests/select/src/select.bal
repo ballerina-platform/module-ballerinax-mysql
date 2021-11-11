@@ -24,7 +24,7 @@ configurable string username = ?;
 configurable string password = ?;
 configurable int port = ?;
 
-final mysql:Client dbClient = check new (host = host, user = username, password = password, port = port);
+final mysql:Client dbClient = check new(host = host, user = username, password = password, port = port);
 
 isolated service /db on new http:Listener(9092) {
     resource isolated function get .(http:Caller caller) returns error? {

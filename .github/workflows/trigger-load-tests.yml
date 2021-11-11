@@ -31,6 +31,6 @@ jobs:
         with:
           workflow: Stdlib Workflow
           repo: ballerina-platform/ballerina-performance-cloud
-          ref: refs/heads/master
+          ref: refs/heads/main
           token: ${{ secrets.BALLERINA_BOT_TOKEN }}
           inputs: '{ "repo-name": "module-ballerinax-mysql", "tests": "${{ github.event.inputs.tests }}", "zipURL": ${{ steps.setRuntimeUrl.outputs.runtimeUrl}}, "clusterName": "${{ github.event.inputs.clusterName }}" }'

@@ -1,6 +1,6 @@
 [container.image]
 repository = "ballerina"
-name = "select"
+name = "insert"
 
 [cloud.deployment]
 min_memory = "256Mi"

@@ -1,0 +1,4 @@
+host = "mysql8-service"
+username = "root"
+password = "password"
+port = 3306

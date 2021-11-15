@@ -1,6 +1,6 @@
 [package]
 org = "wso2"
-name = "select"
+name = "insert"
 version = "0.0.1"
 
 [build-options]

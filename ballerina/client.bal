@@ -67,7 +67,7 @@ public isolated client class Client {
     # + returnType - The `typedesc` of the record/type that should be returned as a result. If this is not provided, the
     #                default column names/type of the query result set will be used
     # + return - Result in the type of `returnType`
-    remote isolated function queryRow(sql:ParameterizedQuery sqlQuery, typedesc<any> returnType = <>)
+    remote isolated function queryRow(sql:ParameterizedQuery sqlQuery, typedesc<anydata> returnType = <>)
     returns returnType|sql:Error = @java:Method {
         'class: "io.ballerina.stdlib.mysql.nativeimpl.QueryProcessor",
         name: "nativeQueryRow"

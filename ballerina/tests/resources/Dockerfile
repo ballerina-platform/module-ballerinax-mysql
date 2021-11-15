@@ -27,6 +27,7 @@ COPY sql-scripts/execute/execute-params-test-data.sql /docker-entrypoint-initdb.
 
 # Batch Execute test case
 COPY sql-scripts/batchexecute/batch-execute-test-data.sql /docker-entrypoint-initdb.d/
+
 # Negative test case
 COPY sql-scripts/error/error-test-data.sql /docker-entrypoint-initdb.d/
 

@@ -116,5 +116,6 @@ release {
 }
 
 task build {
+    dependsOn("${packageName}-native:build")
     dependsOn("${packageName}-ballerina:build")
 }

@@ -17,15 +17,12 @@
  */
 package io.ballerina.stdlib.mysql.compiler.analyzer;
 
-import io.ballerina.compiler.api.symbols.ModuleSymbol;
 import io.ballerina.compiler.api.symbols.Symbol;
-import io.ballerina.compiler.api.symbols.TypeReferenceTypeSymbol;
-import io.ballerina.compiler.api.symbols.TypeSymbol;
-import io.ballerina.compiler.syntax.tree.ExpressionNode;
 import io.ballerina.compiler.syntax.tree.RemoteMethodCallActionNode;
 import io.ballerina.projects.plugins.AnalysisTask;
 import io.ballerina.projects.plugins.SyntaxNodeAnalysisContext;
 import io.ballerina.stdlib.mysql.compiler.Constants;
+import io.ballerina.stdlib.mysql.compiler.Utils;
 import io.ballerina.tools.diagnostics.Diagnostic;
 import io.ballerina.tools.diagnostics.DiagnosticFactory;
 import io.ballerina.tools.diagnostics.DiagnosticInfo;
@@ -59,22 +56,7 @@ public class RemoteMethodAnalyzer implements AnalysisTask<SyntaxNodeAnalysisCont
     }
 
     private void addHint(SyntaxNodeAnalysisContext ctx, RemoteMethodCallActionNode node) {
-        ExpressionNode methodExpression = node.expression();
-        Optional<TypeSymbol> methodExpReferenceType = ctx.semanticModel().typeOf(methodExpression);
-        if (methodExpReferenceType.isEmpty()) {
-            return;
-        }
-        TypeReferenceTypeSymbol methodExpTypeSymbol = (TypeReferenceTypeSymbol) methodExpReferenceType.get();
-        Optional<ModuleSymbol> optionalModuleSymbol = methodExpTypeSymbol.getModule();
-        if (optionalModuleSymbol.isEmpty()) {
-            return;
-        }
-        ModuleSymbol module = optionalModuleSymbol.get();
-        if (!(module.id().orgName().equals(Constants.BALLERINAX) && module.id().moduleName().equals(Constants.MYSQL))) {
-            return;
-        }
-        String objectName = ((TypeReferenceTypeSymbol) methodExpReferenceType.get()).definition().getName().get();
-        if (!objectName.equals(Constants.Client.CLIENT)) {
+        if (!(Utils.isJDBCClientObject(ctx, node.expression()))) {
             return;
         }
 

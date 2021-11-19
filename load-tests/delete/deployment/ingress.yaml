@@ -14,6 +14,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: mysql-delete-sv
+                name: delete-svc
                 port:
                   number: 9092

@@ -16,16 +16,16 @@
 
 import ballerinax/mysql;
 
-mysql:Client dbClient = check new mysql:Client("url", (), (), (), 120, {}, { maxOpenConnections: -1 });
+mysql:Client dbClient = check new mysql:Client("url", (), (), (), 120, { connectTimeout: -1 }, { maxOpenConnections: -1 });
 
 public function main() returns error? {
 
     mysql:Client dbClient1 = check new("url", connectionPool = { maxOpenConnections: -1 });
     check dbClient1.close();
 
-    mysql:Client dbClient2 = check new("url", options = {});
+    mysql:Client dbClient2 = check new("url", options = { connectTimeout: -1 });
     check dbClient2.close();
 
-    mysql:Client dbClient3 = check new("url", (), (), (), 120, {});
+    mysql:Client dbClient3 = check new("url", (), (), (), 120, { connectTimeout: -1 });
     check dbClient3.close();
 }

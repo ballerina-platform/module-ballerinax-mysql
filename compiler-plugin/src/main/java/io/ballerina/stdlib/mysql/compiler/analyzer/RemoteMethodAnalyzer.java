@@ -32,8 +32,8 @@ import org.ballerinalang.util.diagnostic.DiagnosticErrorCode;
 import java.util.List;
 import java.util.Optional;
 
-import static io.ballerina.stdlib.mysql.compiler.MySQLDiagnosticsCode.MYSQL_101;
-import static io.ballerina.stdlib.mysql.compiler.MySQLDiagnosticsCode.MYSQL_102;
+import static io.ballerina.stdlib.mysql.compiler.MySQLDiagnosticsCode.MYSQL_901;
+import static io.ballerina.stdlib.mysql.compiler.MySQLDiagnosticsCode.MYSQL_902;
 import static org.ballerinalang.util.diagnostic.DiagnosticErrorCode.CANNOT_INFER_TYPE_FOR_PARAM;
 
 /**
@@ -72,12 +72,12 @@ public class RemoteMethodAnalyzer implements AnalysisTask<SyntaxNodeAnalysisCont
         switch (methodName.get()) {
             case Constants.Client.QUERY:
                 ctx.reportDiagnostic(DiagnosticFactory.createDiagnostic(
-                        new DiagnosticInfo(MYSQL_101.getCode(), MYSQL_101.getMessage(), MYSQL_101.getSeverity()),
+                        new DiagnosticInfo(MYSQL_901.getCode(), MYSQL_901.getMessage(), MYSQL_901.getSeverity()),
                         node.location()));
                 break;
             case Constants.Client.QUERY_ROW:
                 ctx.reportDiagnostic(DiagnosticFactory.createDiagnostic(
-                        new DiagnosticInfo(MYSQL_102.getCode(), MYSQL_102.getMessage(), MYSQL_102.getSeverity()),
+                        new DiagnosticInfo(MYSQL_902.getCode(), MYSQL_902.getMessage(), MYSQL_902.getSeverity()),
                         node.location()));
                 break;
             default:

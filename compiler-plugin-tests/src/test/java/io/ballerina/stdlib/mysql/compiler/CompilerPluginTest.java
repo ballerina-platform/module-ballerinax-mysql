@@ -37,7 +37,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static io.ballerina.stdlib.mysql.compiler.MySQLDiagnosticsCode.SQL_101;
+import static io.ballerina.stdlib.mysql.compiler.MySQLDiagnosticsCode.MYSQL_101;
 
 /**
  * Tests the custom SQL compiler plugin.
@@ -76,16 +76,16 @@ public class CompilerPluginTest {
         Assert.assertEquals(availableHints, 3);
 
         DiagnosticInfo hint1 = diagnosticHints.get(0).diagnosticInfo();
-        Assert.assertEquals(hint1.code(), MySQLDiagnosticsCode.MYSQL_101.getCode());
-        Assert.assertEquals(hint1.messageFormat(), MySQLDiagnosticsCode.MYSQL_101.getMessage());
+        Assert.assertEquals(hint1.code(), MySQLDiagnosticsCode.MYSQL_901.getCode());
+        Assert.assertEquals(hint1.messageFormat(), MySQLDiagnosticsCode.MYSQL_901.getMessage());
 
         DiagnosticInfo hint2 = diagnosticHints.get(1).diagnosticInfo();
-        Assert.assertEquals(hint2.code(), MySQLDiagnosticsCode.MYSQL_102.getCode());
-        Assert.assertEquals(hint2.messageFormat(), MySQLDiagnosticsCode.MYSQL_102.getMessage());
+        Assert.assertEquals(hint2.code(), MySQLDiagnosticsCode.MYSQL_902.getCode());
+        Assert.assertEquals(hint2.messageFormat(), MySQLDiagnosticsCode.MYSQL_902.getMessage());
 
         DiagnosticInfo hint3 = diagnosticHints.get(2).diagnosticInfo();
-        Assert.assertEquals(hint3.code(), MySQLDiagnosticsCode.MYSQL_101.getCode());
-        Assert.assertEquals(hint3.messageFormat(), MySQLDiagnosticsCode.MYSQL_101.getMessage());
+        Assert.assertEquals(hint3.code(), MySQLDiagnosticsCode.MYSQL_901.getCode());
+        Assert.assertEquals(hint3.messageFormat(), MySQLDiagnosticsCode.MYSQL_901.getMessage());
     }
 
     @Test
@@ -98,11 +98,41 @@ public class CompilerPluginTest {
                 .collect(Collectors.toList());
         long availableErrors = diagnosticErrorStream.size();
 
-        Assert.assertEquals(availableErrors, 2);
+        Assert.assertEquals(availableErrors, 5);
+
+        for (int i = 0; i < diagnosticErrorStream.size(); i++) {
+            Diagnostic diagnostic = diagnosticErrorStream.get(i);
+            switch (i) {
+                case 0:
+                case 3:
+                case 4:
+                    Assert.assertEquals(diagnostic.diagnosticInfo().code(), MYSQL_101.getCode());
+                    Assert.assertEquals(diagnostic.diagnosticInfo().messageFormat(),
+                            MYSQL_101.getMessage());
+                    break;
+                default:
+                    Assert.assertEquals(diagnostic.diagnosticInfo().code(), MySQLDiagnosticsCode.SQL_101.getCode());
+                    Assert.assertEquals(diagnostic.diagnosticInfo().messageFormat(),
+                            MySQLDiagnosticsCode.SQL_101.getMessage());
+            }
+        }
+    }
+
+    @Test
+    public void testMySQLRecords() {
+        Package currentPackage = loadPackage("sample3");
+        PackageCompilation compilation = currentPackage.getCompilation();
+        DiagnosticResult diagnosticResult = compilation.diagnosticResult();
+        List<Diagnostic> diagnosticErrorStream = diagnosticResult.diagnostics().stream()
+                .filter(r -> r.diagnosticInfo().severity().equals(DiagnosticSeverity.ERROR))
+                .collect(Collectors.toList());
+        long availableErrors = diagnosticErrorStream.size();
+
+        Assert.assertEquals(availableErrors, 10);
 
         diagnosticErrorStream.forEach(diagnostic -> {
-            Assert.assertEquals(diagnostic.diagnosticInfo().code(), SQL_101.getCode());
-            Assert.assertEquals(diagnostic.diagnosticInfo().messageFormat(), SQL_101.getMessage());
+            Assert.assertEquals(diagnostic.diagnosticInfo().code(), MYSQL_101.getCode());
+            Assert.assertEquals(diagnostic.diagnosticInfo().messageFormat(), MYSQL_101.getMessage());
         });
     }
 }

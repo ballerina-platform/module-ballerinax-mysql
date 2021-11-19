@@ -33,8 +33,10 @@ public enum MySQLDiagnosticsCode {
     SQL_102("SQL_102", "invalid value: expected value is greater than zero", ERROR),
     SQL_103("SQL_103", "invalid value: expected value is greater than or equal to 30", ERROR),
 
-    MYSQL_101("MYSQL_101", "parameter 'rowType' should be explicitly passed when the return data is ignored", HINT),
-    MYSQL_102("MYSQL_102", "parameter 'returnType' should be explicitly passed when the return data is ignored", HINT);
+    MYSQL_101("MYSQL_101", "invalid value: expected value is greater than or equal to zero", ERROR),
+
+    MYSQL_901("MYSQL_901", "parameter 'rowType' should be explicitly passed when the return data is ignored", HINT),
+    MYSQL_902("MYSQL_902", "parameter 'returnType' should be explicitly passed when the return data is ignored", HINT);
 
     private final String code;
     private final String message;

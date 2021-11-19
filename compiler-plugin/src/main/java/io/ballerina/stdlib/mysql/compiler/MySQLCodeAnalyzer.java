@@ -22,6 +22,7 @@ import io.ballerina.compiler.syntax.tree.SyntaxKind;
 import io.ballerina.projects.plugins.CodeAnalysisContext;
 import io.ballerina.projects.plugins.CodeAnalyzer;
 import io.ballerina.stdlib.mysql.compiler.analyzer.InitializerParamAnalyzer;
+import io.ballerina.stdlib.mysql.compiler.analyzer.RecordAnalyzer;
 import io.ballerina.stdlib.mysql.compiler.analyzer.RemoteMethodAnalyzer;
 
 import java.util.List;
@@ -36,5 +37,7 @@ public class MySQLCodeAnalyzer extends CodeAnalyzer {
         ctx.addSyntaxNodeAnalysisTask(new RemoteMethodAnalyzer(), SyntaxKind.REMOTE_METHOD_CALL_ACTION);
         ctx.addSyntaxNodeAnalysisTask(new InitializerParamAnalyzer(),
                 List.of(SyntaxKind.IMPLICIT_NEW_EXPRESSION, SyntaxKind.EXPLICIT_NEW_EXPRESSION));
+        ctx.addSyntaxNodeAnalysisTask(new RecordAnalyzer(),
+                List.of(SyntaxKind.LOCAL_VAR_DECL, SyntaxKind.MODULE_VAR_DECL));
     }
 }

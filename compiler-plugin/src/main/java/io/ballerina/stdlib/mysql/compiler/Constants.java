@@ -24,6 +24,7 @@ public class Constants {
     public static final String BALLERINAX = "ballerinax";
     public static final String MYSQL = "mysql";
     public static final String CONNECTION_POOL_PARM_NAME = "connectionPool";
+    public static final String OPTIONS_PARM_NAME = "options";
 
     /**
      * Constants related to Client object.
@@ -41,6 +42,25 @@ public class Constants {
         public static final String MAX_OPEN_CONNECTIONS = "maxOpenConnections";
         public static final String MAX_CONNECTION_LIFE_TIME = "maxConnectionLifeTime";
         public static final String MIN_IDLE_CONNECTIONS = "minIdleConnections";
+    }
+
+    /**
+     * Constants for fields in mysql:Options.
+     */
+    public static class Options {
+        public static final String NAME = "Options";
+        public static final String CONNECTION_TIMEOUT = "connectTimeout";
+        public static final String SOCKET_TIMEOUT = "socketTimeout";
+        public static final String FAILOVER = "failoverConfig";
+    }
+
+    /**
+     * Constants for fields in mysql:FailoverConfig.
+     */
+    public static class FailOver {
+        public static final String NAME = "FailoverConfig";
+        public static final String TIME_BEFORE_RETRY = "timeBeforeRetry";
+        public static final String QUERY_BEFORE_RETRY = "queriesBeforeRetry";
     }
 
     public static final String UNNECESSARY_CHARS_REGEX = "\"|\\n";

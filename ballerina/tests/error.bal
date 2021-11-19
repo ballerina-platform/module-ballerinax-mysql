@@ -232,16 +232,16 @@ function TestTableDefinitionIncorrect() returns error? {
 }
 function TestIntegrityConstraintViolation() returns error? {
     Client dbClient = check new (host, user, password, errorDB, port);
-    sql:ExecutionResult|error result = check dbClient->execute(`CREATE TABLE employees( employee_id int (20) not null,
+    _ = check dbClient->execute(`CREATE TABLE employees( employee_id int (20) not null,
                                                         employee_name varchar (75) not null,supervisor_name varchar(75),
                                                         CONSTRAINT employee_pk PRIMARY KEY (employee_id))`);
-    result = check dbClient->execute(`CREATE TABLE departments( department_id int (20) not null,employee_id int not
+    _ = check dbClient->execute(`CREATE TABLE departments( department_id int (20) not null,employee_id int not
                                        null,CONSTRAINT fk_employee FOREIGN KEY (employee_id)
                                        REFERENCES employees (employee_id))`);
     sql:ExecutionResult|error err = dbClient->execute(
                                     `INSERT INTO departments(department_id, employee_id) VALUES (250, 600)`);
     check dbClient.close();
-    sql:DatabaseError sqlerror = <sql:DatabaseError>err;
+    sql:DatabaseError sqlerror = <sql:DatabaseError> err;
     test:assertTrue(strings:includes(sqlerror.message(), "Error while executing SQL query: INSERT INTO " +
                 "departments(department_id, employee_id) VALUES (250, 600). Cannot add or update a child row: " +
                 "a foreign key constraint fails (`ERROR_DB`.`departments`, CONSTRAINT " +

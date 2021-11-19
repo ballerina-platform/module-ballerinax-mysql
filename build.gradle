@@ -116,5 +116,8 @@ release {
 }
 
 task build {
+    dependsOn("${packageName}-native:build")
+    dependsOn("${packageName}-compiler-plugin:build")
     dependsOn("${packageName}-ballerina:build")
+    dependsOn("${packageName}-compiler-plugin-tests:build")
 }

@@ -18,7 +18,6 @@
 
 package io.ballerina.stdlib.mysql.compiler;
 
-
 import io.ballerina.projects.DiagnosticResult;
 import io.ballerina.projects.Package;
 import io.ballerina.projects.PackageCompilation;

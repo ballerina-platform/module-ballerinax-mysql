@@ -18,5 +18,12 @@ import ballerinax/mysql;
 
 public function main() returns error? {
     mysql:Client dbClient = check new();
+    _ = check dbClient->query(``);
+    _ = check dbClient->queryRow(``);
+    check invokeQuery(dbClient);
     check dbClient.close();
+}
+
+function invokeQuery(mysql:Client dbClient) returns error? {
+    _ = check dbClient->query(``);
 }

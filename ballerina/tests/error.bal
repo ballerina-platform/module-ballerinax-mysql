@@ -312,3 +312,33 @@ function testCreateProceduresWithInvalidArgument() returns error? {
                     "version for the right syntax to use near 'pName VARCHAR(255) MODIFIES SQL DATA INSERT INTO " +
                     "DataTable(row_id) VALUES (pAge)' at line 1.", sqlError.message());
 }
+
+@test:Config {
+    groups: ["error"]
+}
+function testSocketTimeout() returns error? {
+    Client dbClient = check new (host, user, password, errorDB, port, {socketTimeout: 3});
+    stream<record{}, error?> streamData = dbClient->query(`SELECT SLEEP(4)`);
+    record {|record {} value;|}?|error data = streamData.next();
+    check streamData.close();
+    check dbClient.close();
+    test:assertTrue(data is error);
+    sql:DatabaseError sqlError = <sql:DatabaseError>data;
+    test:assertTrue(sqlError.message().startsWith("Error while executing SQL query: SELECT SLEEP(4). " +
+                "Communications link failure"), sqlError.message());
+}
+
+@test:Config {
+    groups: ["error"]
+}
+function TestInsertedValueTooLarge() returns error? {
+    Client dbClient = check new (host, user, password, errorDB, port);
+    sql:ExecutionResult|error err = dbClient->execute(`CREATE TABLE test(A VARCHAR(2))`);
+    err = dbClient->execute(`INSERT INTO test(A) VALUES ('123')`);
+    check dbClient.close();
+    test:assertTrue(err is sql:DatabaseError);
+    sql:DatabaseError sqlerror = <sql:DatabaseError>err;
+    test:assertTrue(strings:includes(sqlerror.message(), "Error while executing SQL query: " +
+                "INSERT INTO test(A) VALUES ('123'). Data truncation: Data too long for column 'A' at row 1."),
+                sqlerror.message());
+}

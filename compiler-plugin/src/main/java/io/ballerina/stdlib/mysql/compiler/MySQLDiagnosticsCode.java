@@ -23,7 +23,7 @@ import static io.ballerina.tools.diagnostics.DiagnosticSeverity.ERROR;
 import static io.ballerina.tools.diagnostics.DiagnosticSeverity.HINT;
 
 /**
- * Enum class to hold JDBC module diagnostic codes.
+ * Enum class to hold MySQL module diagnostic codes.
  */
 public enum MySQLDiagnosticsCode {
 

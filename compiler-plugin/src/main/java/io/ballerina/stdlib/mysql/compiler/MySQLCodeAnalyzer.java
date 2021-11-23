@@ -28,7 +28,7 @@ import io.ballerina.stdlib.mysql.compiler.analyzer.RemoteMethodAnalyzer;
 import java.util.List;
 
 /**
- * JDBC Code Analyzer.
+ * MySQL Code Analyzer.
  */
 public class MySQLCodeAnalyzer extends CodeAnalyzer {
 

@@ -61,7 +61,7 @@ public class InitializerParamAnalyzer implements AnalysisTask<SyntaxNodeAnalysis
             }
         }
 
-        if (!(Utils.isJDBCClientObject(ctx, ((ExpressionNode) ctx.node())))) {
+        if (!(Utils.isMySQLClientObject(ctx, ((ExpressionNode) ctx.node())))) {
             return;
         }
 

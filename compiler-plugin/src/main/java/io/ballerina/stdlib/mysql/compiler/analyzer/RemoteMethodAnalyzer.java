@@ -56,7 +56,7 @@ public class RemoteMethodAnalyzer implements AnalysisTask<SyntaxNodeAnalysisCont
     }
 
     private void addHint(SyntaxNodeAnalysisContext ctx, RemoteMethodCallActionNode node) {
-        if (!(Utils.isJDBCClientObject(ctx, node.expression()))) {
+        if (!(Utils.isMySQLClientObject(ctx, node.expression()))) {
             return;
         }
 

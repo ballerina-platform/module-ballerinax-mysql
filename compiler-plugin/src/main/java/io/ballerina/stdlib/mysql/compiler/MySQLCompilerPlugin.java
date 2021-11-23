@@ -22,7 +22,7 @@ import io.ballerina.projects.plugins.CompilerPlugin;
 import io.ballerina.projects.plugins.CompilerPluginContext;
 
 /**
- * Compiler plugin for JDBC client.
+ * Compiler plugin for MySQL client.
  */
 public class MySQLCompilerPlugin extends CompilerPlugin {
     @Override

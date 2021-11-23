@@ -43,7 +43,7 @@ import static io.ballerina.stdlib.mysql.compiler.MySQLDiagnosticsCode.MYSQL_101;
  * Utils class.
  */
 public class Utils {
-    public static boolean isJDBCClientObject(SyntaxNodeAnalysisContext ctx, ExpressionNode node) {
+    public static boolean isMySQLClientObject(SyntaxNodeAnalysisContext ctx, ExpressionNode node) {
         Optional<TypeSymbol> objectType = ctx.semanticModel().typeOf(node);
         if (objectType.isEmpty()) {
             return false;
@@ -52,15 +52,15 @@ public class Utils {
             return ((UnionTypeSymbol) objectType.get()).memberTypeDescriptors().stream()
                     .filter(typeDescriptor -> typeDescriptor instanceof TypeReferenceTypeSymbol)
                     .map(typeReferenceTypeSymbol -> (TypeReferenceTypeSymbol) typeReferenceTypeSymbol)
-                    .anyMatch(Utils::isJDBCClientObject);
+                    .anyMatch(Utils::isMySQLClientObject);
         }
         if (objectType.get() instanceof TypeReferenceTypeSymbol) {
-            return isJDBCClientObject(((TypeReferenceTypeSymbol) objectType.get()));
+            return isMySQLClientObject(((TypeReferenceTypeSymbol) objectType.get()));
         }
         return false;
     }
 
-    public static boolean isJDBCClientObject(TypeReferenceTypeSymbol typeReference) {
+    public static boolean isMySQLClientObject(TypeReferenceTypeSymbol typeReference) {
         Optional<ModuleSymbol> optionalModuleSymbol = typeReference.getModule();
         if (optionalModuleSymbol.isEmpty()) {
             return false;

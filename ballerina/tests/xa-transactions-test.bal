@@ -28,9 +28,9 @@ type XAResultCount record {
     groups: ["transaction", "xa-transaction"]
 }
 function testXATransactionSuccess() returns error? {
-    Client dbClient1 = check new (host, user, password, xaTransactionDB1, port,
+    Client dbClient1 = check new (host, user, password, xaTransactionDB1, port, 
     connectionPool = {maxOpenConnections: 1});
-    Client dbClient2 = check new (host, user, password, xaTransactionDB2, port,
+    Client dbClient2 = check new (host, user, password, xaTransactionDB2, port, 
     connectionPool = {maxOpenConnections: 1});
 
     transaction {
@@ -42,8 +42,8 @@ function testXATransactionSuccess() returns error? {
 
     int count1 = check getCustomerCount(dbClient1, "1");
     int count2 = check getSalaryCount(dbClient2, "1");
-    test:assertEquals(count1, 1, "First transaction failed"); 
-    test:assertEquals(count2, 1, "Second transaction failed"); 
+    test:assertEquals(count1, 1, "First transaction failed");
+    test:assertEquals(count2, 1, "Second transaction failed");
 
     check dbClient1.close();
     check dbClient2.close();
@@ -55,41 +55,41 @@ function testXATransactionSuccess() returns error? {
 function testXATransactionSuccessWithDataSource() returns error? {
     Client dbClient1 = check new (host, user, password, xaTransactionDB1, port);
     Client dbClient2 = check new (host, user, password, xaTransactionDB2, port);
-    
+
     transaction {
         _ = check dbClient1->execute(`insert into Customers (customerId, name, creditLimit, country)
                                 values (10, 'Anne', 1000, 'UK')`);
         _ = check dbClient2->execute(`insert into Salary (id, value ) values (10, 1000)`);
         check commit;
     }
-    
+
     int count1 = check getCustomerCount(dbClient1, "10");
     int count2 = check getSalaryCount(dbClient2, "10");
-    test:assertEquals(count1, 1, "First transaction failed"); 
-    test:assertEquals(count2, 1, "Second transaction failed"); 
+    test:assertEquals(count1, 1, "First transaction failed");
+    test:assertEquals(count2, 1, "Second transaction failed");
 
     check dbClient1.close();
     check dbClient2.close();
 }
 
-isolated function getCustomerCount(Client dbClient, string id) returns int|error{
-    stream<XAResultCount,  sql:Error?> streamData = dbClient->query(`Select COUNT(*) as
+isolated function getCustomerCount(Client dbClient, string id) returns int|error {
+    stream<XAResultCount, sql:Error?> streamData = dbClient->query(`Select COUNT(*) as
         countval from Customers where customerId = ${id}`);
     return getResult(streamData);
 }
 
-isolated function getSalaryCount(Client dbClient, string id) returns int|error{
-    stream<XAResultCount,  sql:Error?> streamData = dbClient->query(`Select COUNT(*) as countval
+isolated function getSalaryCount(Client dbClient, string id) returns int|error {
+    stream<XAResultCount, sql:Error?> streamData = dbClient->query(`Select COUNT(*) as countval
     from Salary where id = ${id}`);
     return getResult(streamData);
 }
 
-isolated function getResult(stream<XAResultCount,  sql:Error?> streamData) returns int|error {
+isolated function getResult(stream<XAResultCount, sql:Error?> streamData) returns int|error {
     record {|XAResultCount value;|}? data = check streamData.next();
     check streamData.close();
     XAResultCount? value = data?.value;
     if value is XAResultCount {
-       return value.COUNTVAL;
+        return value.COUNTVAL;
     }
     return 0;
 }

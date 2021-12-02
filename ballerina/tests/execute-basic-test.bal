@@ -38,7 +38,7 @@ function testInsertTable() returns error? {
     Client dbClient = check new (host, user, password, executeDb, port);
     sql:ExecutionResult result = check dbClient->execute(`Insert into NumericTypes (int_type) values (20)`);
     check dbClient.close();
-    
+
     test:assertExactEquals(result.affectedRowCount, 1, "Affected row count is different.");
     int|string? insertId = result.lastInsertId;
     if insertId is int {
@@ -100,11 +100,11 @@ function testInsertAndSelectTableWithGeneratedKeys() returns error? {
     sql:ExecutionResult result = check dbClient->execute(`insert into NumericTypes (int_type) values (31)`);
 
     test:assertExactEquals(result.affectedRowCount, 1, "Affected row count is different.");
-    
+
     string|int? insertedId = result.lastInsertId;
     if insertedId is int {
         sql:ParameterizedQuery query = `SELECT * from NumericTypes where id = ${insertedId}`;
-        stream<NumericType, sql:Error?> streamData  = dbClient->query(query);
+        stream<NumericType, sql:Error?> streamData = dbClient->query(query);
         record {|NumericType value;|}? data = check streamData.next();
         check streamData.close();
         test:assertNotExactEquals(data?.value, (), "Incorrect InsetId returned.");
@@ -161,7 +161,7 @@ function testInsertWithStringAndSelectTable() returns error? {
         character_type, nvarcharmax_type, longvarchar_type, clob_type) values ( ${intIDVal}
         ,'str1','str2','s','str4','s','str6','str7','str8')`;
     sql:ExecutionResult result = check dbClient->execute(insertQuery);
-    
+
     test:assertExactEquals(result.affectedRowCount, 1, "Affected row count is different.");
 
     sql:ParameterizedQuery query = `SELECT * from StringTypes where id = ${intIDVal}`;
@@ -246,7 +246,7 @@ function testInsertWithNilStringAndSelectTable() returns error? {
     stream<StringNilData, sql:Error?> streamData = dbClient->query(query);
     record {|StringNilData value;|}? data = check streamData.next();
     check streamData.close();
-    
+
     StringNilData expectedInsertRow = {
         id: 45,
         varchar_type: (),
@@ -293,8 +293,8 @@ function testInsertTableWithDataTypeError() returns error? {
     sql:ExecutionResult|sql:Error result = dbClient->execute(`Insert into NumericTypes (int_type) values ('This is wrong type')`);
 
     if result is sql:DatabaseError {
-        test:assertTrue(result.message().startsWith("Error while executing SQL query: Insert into NumericTypes" +
-        " (int_type) values ('This is wrong type'). Incorrect integer value: 'This is wrong type' for column 'int_type'"),
+        test:assertTrue(result.message().startsWith("Error while executing SQL query: Insert into NumericTypes" + 
+        " (int_type) values ('This is wrong type'). Incorrect integer value: 'This is wrong type' for column 'int_type'"), 
                     "Error message does not match, actual :'" + result.message() + "'");
         sql:DatabaseErrorDetail errorDetails = result.detail();
         test:assertEquals(errorDetails.errorCode, 1366, "SQL Error code does not match");
@@ -318,7 +318,7 @@ function testUpdateData() returns error? {
     Client dbClient = check new (host, user, password, executeDb, port);
     sql:ExecutionResult result = check dbClient->execute(`Update NumericTypes set int_type = 11 where int_type = 10`);
     test:assertExactEquals(result.affectedRowCount, 1, "Affected row count is different.");
-    
+
     stream<ResultCount, sql:Error?> streamData = dbClient->query(`SELECT count(*) as countval from NumericTypes
          where int_type = 11`);
     record {|ResultCount value;|}? data = check streamData.next();
@@ -327,5 +327,4 @@ function testUpdateData() returns error? {
 
     check dbClient.close();
 }
-
 

@@ -103,7 +103,7 @@ function deleteDataTable1() returns error? {
     string stringType = "Hello";
     decimal decimalType = 23.45;
 
-    sql:ParameterizedQuery sqlQuery =
+    sql:ParameterizedQuery sqlQuery = 
             `DELETE FROM DataTable where row_id=${rowId} AND int_type=${intType} AND long_type=${longType}
               AND double_type=${doubleType} AND boolean_type=${boolType}
               AND string_type=${stringType} AND decimal_type=${decimalType}`;
@@ -134,7 +134,7 @@ function deleteDataTable3() returns error? {
     decimal decimalVal = 25.45;
     sql:DecimalValue decimalType = new (decimalVal);
 
-    sql:ParameterizedQuery sqlQuery =
+    sql:ParameterizedQuery sqlQuery = 
             `DELETE FROM DataTable where row_id=${rowId} AND int_type=${intType} AND long_type=${longType}
               AND double_type=${doubleType} AND boolean_type=${boolType}
               AND string_type=${stringType} AND decimal_type=${decimalType}`;
@@ -150,7 +150,7 @@ function insertIntoComplexTable() returns error? {
     byte[] binaryData = <byte[]>getUntaintedData(value, "blob_type");
     int rowId = 5;
     string stringType = "very long text";
-    sql:ParameterizedQuery sqlQuery =
+    sql:ParameterizedQuery sqlQuery = 
         `INSERT INTO ComplexTypes (row_id, blob_type, text_type, binary_type, var_binary_type) VALUES (
         ${rowId}, ${binaryData}, ${stringType}, ${binaryData}, ${binaryData})`;
     validateResult(check executeQueryMysqlClient(sqlQuery), 1);
@@ -170,7 +170,7 @@ function insertIntoComplexTable2() returns error? {
     sql:BlobValue binaryType = new (byteChannel);
     int rowId = 6;
 
-    sql:ParameterizedQuery sqlQuery =
+    sql:ParameterizedQuery sqlQuery = 
         `INSERT INTO ComplexTypes (row_id, blob_type, text_type, binary_type, var_binary_type) VALUES (
         ${rowId}, ${blobType}, ${textType}, ${binaryType}, ${binaryType})`;
     validateResult(check executeQueryMysqlClient(sqlQuery), 1);
@@ -183,7 +183,7 @@ function insertIntoComplexTable2() returns error? {
 function insertIntoComplexTable3() returns error? {
     int rowId = 7;
     var nilType = ();
-    sql:ParameterizedQuery sqlQuery =
+    sql:ParameterizedQuery sqlQuery = 
             `INSERT INTO ComplexTypes (row_id, blob_type, text_type, binary_type, var_binary_type) VALUES (
             ${rowId}, ${nilType}, ${nilType}, ${nilType}, ${nilType})`;
     validateResult(check executeQueryMysqlClient(sqlQuery), 1);
@@ -198,7 +198,7 @@ function deleteComplexTable() returns error? {
     byte[] binaryData = <byte[]>getUntaintedData(value, "blob_type");
 
     int rowId = 2;
-    sql:ParameterizedQuery sqlQuery =
+    sql:ParameterizedQuery sqlQuery = 
             `DELETE FROM ComplexTypes where row_id = ${rowId} AND blob_type= ${binaryData}`;
     validateResult(check executeQueryMysqlClient(sqlQuery), 1);
 }
@@ -212,7 +212,7 @@ function deleteComplexTable2() returns error? {
     sql:TextValue textType = new ();
 
     int rowId = 4;
-    sql:ParameterizedQuery sqlQuery =
+    sql:ParameterizedQuery sqlQuery = 
             `DELETE FROM ComplexTypes where row_id = ${rowId} AND blob_type= ${blobType} AND text_type=${textType}`;
     validateResult(check executeQueryMysqlClient(sqlQuery), 0);
 }
@@ -230,7 +230,7 @@ function insertIntoNumericTable() returns error? {
     int tinyIntType = 127;
     decimal decimalType = 1234.567;
 
-    sql:ParameterizedQuery sqlQuery =
+    sql:ParameterizedQuery sqlQuery = 
         `INSERT INTO NumericTypes (id, int_type, bigint_type, smallint_type, tinyint_type, bit_type, decimal_type,
         numeric_type, float_type, real_type) VALUES(${rowId},${intType},${bigIntType},${smallIntType},${tinyIntType},
         ${bitType},${decimalType},${decimalType},${decimalType},${decimalType})`;
@@ -244,7 +244,7 @@ function insertIntoNumericTable() returns error? {
 function insertIntoNumericTable2() returns error? {
     int rowId = 4;
     var nilType = ();
-    sql:ParameterizedQuery sqlQuery =
+    sql:ParameterizedQuery sqlQuery = 
             `INSERT INTO NumericTypes (id, int_type, bigint_type, smallint_type, tinyint_type, bit_type, decimal_type,
             numeric_type, float_type, real_type) VALUES(${rowId},${nilType},${nilType},${nilType},${nilType},
             ${nilType},${nilType},${nilType},${nilType},${nilType})`;
@@ -268,7 +268,7 @@ function insertIntoNumericTable3() returns error? {
     sql:FloatValue floatType = new (1234.567);
     sql:RealValue realType = new (1234.567);
 
-    sql:ParameterizedQuery sqlQuery =
+    sql:ParameterizedQuery sqlQuery = 
         `INSERT INTO NumericTypes (id, int_type, bigint_type, smallint_type, tinyint_type, bit_type, decimal_type,
         numeric_type, float_type, real_type) VALUES(${id},${intType},${bigIntType},${smallIntType},${tinyIntType},
         ${bitType},${decimalType},${numbericType},${floatType},${realType})`;
@@ -286,7 +286,7 @@ function insertIntoDateTimeTable() returns error? {
     string dateTimeType = "2017-02-03 11:53:00";
     string timeStampType = "2017-02-03 11:53:00";
 
-    sql:ParameterizedQuery sqlQuery =
+    sql:ParameterizedQuery sqlQuery = 
         `INSERT INTO DateTimeTypes (row_id, date_type, time_type, datetime_type, timestamp_type)
         VALUES(${rowId}, ${dateType}, ${timeType}, ${dateTimeType}, ${timeStampType})`;
     validateResult(check executeQueryMysqlClient(sqlQuery), 1);
@@ -303,7 +303,7 @@ function insertIntoDateTimeTable2() returns error? {
     sql:TimestampValue timestampVal = new ("2017-02-03 11:53:00");
     int rowId = 3;
 
-    sql:ParameterizedQuery sqlQuery =
+    sql:ParameterizedQuery sqlQuery = 
             `INSERT INTO DateTimeTypes (row_id, date_type, time_type, datetime_type, timestamp_type)
             VALUES(${rowId}, ${dateVal}, ${timeVal}, ${dateTimeVal}, ${timestampVal})`;
 
@@ -321,7 +321,7 @@ function insertIntoDateTimeTable3() returns error? {
     sql:TimestampValue timestampVal = new ();
     int rowId = 4;
 
-    sql:ParameterizedQuery sqlQuery =
+    sql:ParameterizedQuery sqlQuery = 
                 `INSERT INTO DateTimeTypes (row_id, date_type, time_type, datetime_type, timestamp_type)
                 VALUES(${rowId}, ${dateVal}, ${timeVal}, ${dateTimeVal}, ${timestampVal})`;
     validateResult(check executeQueryMysqlClient(sqlQuery), 1);
@@ -335,7 +335,7 @@ function insertIntoDateTimeTable4() returns error? {
     int rowId = 5;
     var nilType = ();
 
-    sql:ParameterizedQuery sqlQuery =
+    sql:ParameterizedQuery sqlQuery = 
             `INSERT INTO DateTimeTypes (row_id, date_type, time_type, datetime_type, timestamp_type)
             VALUES(${rowId}, ${nilType}, ${nilType}, ${nilType}, ${nilType})`;
     validateResult(check executeQueryMysqlClient(sqlQuery), 1);

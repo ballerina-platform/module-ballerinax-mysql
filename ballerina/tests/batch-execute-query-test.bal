@@ -24,11 +24,11 @@ string batchExecuteDB = "BATCH_EXECUTE_DB";
 }
 function batchInsertIntoDataTable() returns error? {
     var data = [
-        {intVal:3, longVal:9223372036854774807, floatVal:123.34},
-        {intVal:4, longVal:9223372036854774807, floatVal:123.34},
-        {intVal:5, longVal:9223372036854774807, floatVal:123.34}
+        {intVal: 3, longVal: 9223372036854774807, floatVal: 123.34}, 
+        {intVal: 4, longVal: 9223372036854774807, floatVal: 123.34}, 
+        {intVal: 5, longVal: 9223372036854774807, floatVal: 123.34}
     ];
-    sql:ParameterizedQuery[] sqlQueries =
+    sql:ParameterizedQuery[] sqlQueries = 
         from var row in data
         select `INSERT INTO DataTable (int_type, long_type, float_type) VALUES (${row.intVal}, ${row.longVal}, ${row.floatVal})`;
     validateBatchExecutionResult(check batchExecuteQueryMySQLClient(sqlQueries), [1, 1, 1], [2,3,4]);
@@ -51,11 +51,11 @@ function batchInsertIntoDataTable2() returns error? {
 }
 function batchInsertIntoDataTableFailure() {
     var data = [
-        {intVal:7, longVal:9223372036854774807, floatVal:123.34},
-        {intVal:1, longVal:9223372036854774807, floatVal:123.34},
-        {intVal:9, longVal:9223372036854774807, floatVal:123.34}
+        {intVal: 7, longVal: 9223372036854774807, floatVal: 123.34}, 
+        {intVal: 1, longVal: 9223372036854774807, floatVal: 123.34}, 
+        {intVal: 9, longVal: 9223372036854774807, floatVal: 123.34}
     ];
-    sql:ParameterizedQuery[] sqlQueries =
+    sql:ParameterizedQuery[] sqlQueries = 
         from var row in data
         select `INSERT INTO DataTable (int_type, long_type, float_type) VALUES (${row.intVal}, ${row.longVal}, ${row.floatVal})`;
     sql:ExecutionResult[]|error result = batchExecuteQueryMySQLClient(sqlQueries);
@@ -75,7 +75,7 @@ function batchInsertIntoDataTableFailure() {
 isolated function validateBatchExecutionResult(sql:ExecutionResult[] results, int[] rowCount, int[] lastId) {
     test:assertEquals(results.length(), rowCount.length());
 
-    int i =0;
+    int i = 0;
     while i < results.length() {
         test:assertEquals(results[i].affectedRowCount, rowCount[i]);
         int|string? lastInsertIdVal = results[i].lastInsertId;

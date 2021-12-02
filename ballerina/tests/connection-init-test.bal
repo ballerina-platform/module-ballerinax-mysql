@@ -51,7 +51,7 @@ function testWithOptions() returns error? {
     Options options = {
         connectTimeout: 60
     };
-    Client dbClient = check new (user = user, password = password, database = connectDB,
+    Client dbClient = check new (user = user, password = password, database = connectDB, 
         port = port, options = options);
     error? exitCode = dbClient.close();
     test:assertExactEquals(exitCode, (), "Initialising connection with options fails.");
@@ -64,7 +64,7 @@ function testWithConnectionPool() returns error? {
     sql:ConnectionPool connectionPool = {
         maxOpenConnections: 25
     };
-    Client dbClient = check new (user = user, password = password, database = connectDB,
+    Client dbClient = check new (user = user, password = password, database = connectDB, 
         port = port, connectionPool = connectionPool);
     error? exitCode = dbClient.close();
     test:assertExactEquals(exitCode, (), "Initialising connection with option max connection pool fails.");
@@ -94,13 +94,13 @@ function testServerFailover() returns error? {
         failoverConfig: {
             failoverServers: [
                 {
-                    host: "localhost",
-                    port: 5506
-                },
+                host: "localhost",
+                port: 5506
+            }, 
                 {
-                    host: "localhost",
-                    port: 3305
-                }
+                host: "localhost",
+                port: 3305
+            }
             ],
             timeBeforeRetry: 10,
             queriesBeforeRetry: 10,

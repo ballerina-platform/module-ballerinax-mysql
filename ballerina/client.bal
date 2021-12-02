@@ -55,7 +55,7 @@ public isolated client class Client {
     # + return - Stream of records in the type of `rowType`. If the `rowType` is not provided, the column names of     
     #                  the query are used as record fields and all record fields are optional
     remote isolated function query(sql:ParameterizedQuery sqlQuery, typedesc<record {}> rowType = <>)
-    returns stream <rowType, sql:Error?> = @java:Method {
+    returns stream<rowType, sql:Error?> = @java:Method {
         'class: "io.ballerina.stdlib.mysql.nativeimpl.QueryProcessor",
         name: "nativeQuery"
     } external;
@@ -67,7 +67,7 @@ public isolated client class Client {
     # + returnType - The `typedesc` of the record/type that should be returned as a result. If this is not provided, the
     #                default column names/type of the query result set will be used
     # + return - Result in the type of `returnType`
-    remote isolated function queryRow(sql:ParameterizedQuery sqlQuery, typedesc<anydata> returnType = <>)
+    remote isolated function queryRow(sql:ParameterizedQuery sqlQuery, typedesc<anydata> returnType = <>) 
     returns returnType|sql:Error = @java:Method {
         'class: "io.ballerina.stdlib.mysql.nativeimpl.QueryProcessor",
         name: "nativeQueryRow"
@@ -95,7 +95,7 @@ public isolated client class Client {
     #            remaining commands in the batch after a failure. The summary of the executed queries in case of an error
     #            can be accessed as `(<sql:BatchExecuteError> result).detail()?.executionResults`
     remote isolated function batchExecute(sql:ParameterizedQuery[] sqlQueries) returns sql:ExecutionResult[]|sql:Error {
-        if (sqlQueries.length() == 0) {
+        if sqlQueries.length() == 0 {
             return error sql:ApplicationError(" Parameter 'sqlQueries' cannot be empty array");
         }
         return nativeBatchExecute(self, sqlQueries);
@@ -107,7 +107,7 @@ public isolated client class Client {
     # + rowTypes - The array of `typedesc` of the records that should be returned as a result. If this is not provided,
     #               the default column names of the query result set will be used for the record attributes
     # + return - Summary of the execution is returned in an `sql:ProcedureCallResult` or `sql:Error`
-    remote isolated function call(sql:ParameterizedCallQuery sqlQuery, typedesc<record {}>[] rowTypes = [])
+    remote isolated function call(sql:ParameterizedCallQuery sqlQuery, typedesc<record {}>[] rowTypes = []) 
     returns sql:ProcedureCallResult|sql:Error = @java:Method {
         'class: "io.ballerina.stdlib.mysql.nativeimpl.CallProcessor",
         name: "nativeCall"
@@ -219,12 +219,12 @@ public type SecureSocket record {|
     boolean allowPublicKeyRetrieval = false;
 |};
 
-isolated function createClient(Client mysqlClient, ClientConfiguration clientConf,
+isolated function createClient(Client mysqlClient, ClientConfiguration clientConf, 
     sql:ConnectionPool globalConnPool) returns sql:Error? = @java:Method {
     'class: "io.ballerina.stdlib.mysql.nativeimpl.ClientProcessor"
 } external;
 
-isolated function nativeBatchExecute(Client sqlClient, sql:ParameterizedQuery[] sqlQueries)
+isolated function nativeBatchExecute(Client sqlClient, sql:ParameterizedQuery[] sqlQueries) 
 returns sql:ExecutionResult[]|sql:Error = @java:Method {
     'class: "io.ballerina.stdlib.mysql.nativeimpl.ExecuteProcessor"
 } external;

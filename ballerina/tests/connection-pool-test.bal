@@ -31,7 +31,7 @@ Options options = {
 
 @test:Config {
     groups: ["pool"]
- }
+}
 function testGlobalConnectionPoolSingleDestination() returns error? {
     check drainGlobalPool(poolDB_1);
 }
@@ -89,12 +89,12 @@ function testGlobalConnectionPoolSingleDestinationConcurrent() returns error? {
         if returnArray[i][0] is anydata {
             test:assertEquals(returnArray[i][0], 1);
             if returnArray[i][1] is anydata {
-               test:assertEquals(returnArray[i][1], 1);
+                test:assertEquals(returnArray[i][1], 1);
             } else {
-               test:assertFail("Expected second element of array an integer" + (<error> returnArray[i][1]).message());
+                test:assertFail("Expected second element of array an integer" + (<error>returnArray[i][1]).message());
             }
         } else {
-            test:assertFail("Expected first element of array an integer" + (<error> returnArray[i][0]).message());
+            test:assertFail("Expected first element of array an integer" + (<error>returnArray[i][0]).message());
         }
         i = i + 1;
     }
@@ -111,7 +111,7 @@ function testLocalSharedConnectionPoolConfigSingleDestination() returns error? {
     Client dbClient3 = check new (host, user, password, poolDB_1, port, options, pool);
     Client dbClient4 = check new (host, user, password, poolDB_1, port, options, pool);
     Client dbClient5 = check new (host, user, password, poolDB_1, port, options, pool);
-    
+
     (stream<Result, error?>)[] resultArray = [];
     resultArray[0] = dbClient1->query(`select count(*) as val from Customers where registrationID = 1`);
     resultArray[1] = dbClient2->query(`select count(*) as val from Customers where registrationID = 1`);
@@ -150,17 +150,17 @@ function testLocalSharedConnectionPoolConfigSingleDestination() returns error? {
 }
 function testLocalSharedConnectionPoolConfigDifferentDbOptions() returns error? {
     sql:ConnectionPool pool = {maxOpenConnections: 3};
-    Client dbClient1 = check new (host, user, password, poolDB_1, port,
+    Client dbClient1 = check new (host, user, password, poolDB_1, port, 
         {connectTimeout: 2, socketTimeout: 10}, pool);
-    Client dbClient2 = check new (host, user, password, poolDB_1, port,
+    Client dbClient2 = check new (host, user, password, poolDB_1, port, 
         {socketTimeout: 10, connectTimeout: 2}, pool);
-    Client dbClient3 = check new (host, user, password, poolDB_1, port,
+    Client dbClient3 = check new (host, user, password, poolDB_1, port, 
         {connectTimeout: 2, socketTimeout: 10}, pool);
-    Client dbClient4 = check new (host, user, password, poolDB_1, port,
+    Client dbClient4 = check new (host, user, password, poolDB_1, port, 
         {connectTimeout: 1}, pool);
-    Client dbClient5 = check new (host, user, password, poolDB_1, port,
+    Client dbClient5 = check new (host, user, password, poolDB_1, port, 
         {connectTimeout: 1}, pool);
-    Client dbClient6 = check new (host, user, password, poolDB_1, port,
+    Client dbClient6 = check new (host, user, password, poolDB_1, port, 
         {connectTimeout: 1}, pool);
 
     stream<Result, error?>[] resultArray = [];
@@ -198,7 +198,7 @@ function testLocalSharedConnectionPoolConfigDifferentDbOptions() returns error? 
     }
     validateConnectionTimeoutError(returnArray[3]);
     validateConnectionTimeoutError(returnArray[7]);
-    
+
 }
 
 @test:Config {
@@ -304,14 +304,14 @@ function testLocalSharedConnectionPoolStopInitInterleave() returns error? {
     test:assertEquals(result, 1);
 }
 
-function testLocalSharedConnectionPoolStopInitInterleaveHelper1(sql:ConnectionPool pool, string database)
+function testLocalSharedConnectionPoolStopInitInterleaveHelper1(sql:ConnectionPool pool, string database) 
 returns error? {
     Client dbClient = check new (host, user, password, database, port, options, pool);
     runtime:sleep(1);
     check dbClient.close();
 }
 
-function testLocalSharedConnectionPoolStopInitInterleaveHelper2(sql:ConnectionPool pool, string database)
+function testLocalSharedConnectionPoolStopInitInterleaveHelper2(sql:ConnectionPool pool, string database) 
 returns int|error {
     runtime:sleep(1);
     Client dbClient = check new (host, user, password, database, port, options, pool);
@@ -440,14 +440,14 @@ function testLocalConnectionPoolShutDown() {
     int|error count1 = getOpenConnectionCount(poolDB_1);
     int|error count2 = getOpenConnectionCount(poolDB_2);
     if count1 is int {
-         if count2 is int {
-             test:assertEquals(count1, count2);
-         } else {
-             test:assertFail("Expected valid count of connection pool" + count2.message());
-         }
-     } else {
-         test:assertFail("Expected valid count of connection pool" + count1.message());
-     }
+        if count2 is int {
+            test:assertEquals(count1, count2);
+        } else {
+            test:assertFail("Expected valid count of connection pool" + count2.message());
+        }
+    } else {
+        test:assertFail("Expected valid count of connection pool" + count1.message());
+    }
 }
 
 public type Variable record {
@@ -463,7 +463,7 @@ function getOpenConnectionCount(string database) returns (int|error) {
     return count;
 }
 
-function testGlobalConnectionPoolConcurrentHelper1(string database) returns
+function testGlobalConnectionPoolConcurrentHelper1(string database) returns 
     [stream<Result, error?>, stream<Result, error?>]|error {
     Client dbClient = check new (host, user, password, database, port, options);
     stream<Result, error?> dt1 = dbClient->query(`select count(*) as val from Customers where registrationID = 1`);
@@ -485,7 +485,7 @@ function testGlobalConnectionPoolConcurrentHelper2(string database) returns (int
     return returnArray;
 }
 
-isolated function getCombinedReturnValue([stream<Result, error?>, stream<Result, error?>]|error queryResult)
+isolated function getCombinedReturnValue([stream<Result, error?>, stream<Result, error?>]|error queryResult) 
     returns (int|error)[]|error {
     if queryResult is error {
         return queryResult;
@@ -512,7 +512,6 @@ isolated function getIntVariableValue(stream<Variable, error?> queryResult) retu
         return -1;
     }
 }
-
 
 function drainGlobalPool(string database) returns error? {
     Client dbClient1 = check new (host, user, password, database, port, options);
@@ -572,12 +571,12 @@ isolated function getReturnValue(stream<Result, error?> queryResult) returns int
 
 isolated function validateApplicationError(int|error dbError) {
     test:assertTrue(dbError is error);
-    sql:ApplicationError sqlError = <sql:ApplicationError> dbError;
+    sql:ApplicationError sqlError = <sql:ApplicationError>dbError;
     test:assertTrue(strings:includes(sqlError.message(), "Client is already closed"), sqlError.message());
 }
 
 isolated function validateConnectionTimeoutError(int|error dbError) {
     test:assertTrue(dbError is error);
-    sql:DatabaseError sqlError = <sql:DatabaseError> dbError;
+    sql:DatabaseError sqlError = <sql:DatabaseError>dbError;
     test:assertTrue(strings:includes(sqlError.message(), "request timed out after"), sqlError.message());
 }

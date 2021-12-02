@@ -89,7 +89,7 @@ function testCallWithStringTypesInParams() returns error? {
 function testCallWithStringTypesReturnsData() returns error? {
     Client dbClient = check new (host, user, password, proceduresDb, port);
     sql:ProcedureCallResult ret = check dbClient->call(`{call SelectStringData()}`, [StringDataForCall]);
-    stream<record{}, sql:Error?>? qResult = ret.queryResult;
+    stream<record {}, sql:Error?>? qResult = ret.queryResult;
     if qResult is () {
         test:assertFail("Empty result set returned.");
     } else {
@@ -102,11 +102,11 @@ function testCallWithStringTypesReturnsData() returns error? {
             charactermax_type: "test2",
             character_type: "b",
             nvarcharmax_type: "test3"
-        };        
+        };
         test:assertEquals(value, expectedDataRow, "Call procedure insert and query did not match.");
         check qResult.close();
         check ret.close();
-        
+
     }
     check dbClient.close();
 }
@@ -119,13 +119,13 @@ function testCallWithStringTypesWithAnotherUser() returns error? {
 
     Options opt = {
         ssl: {
-           allowPublicKeyRetrieval: true
+            allowPublicKeyRetrieval: true
         },
         noAccessToProcedureBodies: true
     };
 
     Client dbClient = check new (host, user1, password, proceduresDb, port, opt);
-    
+
     _ = check dbClient->call(`{call InsertStringData(4,'test1', 'test2', 'c', 'test3', 'd', 'test4')};`);
 
     sql:ParameterizedQuery sqlQuery = `SELECT varchar_type, charmax_type, char_type, charactermax_type, character_type,
@@ -150,7 +150,7 @@ function testCallWithStringTypesReturnsDataMultiple() returns error? {
     Client dbClient = check new (host, user, password, proceduresDb, port);
     sql:ProcedureCallResult ret = check dbClient->call(`{call SelectStringDataMultiple()}`, [StringDataForCall, StringDataSingle]);
 
-    stream<record{}, sql:Error?>? qResult = ret.queryResult;
+    stream<record {}, sql:Error?>? qResult = ret.queryResult;
     if qResult is () {
         test:assertFail("First result set is empty.");
     } else {
@@ -164,7 +164,7 @@ function testCallWithStringTypesReturnsDataMultiple() returns error? {
             charactermax_type: "test2",
             character_type: "b",
             nvarcharmax_type: "test3"
-        };        
+        };
         test:assertEquals(result1, expectedDataRow, "Call procedure first select did not match.");
     }
 
@@ -196,7 +196,7 @@ function testCallWithStringTypesReturnsDataMultiple() returns error? {
 function testCallWithStringTypesOutParams() returns error? {
     Client dbClient = check new (host, user, password, proceduresDb, port);
 
-    sql:IntegerValue paraID = new(1);
+    sql:IntegerValue paraID = new (1);
     sql:VarcharOutParameter paraVarchar = new;
     sql:CharOutParameter paraCharmax = new;
     sql:CharOutParameter paraChar = new;
@@ -224,7 +224,7 @@ function testCallWithStringTypesOutParams() returns error? {
 function testCallWithNumericTypesOutParams() returns error? {
     Client dbClient = check new (host, user, password, proceduresDb, port);
 
-    sql:IntegerValue paraID = new(1);
+    sql:IntegerValue paraID = new (1);
     sql:IntegerOutParameter paraInt = new;
     sql:BigIntOutParameter paraBigInt = new;
     sql:SmallIntOutParameter paraSmallInt = new;
@@ -240,7 +240,7 @@ function testCallWithNumericTypesOutParams() returns error? {
         `{call SelectNumericDataWithOutParams(${paraID}, ${paraInt}, ${paraBigInt}, ${paraSmallInt}, ${paraTinyInt}, ${paraBit}, ${paraDecimal}, ${paraNumeric}, ${paraFloat}, ${paraReal}, ${paraDouble})}`);
     check dbClient.close();
 
-    decimal paraDecimalVal= 1234.56;
+    decimal paraDecimalVal = 1234.56;
 
     test:assertEquals(paraInt.get(int), 2147483647, "2nd out parameter of procedure did not match.");
     test:assertEquals(paraBigInt.get(int), 9223372036854774807, "3rd out parameter of procedure did not match.");
@@ -254,9 +254,9 @@ function testCallWithNumericTypesOutParams() returns error? {
     test:assertEquals(paraDouble.get(float), 1234.56, "11th out parameter of procedure did not match.");
 }
 
-isolated function queryMySQLClient(Client dbClient, sql:ParameterizedQuery sqlQuery)
+isolated function queryMySQLClient(Client dbClient, sql:ParameterizedQuery sqlQuery) 
 returns record {}|error {
-    stream<record{}, error?> streamData = dbClient->query(sqlQuery);
+    stream<record {}, error?> streamData = dbClient->query(sqlQuery);
     record {|record {} value;|}? data = check streamData.next();
     check streamData.close();
     record {}? value = data?.value;

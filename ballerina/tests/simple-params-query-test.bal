@@ -162,7 +162,7 @@ function queryTypeVarCharIntegerParam() returns error? {
     decimal decimalVal = 25.45;
     record {}? returnData = check queryMysqlClient(sqlQuery);
     test:assertNotEquals(returnData, ());
-    if (returnData is ()) {
+    if returnData is () {
         test:assertFail("Query returns ()");
     } else {
         test:assertEquals(returnData["int_type"], 1);
@@ -278,7 +278,7 @@ function queryTypeDoubleIntParam() returns error? {
     sql:ParameterizedQuery sqlQuery = `SELECT * from NumericTypes WHERE float_type = ${typeVal}`;
     record{}? returnData = check queryMysqlClient(sqlQuery);
 
-    if (returnData is ()) {
+    if returnData is () {
         test:assertFail("Returned data is nil");
     } else {
         test:assertEquals(returnData.length(), 11);
@@ -336,7 +336,7 @@ function queryTypeNumericIntParam() returns error? {
     sql:ParameterizedQuery sqlQuery = `SELECT * from NumericTypes WHERE numeric_type = ${typeVal}`;
     record{}? returnData = check queryMysqlClient(sqlQuery);
 
-    if (returnData is ()) {
+    if returnData is () {
         test:assertFail("Returned data is nil");
     } else {
         test:assertEquals(returnData.length(), 11);
@@ -616,7 +616,7 @@ function querySetStringParam() returns error? {
     string setType = "a,d";
     sql:ParameterizedQuery sqlQuery = `SELECT * from SetTable where set_type= ${setType}`;
     record{}? returnData = check queryMysqlClient(sqlQuery);
-    if (returnData is ()) {
+    if returnData is () {
         test:assertFail("Returned data is nil");
     } else {
         test:assertEquals(returnData.length(), 2);
@@ -782,7 +782,7 @@ returns record {}|error? {
 
 isolated function validateDataTableResult(record{}? returnData) {
     decimal decimalVal = 23.45;
-    if (returnData is ()) {
+    if returnData is () {
         test:assertFail("Empty row returned.");
     } else {
         test:assertEquals(returnData["row_id"], 1);
@@ -797,7 +797,7 @@ isolated function validateDataTableResult(record{}? returnData) {
 }
 
 isolated function validateNumericTableResult(record{}? returnData) {
-    if (returnData is ()) {
+    if returnData is () {
         test:assertFail("Empty row returned.");
     } else {
         test:assertEquals(returnData["id"], 1);
@@ -815,7 +815,7 @@ isolated function validateNumericTableResult(record{}? returnData) {
 }
 
 isolated function validateComplexTableResult(record{}? returnData) {
-    if (returnData is ()) {
+    if returnData is () {
         test:assertFail("Returned data is nil");
     } else {
         test:assertEquals(returnData.length(), 11);
@@ -825,7 +825,7 @@ isolated function validateComplexTableResult(record{}? returnData) {
 }
 
 isolated function validateDateTimeTypesTableResult(record{}? returnData) {
-    if (returnData is ()) {
+    if returnData is () {
         test:assertFail("Returned data is nil");
     } else {
         test:assertEquals(returnData.length(), 5);
@@ -835,7 +835,7 @@ isolated function validateDateTimeTypesTableResult(record{}? returnData) {
 }
 
 isolated function validateEnumTable(record{}? returnData) {
-    if (returnData is ()) {
+    if returnData is () {
         test:assertFail("Returned data is nil");
     } else {
         test:assertEquals(returnData.length(), 2);
@@ -845,7 +845,7 @@ isolated function validateEnumTable(record{}? returnData) {
 }
 
 isolated function validateGeoTable(record{}? returnData) {
-    if (returnData is ()) {
+    if returnData is () {
         test:assertFail("Returned data is nil");
     } else {
         test:assertEquals(returnData.length(), 2);
@@ -855,7 +855,7 @@ isolated function validateGeoTable(record{}? returnData) {
 }
 
 isolated function validateJsonTable(record{}? returnData) {
-    if (returnData is ()) {
+    if returnData is () {
         test:assertFail("Returned data is nil");
     } else {
         test:assertEquals(returnData.length(), 2);
@@ -872,7 +872,7 @@ isolated function validateJsonTable(record{}? returnData) {
 }
 
 isolated function validateJsonTableWithoutRequestType(record{}? returnData) {
-    if (returnData is ()) {
+    if returnData is () {
         test:assertFail("Returned data is nil");
     } else {
          test:assertEquals(returnData.length(), 2);

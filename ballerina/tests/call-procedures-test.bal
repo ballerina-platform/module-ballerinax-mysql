@@ -90,7 +90,7 @@ function testCallWithStringTypesReturnsData() returns error? {
     Client dbClient = check new (host, user, password, proceduresDb, port);
     sql:ProcedureCallResult ret = check dbClient->call(`{call SelectStringData()}`, [StringDataForCall]);
     stream<record{}, sql:Error?>? qResult = ret.queryResult;
-    if (qResult is ()) {
+    if qResult is () {
         test:assertFail("Empty result set returned.");
     } else {
         record {|record {} value;|}? data = check qResult.next();
@@ -151,7 +151,7 @@ function testCallWithStringTypesReturnsDataMultiple() returns error? {
     sql:ProcedureCallResult ret = check dbClient->call(`{call SelectStringDataMultiple()}`, [StringDataForCall, StringDataSingle]);
 
     stream<record{}, sql:Error?>? qResult = ret.queryResult;
-    if (qResult is ()) {
+    if qResult is () {
         test:assertFail("First result set is empty.");
     } else {
         record {|record {} value;|}? data = check qResult.next();
@@ -169,12 +169,12 @@ function testCallWithStringTypesReturnsDataMultiple() returns error? {
     }
 
     boolean nextResult = check ret.getNextQueryResult();
-    if (!nextResult) {
+    if !nextResult {
         test:assertFail("Only 1 result set returned!.");
     }
 
     qResult = ret.queryResult;
-    if (qResult is ()) {
+    if qResult is () {
         test:assertFail("Second result set is empty.");
     } else {
         record {|record {} value;|}? data = check qResult.next();
@@ -261,7 +261,7 @@ returns record {}|error {
     check streamData.close();
     record {}? value = data?.value;
     check dbClient.close();
-    if (value is ()) {
+    if value is () {
         return {};
     } else {
         return value;

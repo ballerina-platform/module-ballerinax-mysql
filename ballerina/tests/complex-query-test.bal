@@ -99,7 +99,7 @@ function testToJson() returns error? {
         STRING_TYPE: "Hello"
     };
     json|error expectedDataJson = expectedData.cloneWithType(json);
-     if (expectedDataJson is json) {
+     if expectedDataJson is json {
          test:assertEquals(retVal, expectedDataJson, "Expected JSON did not match.");
      } else {
          test:assertFail("Error in cloning record to JSON" + expectedDataJson.message());
@@ -224,7 +224,7 @@ function testColumnAlias() returns error? {
     };
     int counter = 0;
     check queryResult.forEach(function (record{} value) {
-        if (value is ResultSetTestAlias) {
+        if value is ResultSetTestAlias {
             test:assertEquals(value, expectedData, "Expected record did not match.");
             counter = counter + 1;
         } else{

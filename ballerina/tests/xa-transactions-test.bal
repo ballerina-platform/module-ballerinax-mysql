@@ -88,7 +88,7 @@ isolated function getResult(stream<XAResultCount,  sql:Error?> streamData) retur
     record {|XAResultCount value;|}? data = check streamData.next();
     check streamData.close();
     XAResultCount? value = data?.value;
-    if(value is XAResultCount){
+    if value is XAResultCount {
        return value.COUNTVAL;
     }
     return 0;

@@ -85,10 +85,10 @@ function testGlobalConnectionPoolSingleDestinationConcurrent() returns error? {
     // Since each select operation hold up one connection each, the last select operation should
     // return an error
     int i = 0;
-    while(i < 4) {
-        if (returnArray[i][0] is anydata) {
+    while i < 4 {
+        if returnArray[i][0] is anydata {
             test:assertEquals(returnArray[i][0], 1);
-            if (returnArray[i][1] is anydata) {
+            if returnArray[i][1] is anydata {
                test:assertEquals(returnArray[i][1], 1);
             } else {
                test:assertFail("Expected second element of array an integer" + (<error> returnArray[i][1]).message());
@@ -138,7 +138,7 @@ function testLocalSharedConnectionPoolConfigSingleDestination() returns error? {
     // custom pool options. Since each select operation holds up one connection each, the last select
     // operation should return an error
     i = 0;
-    while(i < 5) {
+    while i < 5 {
         test:assertEquals(returnArray[i], 1);
         i = i + 1;
     }
@@ -191,7 +191,7 @@ function testLocalSharedConnectionPoolConfigDifferentDbOptions() returns error? 
 
     // Since max pool size is 3, the last select function call going through each pool should fail.
     i = 0;
-    while(i < 3) {
+    while i < 3 {
         test:assertEquals(returnArray[i], 1);
         test:assertEquals(returnArray[i + 4], 1);
         i = i + 1;
@@ -241,7 +241,7 @@ function testLocalSharedConnectionPoolConfigMultipleDestinations() returns error
 
     // Since max pool size is 3, the last select function call going through each pool should fail.
     i = 0;
-    while(i < 3) {
+    while i < 3 {
         test:assertEquals(returnArray[i], 1);
         test:assertEquals(returnArray[i + 4], 1);
         i = i + 1;
@@ -439,8 +439,8 @@ function testStopClientUsingGlobalPool() returns error? {
 function testLocalConnectionPoolShutDown() {
     int|error count1 = getOpenConnectionCount(poolDB_1);
     int|error count2 = getOpenConnectionCount(poolDB_2);
-    if (count1 is int) {
-         if (count2 is int) {
+    if count1 is int {
+         if count2 is int {
              test:assertEquals(count1, count2);
          } else {
              test:assertFail("Expected valid count of connection pool" + count2.message());
@@ -487,7 +487,7 @@ function testGlobalConnectionPoolConcurrentHelper2(string database) returns (int
 
 isolated function getCombinedReturnValue([stream<Result, error?>, stream<Result, error?>]|error queryResult)
     returns (int|error)[]|error {
-    if (queryResult is error) {
+    if queryResult is error {
         return queryResult;
     } else {
         stream<Result, error?> x;
@@ -500,17 +500,17 @@ isolated function getCombinedReturnValue([stream<Result, error?>, stream<Result,
     }
 }
 
-isolated function getIntVariableValue(stream<record {}, error?> queryResult) returns int|error {
-    int count = -1;
-    record {|record {} value;|}? data = check queryResult.next();
-    if (data is record {|record {} value;|}) {
-        record {} variable = data.value;
-        if (variable is Variable) {
-            return 'int:fromString(variable.value);
-        }
-    }
+isolated function getIntVariableValue(stream<Variable, error?> queryResult) returns int|error {
+
+    record {|Variable value;|}? data = check queryResult.next();
     check queryResult.close();
-    return count;
+
+    if data is record {|Variable value;|} {
+        Variable variable = data.value;
+        return 'int:fromString(variable.value);
+    } else {
+        return -1;
+    }
 }
 
 
@@ -552,7 +552,7 @@ function drainGlobalPool(string database) returns error? {
     // Since each select operation hold up one connection each, the last select operation should
     // return an error
     i = 0;
-    while(i < 10) {
+    while i < 10 {
         test:assertEquals(returnArray[i], 1);
         i = i + 1;
     }

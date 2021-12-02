@@ -61,7 +61,7 @@ function batchInsertIntoDataTableFailure() {
     sql:ExecutionResult[]|error result = batchExecuteQueryMySQLClient(sqlQueries);
     test:assertTrue(result is error);
 
-    if (result is sql:BatchExecuteError) {
+    if result is sql:BatchExecuteError {
         sql:BatchExecuteErrorDetail errorDetails = result.detail();
         test:assertEquals(errorDetails.executionResults.length(), 3);
         test:assertEquals(errorDetails.executionResults[0].affectedRowCount, 1);
@@ -76,12 +76,12 @@ isolated function validateBatchExecutionResult(sql:ExecutionResult[] results, in
     test:assertEquals(results.length(), rowCount.length());
 
     int i =0;
-    while (i < results.length()) {
+    while i < results.length() {
         test:assertEquals(results[i].affectedRowCount, rowCount[i]);
         int|string? lastInsertIdVal = results[i].lastInsertId;
-        if (lastId[i] == -1) {
+        if lastId[i] == -1 {
             test:assertNotEquals(lastInsertIdVal, ());
-        } else if (lastInsertIdVal is int) {
+        } else if lastInsertIdVal is int {
             test:assertTrue(lastInsertIdVal > 1, "Last Insert Id is nil.");
         } else {
             test:assertFail("The last insert id should be an integer.");

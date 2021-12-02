@@ -98,12 +98,8 @@ function testToJson() returns error? {
         BOOLEAN_TYPE: true,
         STRING_TYPE: "Hello"
     };
-    json|error expectedDataJson = expectedData.cloneWithType(json);
-     if expectedDataJson is json {
-         test:assertEquals(retVal, expectedDataJson, "Expected JSON did not match.");
-     } else {
-         test:assertFail("Error in cloning record to JSON" + expectedDataJson.message());
-     }
+    json expectedDataJson = check expectedData.cloneWithType(json);
+     test:assertEquals(retVal, expectedDataJson, "Expected JSON did not match.");
 
     check dbClient.close();
 }

@@ -16,7 +16,7 @@
 
 import ballerina/io;
 
-isolated function getUntaintedData(record {}|error? value, string fieldName) returns anydata {
+isolated function getUntaintedData(record {}? value, string fieldName) returns anydata {
     if value is record {} {
         return value[fieldName];
     }

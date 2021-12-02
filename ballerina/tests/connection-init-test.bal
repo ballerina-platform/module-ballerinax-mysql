@@ -31,7 +31,7 @@ isolated function testConnectionWithNoFields() {
 }
 function testWithURLParams() returns error? {
     Client dbClient = check new (host, user, password, connectDB, port);
-    var exitCode = dbClient.close();
+    error? exitCode = dbClient.close();
     test:assertExactEquals(exitCode, (), "Initialising connection with params fails.");
 }
 
@@ -40,7 +40,7 @@ function testWithURLParams() returns error? {
 }
 function testWithoutHost() returns error? {
     Client dbClient = check new (user = user, password = password, database = connectDB, port = port);
-    var exitCode = dbClient.close();
+    error? exitCode = dbClient.close();
     test:assertExactEquals(exitCode, (), "Initialising connection without host fails.");
 }
 
@@ -53,7 +53,7 @@ function testWithOptions() returns error? {
     };
     Client dbClient = check new (user = user, password = password, database = connectDB,
         port = port, options = options);
-    var exitCode = dbClient.close();
+    error? exitCode = dbClient.close();
     test:assertExactEquals(exitCode, (), "Initialising connection with options fails.");
 }
 
@@ -66,7 +66,7 @@ function testWithConnectionPool() returns error? {
     };
     Client dbClient = check new (user = user, password = password, database = connectDB,
         port = port, connectionPool = connectionPool);
-    var exitCode = dbClient.close();
+    error? exitCode = dbClient.close();
     test:assertExactEquals(exitCode, (), "Initialising connection with option max connection pool fails.");
     test:assertEquals(connectionPool.maxOpenConnections, 25, "Configured max connection config is wrong.");
 }
@@ -82,7 +82,7 @@ function testWithConnectionParams() returns error? {
         connectTimeout: 60
     };
     Client dbClient = check new (host, user, password, connectDB, port, options, connectionPool);
-    var exitCode = dbClient.close();
+    error? exitCode = dbClient.close();
     test:assertExactEquals(exitCode, (), "Initialising connection with connection params fails.");
 }
 

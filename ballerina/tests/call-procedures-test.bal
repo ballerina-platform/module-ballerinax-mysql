@@ -168,7 +168,7 @@ function testCallWithStringTypesReturnsDataMultiple() returns error? {
         test:assertEquals(result1, expectedDataRow, "Call procedure first select did not match.");
     }
 
-    var nextResult = check ret.getNextQueryResult();
+    boolean nextResult = check ret.getNextQueryResult();
     if (!nextResult) {
         test:assertFail("Only 1 result set returned!.");
     }

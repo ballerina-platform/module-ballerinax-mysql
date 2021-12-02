@@ -53,7 +53,7 @@ function testLocalTransaction() returns error? {
         _ = check dbClient->execute(`Insert into Customers (firstName,lastName,registrationID,creditLimit,country)
                                 values ('James', 'Clerk', 200, 5000.75, 'USA')`);
         transInfo = transactions:info();
-        var commitResult = commit;
+        error? commitResult = commit;
         if(commitResult is ()){
             committedBlockExecuted = true;
         }
@@ -110,12 +110,12 @@ function testTransactionRollbackWithRollback() returns error? {
     transactions:Info transInfo;
     retry<SQLDefaultRetryManager>(1) transaction {
         transInfo = transactions:info();
-        var e1 = dbClient->execute(`Insert into Customers (firstName,lastName,registrationID,
+        sql:ExecutionResult|error e1 = dbClient->execute(`Insert into Customers (firstName,lastName,registrationID,
                 creditLimit,country) values ('James', 'Clerk', 211, 5000.75, 'USA')`);
         if (e1 is error){
             rollback;
         } else {
-            var e2 = dbClient->execute(`Insert into Customers2 (firstName,lastName,registrationID,
+            sql:ExecutionResult|error e2 = dbClient->execute(`Insert into Customers2 (firstName,lastName,registrationID,
                         creditLimit,country) values ('James', 'Clerk', 211, 5000.75, 'USA')`);
             if (e2 is error){
                 rollback;
@@ -238,7 +238,7 @@ int testTransactionErrorPanicRetVal = 0;
 function testTransactionErrorPanic() returns error? {
     Client dbClient = check new (host, user, password, localTransactionDB, port);
     int catchValue = 0;
-    var ret = trap testTransactionErrorPanicHelper(dbClient);
+    error? ret = trap testTransactionErrorPanicHelper(dbClient);
 
     if (ret is error) {
         catchValue = -1;
@@ -371,7 +371,7 @@ function testLocalTransactionFailed() returns error? {
 
     string a = "beforetx";
 
-    var ret = trap testLocalTransactionFailedHelper(dbClient);
+    string|error ret = testLocalTransactionFailedHelper(dbClient);
     if (ret is string) {
         a += ret;
     } else {
@@ -398,7 +398,7 @@ function testLocalTransactionFailedHelper(Client dbClient) returns string|error 
         transactions:onRollback(onRollbackFunc);
         _ = check dbClient->execute(`Insert into Customers (firstName,lastName,registrationID,creditLimit,country)
                         values ('James', 'Clerk', 111, 5000.75, 'USA')`);
-        var e2 = dbClient->execute(`Insert into Customers2 (firstName,lastName,registrationID,creditLimit,country)
+        sql:ExecutionResult|error e2 = dbClient->execute(`Insert into Customers2 (firstName,lastName,registrationID,creditLimit,country)
                         values ('Anne', 'Clerk', 111, 5000.75, 'USA')`);
         if(e2 is error){
            check getError();

@@ -22,7 +22,7 @@ string batchExecuteDB = "BATCH_EXECUTE_DB";
 @test:Config {
     groups: ["batch-execute"]
 }
-function batchInsertIntoDataTable() {
+function batchInsertIntoDataTable() returns error? {
     var data = [
         {intVal:3, longVal:9223372036854774807, floatVal:123.34},
         {intVal:4, longVal:9223372036854774807, floatVal:123.34},
@@ -31,18 +31,18 @@ function batchInsertIntoDataTable() {
     sql:ParameterizedQuery[] sqlQueries =
         from var row in data
         select `INSERT INTO DataTable (int_type, long_type, float_type) VALUES (${row.intVal}, ${row.longVal}, ${row.floatVal})`;
-    validateBatchExecutionResult(batchExecuteQueryMySQLClient(sqlQueries), [1, 1, 1], [2,3,4]);
+    validateBatchExecutionResult(check batchExecuteQueryMySQLClient(sqlQueries), [1, 1, 1], [2,3,4]);
 }
 
 @test:Config {
     groups: ["batch-execute"],
     dependsOn: [batchInsertIntoDataTable]
 }
-function batchInsertIntoDataTable2() {
+function batchInsertIntoDataTable2() returns error? {
     int intType = 6;
     sql:ParameterizedQuery sqlQuery = `INSERT INTO DataTable (int_type) VALUES(${intType})`;
     sql:ParameterizedQuery[] sqlQueries = [sqlQuery];
-    validateBatchExecutionResult(batchExecuteQueryMySQLClient(sqlQueries), [1], [5]);
+    validateBatchExecutionResult(check batchExecuteQueryMySQLClient(sqlQueries), [1], [5]);
 }
 
 @test:Config {
@@ -58,7 +58,7 @@ function batchInsertIntoDataTableFailure() {
     sql:ParameterizedQuery[] sqlQueries =
         from var row in data
         select `INSERT INTO DataTable (int_type, long_type, float_type) VALUES (${row.intVal}, ${row.longVal}, ${row.floatVal})`;
-    sql:ExecutionResult[]|error result = trap batchExecuteQueryMySQLClient(sqlQueries);
+    sql:ExecutionResult[]|error result = batchExecuteQueryMySQLClient(sqlQueries);
     test:assertTrue(result is error);
 
     if (result is sql:BatchExecuteError) {
@@ -90,9 +90,9 @@ isolated function validateBatchExecutionResult(sql:ExecutionResult[] results, in
     }
 }
 
-function batchExecuteQueryMySQLClient(sql:ParameterizedQuery[] sqlQueries) returns sql:ExecutionResult[] {
-    Client dbClient = checkpanic new (host, user, password, batchExecuteDB, port);
-    sql:ExecutionResult[] result = checkpanic dbClient->batchExecute(sqlQueries);
-    checkpanic dbClient.close();
+function batchExecuteQueryMySQLClient(sql:ParameterizedQuery[] sqlQueries) returns sql:ExecutionResult[]|error {
+    Client dbClient = check new (host, user, password, batchExecuteDB, port);
+    sql:ExecutionResult[] result = check dbClient->batchExecute(sqlQueries);
+    check dbClient.close();
     return result;
 }

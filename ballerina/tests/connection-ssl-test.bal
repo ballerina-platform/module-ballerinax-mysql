@@ -21,13 +21,13 @@ import ballerina/test;
 int sslPort = 3307;
 string sslDB = "SSL_CONNECT_DB";
 
-string clientStorePath = checkpanic file:getAbsolutePath("./tests/resources/keystore/client/client-keystore.p12");
-string turstStorePath = checkpanic file:getAbsolutePath("./tests/resources/keystore/client/client-truststore.p12");
+string clientStorePath = check file:getAbsolutePath("./tests/resources/keystore/client/client-keystore.p12");
+string turstStorePath = check file:getAbsolutePath("./tests/resources/keystore/client/client-truststore.p12");
 
 @test:Config {
     groups: ["connection","ssl"]
 }
-function testSSLVerifyCert() {
+function testSSLVerifyCert() returns error? {
     Options options = {
         ssl: {
             mode: SSL_VERIFY_CA,
@@ -41,7 +41,7 @@ function testSSLVerifyCert() {
             }
         }
     };
-    Client dbClient = checkpanic new (user = user, password = password, database = sslDB,
+    Client dbClient = check new (user = user, password = password, database = sslDB,
         port = sslPort, options = options);
     test:assertEquals(dbClient.close(), ());
 }
@@ -49,7 +49,7 @@ function testSSLVerifyCert() {
 @test:Config {
     groups: ["connection","ssl"]
 }
-function testSSLPreferred() {
+function testSSLPreferred() returns error? {
     Options options = {
         ssl: {
             mode:  SSL_PREFERRED,
@@ -63,7 +63,7 @@ function testSSLPreferred() {
             }
         }
     };
-    Client dbClient = checkpanic new (user = user, password = password, database = sslDB,
+    Client dbClient = check new (user = user, password = password, database = sslDB,
         port = sslPort, options = options);
     test:assertEquals(dbClient.close(), ());
 }
@@ -71,7 +71,7 @@ function testSSLPreferred() {
 @test:Config {
     groups: ["connection","ssl"]
 }
-function testSSLRequiredWithClientCert() {
+function testSSLRequiredWithClientCert() returns error? {
     Options options = {
         ssl: {
             mode:  SSL_REQUIRED,
@@ -81,7 +81,7 @@ function testSSLRequiredWithClientCert() {
             }
         }
     };
-    Client dbClient = checkpanic new (user = user, password = password, database = sslDB,
+    Client dbClient = check new (user = user, password = password, database = sslDB,
         port = sslPort, options = options);
     test:assertEquals(dbClient.close(), ());
 }

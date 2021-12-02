@@ -400,7 +400,7 @@ function queryTypeBinaryByteParam() returns error? {
     groups: ["query","query-simple-params"]
 }
 function queryTypeBinaryReadableByteChannelParam() returns error? {
-    io:ReadableByteChannel byteChannel = getByteColumnChannel();
+    io:ReadableByteChannel byteChannel = check getByteColumnChannel();
     sql:BinaryValue typeVal = new (byteChannel);
     sql:ParameterizedQuery sqlQuery = `SELECT * from ComplexTypes WHERE binary_type = ${typeVal}`;
     validateComplexTableResult(check queryMysqlClient(sqlQuery));
@@ -410,7 +410,7 @@ function queryTypeBinaryReadableByteChannelParam() returns error? {
     groups: ["query","query-simple-params"]
 }
 function queryTypeVarBinaryReadableByteChannelParam() returns error? {
-    io:ReadableByteChannel byteChannel = getByteColumnChannel();
+    io:ReadableByteChannel byteChannel = check getByteColumnChannel();
     sql:VarBinaryValue typeVal = new (byteChannel);
     sql:ParameterizedQuery sqlQuery = `SELECT * from ComplexTypes WHERE var_binary_type = ${typeVal}`;
     validateComplexTableResult(check queryMysqlClient(sqlQuery));
@@ -464,7 +464,7 @@ function queryTypeLongBlobByteParam() returns error? {
     groups: ["query","query-simple-params"]
 }
 function queryTypeBlobReadableByteChannelParam() returns error? {
-    io:ReadableByteChannel byteChannel = getBlobColumnChannel();
+    io:ReadableByteChannel byteChannel = check getBlobColumnChannel();
     sql:BlobValue typeVal = new (byteChannel);
     sql:ParameterizedQuery sqlQuery = `SELECT * from ComplexTypes WHERE blob_type = ${typeVal}`;
     validateComplexTableResult(check queryMysqlClient(sqlQuery));
@@ -510,7 +510,7 @@ function queryTypeLongTextStringParam() returns error? {
     groups: ["query","query-simple-params"]
 }
 function queryTypeTextReadableCharChannelParam() returns error? {
-    io:ReadableCharacterChannel clobChannel = getTextColumnChannel();
+    io:ReadableCharacterChannel clobChannel = check getTextColumnChannel();
     sql:ClobValue typeVal = new (clobChannel);
     sql:ParameterizedQuery sqlQuery = `SELECT * from ComplexTypes WHERE text_type = ${typeVal}`;
     validateComplexTableResult(check queryMysqlClient(sqlQuery));
@@ -520,7 +520,7 @@ function queryTypeTextReadableCharChannelParam() returns error? {
     groups: ["query","query-simple-params"]
 }
 function queryTypeNTextReadableCharChannelParam() returns error? {
-    io:ReadableCharacterChannel clobChannel = getTextColumnChannel();
+    io:ReadableCharacterChannel clobChannel = check getTextColumnChannel();
     sql:NClobValue typeVal = new (clobChannel);
     sql:ParameterizedQuery sqlQuery = `SELECT * from ComplexTypes WHERE text_type = ${typeVal}`;
     validateComplexTableResult(check queryMysqlClient(sqlQuery));

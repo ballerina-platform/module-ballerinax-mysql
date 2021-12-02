@@ -23,24 +23,24 @@ isolated function getUntaintedData(record {}|error? value, string fieldName) ret
     return {};
 }
 
-isolated function getByteColumnChannel() returns io:ReadableByteChannel {
-    io:ReadableByteChannel byteChannel = checkpanic io:openReadableFile("./tests/resources/files/byteValue.txt");
+isolated function getByteColumnChannel() returns io:ReadableByteChannel|error {
+    io:ReadableByteChannel byteChannel = check io:openReadableFile("./tests/resources/files/byteValue.txt");
     return byteChannel;
 }
 
-isolated function getBlobColumnChannel() returns io:ReadableByteChannel {
-    io:ReadableByteChannel byteChannel = checkpanic io:openReadableFile("./tests/resources/files/blobValue.txt");
+isolated function getBlobColumnChannel() returns io:ReadableByteChannel|error {
+    io:ReadableByteChannel byteChannel = check io:openReadableFile("./tests/resources/files/blobValue.txt");
     return byteChannel;
 }
 
-isolated function getClobColumnChannel() returns io:ReadableCharacterChannel {
-    io:ReadableByteChannel byteChannel = checkpanic io:openReadableFile("./tests/resources/files/clobValue.txt");
+isolated function getClobColumnChannel() returns io:ReadableCharacterChannel|error {
+    io:ReadableByteChannel byteChannel = check io:openReadableFile("./tests/resources/files/clobValue.txt");
     io:ReadableCharacterChannel sourceChannel = new (byteChannel, "UTF-8");
     return sourceChannel;
 }
 
-isolated function getTextColumnChannel() returns io:ReadableCharacterChannel {
-    io:ReadableByteChannel byteChannel = checkpanic io:openReadableFile("./tests/resources/files/clobValue.txt");
+isolated function getTextColumnChannel() returns io:ReadableCharacterChannel|error {
+    io:ReadableByteChannel byteChannel = check io:openReadableFile("./tests/resources/files/clobValue.txt");
     io:ReadableCharacterChannel sourceChannel = new (byteChannel, "UTF-8");
     return sourceChannel;
 }

@@ -21,13 +21,13 @@ import ballerina/test;
 int sslPort = 3307;
 string sslDB = "SSL_CONNECT_DB";
 
-string clientStorePath = checkpanic file:getAbsolutePath("./tests/resources/keystore/client/client-keystore.p12");
-string turstStorePath = checkpanic file:getAbsolutePath("./tests/resources/keystore/client/client-truststore.p12");
+string clientStorePath = check file:getAbsolutePath("./tests/resources/keystore/client/client-keystore.p12");
+string turstStorePath = check file:getAbsolutePath("./tests/resources/keystore/client/client-truststore.p12");
 
 @test:Config {
-    groups: ["connection","ssl"]
+    groups: ["connection", "ssl"]
 }
-function testSSLVerifyCert() {
+function testSSLVerifyCert() returns error? {
     Options options = {
         ssl: {
             mode: SSL_VERIFY_CA,
@@ -41,18 +41,18 @@ function testSSLVerifyCert() {
             }
         }
     };
-    Client dbClient = checkpanic new (user = user, password = password, database = sslDB,
+    Client dbClient = check new (user = user, password = password, database = sslDB, 
         port = sslPort, options = options);
     test:assertEquals(dbClient.close(), ());
 }
 
 @test:Config {
-    groups: ["connection","ssl"]
+    groups: ["connection", "ssl"]
 }
-function testSSLPreferred() {
+function testSSLPreferred() returns error? {
     Options options = {
         ssl: {
-            mode:  SSL_PREFERRED,
+            mode: SSL_PREFERRED,
             key: {
                 path: clientStorePath,
                 password: "password"
@@ -63,36 +63,36 @@ function testSSLPreferred() {
             }
         }
     };
-    Client dbClient = checkpanic new (user = user, password = password, database = sslDB,
+    Client dbClient = check new (user = user, password = password, database = sslDB, 
         port = sslPort, options = options);
     test:assertEquals(dbClient.close(), ());
 }
 
 @test:Config {
-    groups: ["connection","ssl"]
+    groups: ["connection", "ssl"]
 }
-function testSSLRequiredWithClientCert() {
+function testSSLRequiredWithClientCert() returns error? {
     Options options = {
         ssl: {
-            mode:  SSL_REQUIRED,
+            mode: SSL_REQUIRED,
             key: {
                 path: clientStorePath,
                 password: "password"
             }
         }
     };
-    Client dbClient = checkpanic new (user = user, password = password, database = sslDB,
+    Client dbClient = check new (user = user, password = password, database = sslDB, 
         port = sslPort, options = options);
     test:assertEquals(dbClient.close(), ());
 }
 
 @test:Config {
-    groups: ["connection","ssl"]
+    groups: ["connection", "ssl"]
 }
 function testSSLVerifyIdentity() {
     Options options = {
         ssl: {
-            mode:  SSL_VERIFY_IDENTITY,
+            mode: SSL_VERIFY_IDENTITY,
             key: {
                 path: clientStorePath,
                 password: "password"
@@ -103,11 +103,11 @@ function testSSLVerifyIdentity() {
             }
         }
     };
-    Client|sql:Error dbClient = new (user = user, password = password, database = sslDB,
+    Client|sql:Error dbClient = new (user = user, password = password, database = sslDB, 
         port = sslPort, options = options);
     test:assertTrue(dbClient is error);
-    error dbError = <error> dbClient;
-    test:assertTrue(strings:includes(dbError.message(),  "The certificate Common Name 'ballerina-mysql-test-server'" +
-    " does not match " +
+    error dbError = <error>dbClient;
+    test:assertTrue(strings:includes(dbError.message(), "The certificate Common Name 'ballerina-mysql-test-server'" + 
+    " does not match " + 
     "with 'localhost'."), dbError.message());
 }

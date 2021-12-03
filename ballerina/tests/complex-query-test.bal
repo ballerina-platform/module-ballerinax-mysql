@@ -53,11 +53,11 @@ type ResultDatesRecord record {
 };
 
 @test:Config {
-    groups: ["query","query-complex-params"]
+    groups: ["query", "query-complex-params"]
 }
 function testGetPrimitiveTypes() returns error? {
     Client dbClient = check new (host, user, password, complexQueryDb, port);
-    stream<record{}, error?> streamData = dbClient->query(
+    stream<record {}, error?> streamData = dbClient->query(
         `SELECT INT_TYPE, LONG_TYPE, FORMAT(FLOAT_TYPE, 2) as FLOAT_TYPE, DOUBLE_TYPE,
          BOOLEAN_TYPE, STRING_TYPE from DataTable WHERE ROW_ID = 1`);
     record {|record {} value;|}? data = check streamData.next();
@@ -78,11 +78,11 @@ function testGetPrimitiveTypes() returns error? {
 }
 
 @test:Config {
-    groups: ["query","query-complex-params"]
+    groups: ["query", "query-complex-params"]
 }
 function testToJson() returns error? {
     Client dbClient = check new (host, user, password, complexQueryDb, port);
-    stream<record{}, error?> streamData = dbClient->query(
+    stream<record {}, error?> streamData = dbClient->query(
         `SELECT INT_TYPE, LONG_TYPE, FORMAT(FLOAT_TYPE, 2) as FLOAT_TYPE, DOUBLE_TYPE,
         BOOLEAN_TYPE, STRING_TYPE from DataTable WHERE ROW_ID = 1`);
     record {|record {} value;|}? data = check streamData.next();
@@ -98,22 +98,18 @@ function testToJson() returns error? {
         BOOLEAN_TYPE: true,
         STRING_TYPE: "Hello"
     };
-    json|error expectedDataJson = expectedData.cloneWithType(json);
-     if (expectedDataJson is json) {
-         test:assertEquals(retVal, expectedDataJson, "Expected JSON did not match.");
-     } else {
-         test:assertFail("Error in cloning record to JSON" + expectedDataJson.message());
-     }
+    json expectedDataJson = check expectedData.cloneWithType(json);
+    test:assertEquals(retVal, expectedDataJson, "Expected JSON did not match.");
 
     check dbClient.close();
 }
 
 @test:Config {
-    groups: ["query","query-complex-params"]
+    groups: ["query", "query-complex-params"]
 }
 function testToJsonComplexTypes() returns error? {
     Client dbClient = check new (host, user, password, complexQueryDb, port);
-    stream<record{}, error?> streamData = dbClient->query(`SELECT BLOB_TYPE as blobType,CLOB_TYPE as clobType,BINARY_TYPE as binaryType from
+    stream<record {}, error?> streamData = dbClient->query(`SELECT BLOB_TYPE as blobType,CLOB_TYPE as clobType,BINARY_TYPE as binaryType from
          ComplexTypes where ROW_ID = 1`);
     record {|record {} value;|}? data = check streamData.next();
     check streamData.close();
@@ -129,11 +125,11 @@ function testToJsonComplexTypes() returns error? {
 }
 
 @test:Config {
-    groups: ["query","query-complex-params"]
+    groups: ["query", "query-complex-params"]
 }
 function testComplexTypesNil() returns error? {
     Client dbClient = check new (host, user, password, complexQueryDb, port);
-    stream<record{}, error?> streamData = dbClient->query(`SELECT BLOB_TYPE,CLOB_TYPE,BINARY_TYPE from
+    stream<record {}, error?> streamData = dbClient->query(`SELECT BLOB_TYPE,CLOB_TYPE,BINARY_TYPE from
          ComplexTypes where ROW_ID = 2`);
     record {|record {} value;|}? data = check streamData.next();
     check streamData.close();
@@ -149,7 +145,7 @@ function testComplexTypesNil() returns error? {
 }
 
 @test:Config {
-    groups: ["query","query-complex-params"]
+    groups: ["query", "query-complex-params"]
 }
 function testDateTimeStrings() returns error? {
     Client dbClient = check new (host, user, password, complexQueryDb, port);
@@ -158,8 +154,8 @@ function testDateTimeStrings() returns error? {
     _ = check dbClient->execute(insertQuery);
     stream<ResultDates, error?> queryResult = dbClient->query(`SELECT DATE_TYPE, TIME_TYPE, TIMESTAMP_TYPE, DATETIME_TYPE
         from DateTimeTypes where ROW_ID = 1`);
-    record{| ResultDates value; |}? data =  check queryResult.next();
-    record{}? value = data?.value;
+    record {|ResultDates value;|}? data = check queryResult.next();
+    record {}? value = data?.value;
     check dbClient.close();
 
     string dateType = "2017-05-23";
@@ -173,11 +169,11 @@ function testDateTimeStrings() returns error? {
         TIMESTAMP_TYPE: insertedTimeString,
         DATETIME_TYPE: insertedDateTimeString
     };
-    test:assertEquals(value, expected, "Expected record did not match."); 
+    test:assertEquals(value, expected, "Expected record did not match.");
 }
 
 @test:Config {
-    groups: ["query","query-complex-params"]
+    groups: ["query", "query-complex-params"]
 }
 function testDateTimeRecords() returns error? {
     Client dbClient = check new (host, user, password, complexQueryDb, port);
@@ -186,14 +182,14 @@ function testDateTimeRecords() returns error? {
     _ = check dbClient->execute(insertQuery);
     stream<ResultDatesRecord, error?> queryResult = dbClient->query(`SELECT DATE_TYPE, TIME_TYPE, TIMESTAMP_TYPE, DATETIME_TYPE
         from DateTimeTypes where ROW_ID = 2`);
-    record{| ResultDatesRecord value; |}? data =  check queryResult.next();
-    record{}? value = data?.value;
+    record {|ResultDatesRecord value;|}? data = check queryResult.next();
+    record {}? value = data?.value;
     check dbClient.close();
 
-    time:Date dateRecord = {"year":2017,"month":5,"day":23};
-    time:TimeOfDay timeRecord = {"hour":14,"minute":15,"second":23};
+    time:Date dateRecord = {"year": 2017, "month": 5, "day": 23};
+    time:TimeOfDay timeRecord = {"hour": 14, "minute": 15, "second": 23};
     time:Utc timestampRecord = [1485362035, 0];
-    time:Civil dateTimeRecord = {"year":2017,"month":1,"day":25,"hour":22,"minute":33,"second":55};
+    time:Civil dateTimeRecord = {"year": 2017, "month": 1, "day": 25, "hour": 22, "minute": 33, "second": 55};
 
     ResultDatesRecord expected = {
         DATE_TYPE: dateRecord,
@@ -205,7 +201,7 @@ function testDateTimeRecords() returns error? {
 }
 
 @test:Config {
-    groups: ["query","query-complex-params"]
+    groups: ["query", "query-complex-params"]
 }
 function testColumnAlias() returns error? {
     Client dbClient = check new (host, user, password, complexQueryDb, port);
@@ -223,17 +219,14 @@ function testColumnAlias() returns error? {
         DT2INT_TYPE: 100
     };
     int counter = 0;
-    error? e = queryResult.forEach(function (record{} value) {
-        if (value is ResultSetTestAlias) {
+    check queryResult.forEach(function(record {} value) {
+        if value is ResultSetTestAlias {
             test:assertEquals(value, expectedData, "Expected record did not match.");
             counter = counter + 1;
-        } else{
+        } else {
             test:assertFail("Expected data type is ResultSetTestAlias");
         }
     });
-    if(e is error) {
-        test:assertFail("Query failed");
-    }
     test:assertEquals(counter, 1, "Expected only one data row.");
     check dbClient.close();
 }

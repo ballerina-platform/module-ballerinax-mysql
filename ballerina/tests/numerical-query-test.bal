@@ -32,18 +32,18 @@ type NumericTypeForQuery record {
 };
 
 @test:Config {
-    groups: ["query","query-numeric-params"]
+    groups: ["query", "query-numeric-params"]
 }
 function testQuery() returns error? {
-    Client dbClient = checkpanic new (host, user, password, database, port);
-    stream<record{}, sql:Error?> streamData = dbClient->query(`SELECT * FROM NumericTypes`);
+    Client dbClient = check new (host, user, password, database, port);
+    stream<record {}, sql:Error?> streamData = dbClient->query(`SELECT * FROM NumericTypes`);
     record {}? returnData = ();
     check streamData.forEach(function(record {} data) {
         returnData = data;
     });
-    checkpanic dbClient.close();
-    
-    if (!(returnData is ())) {
+    check dbClient.close();
+
+    if !(returnData is ()) {
         test:assertEquals(returnData["ID"], 1);
         test:assertEquals(returnData["INT_TYPE"], 2147483647);
         test:assertEquals(returnData["BIGINT_TYPE"], 9223372036854774807);
@@ -61,16 +61,16 @@ function testQuery() returns error? {
 }
 
 @test:Config {
-    groups: ["query","query-numeric-params"]
+    groups: ["query", "query-numeric-params"]
 }
 function testQueryNumericTypeRecord() returns error? {
-    Client dbClient = checkpanic new (host, user, password, database, port);
+    Client dbClient = check new (host, user, password, database, port);
     stream<NumericTypeForQuery, sql:Error?> streamData = dbClient->query(`SELECT * FROM NumericTypes`);
     NumericTypeForQuery? returnData = ();
     check streamData.forEach(function(NumericTypeForQuery data) {
         returnData = data;
     });
-    checkpanic dbClient.close();
+    check dbClient.close();
 
     test:assertEquals(returnData?.id, 1);
     test:assertEquals(returnData?.int_type, 2147483647);
@@ -98,16 +98,16 @@ type NumericInvalidColumn record {|
 |};
 
 @test:Config {
-    groups: ["query","query-numeric-params"]
+    groups: ["query", "query-numeric-params"]
 }
-function testQueryNumericInvalidColumnRecord() {
-    Client dbClient = checkpanic new (host, user, password, database, port);
+function testQueryNumericInvalidColumnRecord() returns error? {
+    Client dbClient = check new (host, user, password, database, port);
     stream<NumericInvalidColumn, sql:Error?> streamData = dbClient->query(`SELECT * FROM NumericTypes`);
     record {|NumericInvalidColumn value;|}|sql:Error? data = streamData.next();
-    checkpanic streamData.close();
-    checkpanic dbClient.close();
+    check streamData.close();
+    check dbClient.close();
     test:assertTrue(data is error);
-    error dbError = <error> data;
+    error dbError = <error>data;
     test:assertEquals(dbError.message(), "No mapping field found for SQL table column 'ID' in the record type 'NumericInvalidColumn'", "Error message differs");
 }
 
@@ -124,17 +124,16 @@ type NumericOptionalType record {
     float? real_type;
 };
 
-
 @test:Config {
-    groups: ["query","query-numeric-params"]
+    groups: ["query", "query-numeric-params"]
 }
-function testQueryNumericOptionalTypeRecord() {
-    Client dbClient = checkpanic new (host, user, password, database, port);
+function testQueryNumericOptionalTypeRecord() returns error? {
+    Client dbClient = check new (host, user, password, database, port);
     stream<NumericOptionalType, sql:Error?> streamData = dbClient->query(`SELECT * FROM NumericTypes`);
-    record {|NumericOptionalType value;|}? data = checkpanic streamData.next();
-    checkpanic streamData.close();
+    record {|NumericOptionalType value;|}? data = check streamData.next();
+    check streamData.close();
     NumericOptionalType? returnData = data?.value;
-    checkpanic dbClient.close();
+    check dbClient.close();
 
     test:assertEquals(returnData?.id, 1);
     test:assertEquals(returnData?.int_type, 2147483647);
@@ -162,16 +161,16 @@ type NumericUnionType record {
 };
 
 @test:Config {
-    groups: ["query","query-numeric-params"]
+    groups: ["query", "query-numeric-params"]
 }
-function testQueryNumericUnionTypeRecord() {
-    Client dbClient = checkpanic new (host, user, password, database, port);
+function testQueryNumericUnionTypeRecord() returns error? {
+    Client dbClient = check new (host, user, password, database, port);
     stream<NumericUnionType, sql:Error?> streamData = dbClient->query(`SELECT * FROM NumericTypes`);
-    record {|NumericUnionType value;|}? data = checkpanic streamData.next();
-    checkpanic streamData.close();
+    record {|NumericUnionType value;|}? data = check streamData.next();
+    check streamData.close();
     NumericUnionType? returnData = data?.value;
-    checkpanic dbClient.close();
-    
+    check dbClient.close();
+
     test:assertEquals(returnData?.id, 1);
     test:assertEquals(returnData?.int_type, 2147483647);
     test:assertEquals(returnData?.bigint_type, 9223372036854774807);
@@ -182,7 +181,7 @@ function testQueryNumericUnionTypeRecord() {
     test:assertTrue(returnData?.decimal_type is decimal);
     test:assertTrue(returnData?.numeric_type is decimal);
     test:assertTrue(returnData?.float_type is float);
-    
+
 }
 
 type NumericStringType record {
@@ -199,15 +198,15 @@ type NumericStringType record {
 };
 
 @test:Config {
-    groups: ["query","query-numeric-params"]
+    groups: ["query", "query-numeric-params"]
 }
-function testQueryNumericStringTypeRecord() {
-    Client dbClient = checkpanic new (host, user, password, database, port);
-    stream<NumericStringType, sql:Error?> streamData= dbClient->query(`SELECT * FROM NumericTypes`);
-    record {|NumericStringType value;|}? data = checkpanic streamData.next();
-    checkpanic streamData.close();
+function testQueryNumericStringTypeRecord() returns error? {
+    Client dbClient = check new (host, user, password, database, port);
+    stream<NumericStringType, sql:Error?> streamData = dbClient->query(`SELECT * FROM NumericTypes`);
+    record {|NumericStringType value;|}? data = check streamData.next();
+    check streamData.close();
     NumericStringType? returnData = data?.value;
-    checkpanic dbClient.close();
+    check dbClient.close();
 
     test:assertEquals(returnData?.id, "1");
     test:assertEquals(returnData?.int_type, "2147483647");
@@ -237,15 +236,15 @@ type NumericCustomType record {
 };
 
 @test:Config {
-    groups: ["query","query-numeric-params"]
+    groups: ["query", "query-numeric-params"]
 }
-function testQueryNumericCustomTypeRecord() {
-    Client dbClient = checkpanic new (host, user, password, database, port);
-    stream<NumericCustomType, sql:Error?> streamData= dbClient->query(`SELECT * FROM NumericTypes`);
-    record {|NumericCustomType value;|}? data = checkpanic streamData.next();
-    checkpanic streamData.close();
+function testQueryNumericCustomTypeRecord() returns error? {
+    Client dbClient = check new (host, user, password, database, port);
+    stream<NumericCustomType, sql:Error?> streamData = dbClient->query(`SELECT * FROM NumericTypes`);
+    record {|NumericCustomType value;|}? data = check streamData.next();
+    check streamData.close();
     NumericCustomType? returnData = data?.value;
-    checkpanic dbClient.close();
+    check dbClient.close();
 
     test:assertEquals(returnData?.id, 1);
     test:assertEquals(returnData?.int_type, 2147483647);
@@ -261,18 +260,18 @@ function testQueryNumericCustomTypeRecord() {
 }
 
 @test:Config {
-    groups: ["query","query-numeric-params"]
+    groups: ["query", "query-numeric-params"]
 }
 function testQueryFromNullTable() returns error? {
-    Client dbClient = checkpanic new (host, user, password, database, port);
-    stream<record{}, sql:Error?> streamData = dbClient->query(`SELECT * FROM NumericNullTypes`);
+    Client dbClient = check new (host, user, password, database, port);
+    stream<record {}, sql:Error?> streamData = dbClient->query(`SELECT * FROM NumericNullTypes`);
     record {} returnData = {};
     int count = 0;
     check streamData.forEach(function(record {} data) {
         returnData = data;
         count += 1;
     });
-    checkpanic dbClient.close();
+    check dbClient.close();
     test:assertEquals(count, 2, "More than one record present");
     test:assertEquals(returnData["ID"], 2);
     test:assertEquals(returnData["INT_TYPE"], ());

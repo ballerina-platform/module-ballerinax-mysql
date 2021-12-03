@@ -30,5 +30,5 @@ public distinct class CustomResultIterator {
     public isolated function getNextQueryResult(sql:ProcedureCallResult callResult) returns boolean|sql:Error = @java:Method {
         'class: "io.ballerina.stdlib.mysql.utils.ProcedureCallResultUtils",
         paramTypes: ["io.ballerina.runtime.api.values.BObject", "io.ballerina.runtime.api.values.BObject"]
-        } external;
+    } external;
 }

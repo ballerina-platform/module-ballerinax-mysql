@@ -49,15 +49,15 @@ function testCallWithStringTypes() returns error? {
         character_type: "d",
         nvarcharmax_type: "test4"
     };
-    test:assertEquals(queryMySQLClient(dbClient, sqlQuery), expectedDataRow, "Call procedure insert and query did not match.");
+    test:assertEquals(check queryMySQLClient(dbClient, sqlQuery), expectedDataRow, "Call procedure insert and query did not match.");
 }
 
 @test:Config {
     groups: ["procedures"],
     dependsOn: [testCallWithStringTypes]
 }
-function testCallWithStringTypesInParams() {
-    Client dbClient = checkpanic new (host, user, password, proceduresDb, port);
+function testCallWithStringTypesInParams() returns error? {
+    Client dbClient = check new (host, user, password, proceduresDb, port);
     string varcharType = "test1";
     string charmaxType = "test2";
     string charType = "c";
@@ -65,7 +65,7 @@ function testCallWithStringTypesInParams() {
     string characterType = "d";
     string nvarcharmaxType = "test4";
 
-    _ = checkpanic dbClient->call(`{call InsertStringData(3, ${varcharType}, ${charmaxType}, ${charType},
+    _ = check dbClient->call(`{call InsertStringData(3, ${varcharType}, ${charmaxType}, ${charType},
                             ${charactermaxType}, ${characterType}, ${nvarcharmaxType})}`);
 
     sql:ParameterizedQuery sqlQuery = `SELECT varchar_type, charmax_type, char_type, charactermax_type, character_type,
@@ -79,21 +79,21 @@ function testCallWithStringTypesInParams() {
         character_type: "d",
         nvarcharmax_type: "test4"
     };
-    test:assertEquals(queryMySQLClient(dbClient, sqlQuery), expectedDataRow, "Call procedure insert and query did not match.");
+    test:assertEquals(check queryMySQLClient(dbClient, sqlQuery), expectedDataRow, "Call procedure insert and query did not match.");
 }
 
 @test:Config {
     groups: ["procedures"],
     dependsOn: [testCallWithStringTypesInParams]
 }
-function testCallWithStringTypesReturnsData() {
-    Client dbClient = checkpanic new (host, user, password, proceduresDb, port);
-    sql:ProcedureCallResult ret = checkpanic dbClient->call(`{call SelectStringData()}`, [StringDataForCall]);
-    stream<record{}, sql:Error?>? qResult = ret.queryResult;
-    if (qResult is ()) {
+function testCallWithStringTypesReturnsData() returns error? {
+    Client dbClient = check new (host, user, password, proceduresDb, port);
+    sql:ProcedureCallResult ret = check dbClient->call(`{call SelectStringData()}`, [StringDataForCall]);
+    stream<record {}, sql:Error?>? qResult = ret.queryResult;
+    if qResult is () {
         test:assertFail("Empty result set returned.");
     } else {
-        record {|record {} value;|}? data = checkpanic qResult.next();
+        record {|record {} value;|}? data = check qResult.next();
         record {}? value = data?.value;
         StringDataForCall expectedDataRow = {
             varchar_type: "test0",
@@ -102,13 +102,13 @@ function testCallWithStringTypesReturnsData() {
             charactermax_type: "test2",
             character_type: "b",
             nvarcharmax_type: "test3"
-        };        
+        };
         test:assertEquals(value, expectedDataRow, "Call procedure insert and query did not match.");
-        checkpanic qResult.close();
-        checkpanic ret.close();
-        
+        check qResult.close();
+        check ret.close();
+
     }
-    checkpanic dbClient.close();
+    check dbClient.close();
 }
 
 @test:Config {
@@ -119,13 +119,13 @@ function testCallWithStringTypesWithAnotherUser() returns error? {
 
     Options opt = {
         ssl: {
-           allowPublicKeyRetrieval: true
+            allowPublicKeyRetrieval: true
         },
         noAccessToProcedureBodies: true
     };
 
     Client dbClient = check new (host, user1, password, proceduresDb, port, opt);
-    
+
     _ = check dbClient->call(`{call InsertStringData(4,'test1', 'test2', 'c', 'test3', 'd', 'test4')};`);
 
     sql:ParameterizedQuery sqlQuery = `SELECT varchar_type, charmax_type, char_type, charactermax_type, character_type,
@@ -139,23 +139,23 @@ function testCallWithStringTypesWithAnotherUser() returns error? {
         character_type: "d",
         nvarcharmax_type: "test4"
     };
-    test:assertEquals(queryMySQLClient(dbClient, sqlQuery), expectedDataRow, "Call procedure insert and query did not match.");
+    test:assertEquals(check queryMySQLClient(dbClient, sqlQuery), expectedDataRow, "Call procedure insert and query did not match.");
 }
 
 @test:Config {
     groups: ["procedures"],
     dependsOn: [testCallWithStringTypesWithAnotherUser]
 }
-function testCallWithStringTypesReturnsDataMultiple() {
-    Client dbClient = checkpanic new (host, user, password, proceduresDb, port);
-    sql:ProcedureCallResult ret = checkpanic dbClient->call(`{call SelectStringDataMultiple()}`, [StringDataForCall, StringDataSingle]);
+function testCallWithStringTypesReturnsDataMultiple() returns error? {
+    Client dbClient = check new (host, user, password, proceduresDb, port);
+    sql:ProcedureCallResult ret = check dbClient->call(`{call SelectStringDataMultiple()}`, [StringDataForCall, StringDataSingle]);
 
-    stream<record{}, sql:Error?>? qResult = ret.queryResult;
-    if (qResult is ()) {
+    stream<record {}, sql:Error?>? qResult = ret.queryResult;
+    if qResult is () {
         test:assertFail("First result set is empty.");
     } else {
-        record {|record {} value;|}? data = checkpanic qResult.next();
-        checkpanic qResult.close();
+        record {|record {} value;|}? data = check qResult.next();
+        check qResult.close();
         record {}? result1 = data?.value;
         StringDataForCall expectedDataRow = {
             varchar_type: "test0",
@@ -164,39 +164,39 @@ function testCallWithStringTypesReturnsDataMultiple() {
             charactermax_type: "test2",
             character_type: "b",
             nvarcharmax_type: "test3"
-        };        
+        };
         test:assertEquals(result1, expectedDataRow, "Call procedure first select did not match.");
     }
 
-    var nextResult = checkpanic ret.getNextQueryResult();
-    if (!nextResult) {
+    boolean nextResult = check ret.getNextQueryResult();
+    if !nextResult {
         test:assertFail("Only 1 result set returned!.");
     }
 
     qResult = ret.queryResult;
-    if (qResult is ()) {
+    if qResult is () {
         test:assertFail("Second result set is empty.");
     } else {
-        record {|record {} value;|}? data = checkpanic qResult.next();
+        record {|record {} value;|}? data = check qResult.next();
         record {}? result2 = data?.value;
         StringDataSingle resultSet2 = {
             varchar_type: "test0"
         };
         test:assertEquals(result2, resultSet2, "Call procedure second select did not match.");
-        checkpanic qResult.close();
-        checkpanic ret.close();
+        check qResult.close();
+        check ret.close();
     }
-    checkpanic dbClient.close();
+    check dbClient.close();
 }
 
 @test:Config {
     groups: ["procedures"],
     dependsOn: [testCallWithStringTypesReturnsDataMultiple]
 }
-function testCallWithStringTypesOutParams() {
-    Client dbClient = checkpanic new (host, user, password, proceduresDb, port);
+function testCallWithStringTypesOutParams() returns error? {
+    Client dbClient = check new (host, user, password, proceduresDb, port);
 
-    sql:IntegerValue paraID = new(1);
+    sql:IntegerValue paraID = new (1);
     sql:VarcharOutParameter paraVarchar = new;
     sql:CharOutParameter paraCharmax = new;
     sql:CharOutParameter paraChar = new;
@@ -204,10 +204,10 @@ function testCallWithStringTypesOutParams() {
     sql:CharOutParameter paraCharacter = new;
     sql:NVarcharOutParameter paraNvarcharmax = new;
 
-    sql:ProcedureCallResult ret = checkpanic dbClient->call(
+    sql:ProcedureCallResult ret = check dbClient->call(
         `{call SelectStringDataWithOutParams(${paraID}, ${paraVarchar}, ${paraCharmax}, ${paraChar}, ${paraCharactermax}, ${paraCharacter}, ${paraNvarcharmax})}`);
-    checkpanic ret.close();
-    checkpanic dbClient.close();
+    check ret.close();
+    check dbClient.close();
 
     test:assertEquals(paraVarchar.get(string), "test0", "2nd out parameter of procedure did not match.");
     test:assertEquals(paraCharmax.get(string), "test1", "3rd out parameter of procedure did not match.");
@@ -221,10 +221,10 @@ function testCallWithStringTypesOutParams() {
     groups: ["procedures"],
     dependsOn: [testCallWithStringTypesOutParams]
 }
-function testCallWithNumericTypesOutParams() {
-    Client dbClient = checkpanic new (host, user, password, proceduresDb, port);
+function testCallWithNumericTypesOutParams() returns error? {
+    Client dbClient = check new (host, user, password, proceduresDb, port);
 
-    sql:IntegerValue paraID = new(1);
+    sql:IntegerValue paraID = new (1);
     sql:IntegerOutParameter paraInt = new;
     sql:BigIntOutParameter paraBigInt = new;
     sql:SmallIntOutParameter paraSmallInt = new;
@@ -236,11 +236,11 @@ function testCallWithNumericTypesOutParams() {
     sql:RealOutParameter paraReal = new;
     sql:DoubleOutParameter paraDouble = new;
 
-    _ = checkpanic dbClient->call(
+    _ = check dbClient->call(
         `{call SelectNumericDataWithOutParams(${paraID}, ${paraInt}, ${paraBigInt}, ${paraSmallInt}, ${paraTinyInt}, ${paraBit}, ${paraDecimal}, ${paraNumeric}, ${paraFloat}, ${paraReal}, ${paraDouble})}`);
-    checkpanic dbClient.close();
+    check dbClient.close();
 
-    decimal paraDecimalVal= 1234.56;
+    decimal paraDecimalVal = 1234.56;
 
     test:assertEquals(paraInt.get(int), 2147483647, "2nd out parameter of procedure did not match.");
     test:assertEquals(paraBigInt.get(int), 9223372036854774807, "3rd out parameter of procedure did not match.");
@@ -249,19 +249,19 @@ function testCallWithNumericTypesOutParams() {
     test:assertEquals(paraBit.get(boolean), true, "6th out parameter of procedure did not match.");
     test:assertEquals(paraDecimal.get(decimal), paraDecimalVal, "7th out parameter of procedure did not match.");
     test:assertEquals(paraNumeric.get(decimal), paraDecimalVal, "8th out parameter of procedure did not match.");
-    test:assertTrue((checkpanic paraFloat.get(float)) > 1234.0, "9th out parameter of procedure did not match.");
-    test:assertTrue((checkpanic paraReal.get(float)) > 1234.0, "10th out parameter of procedure did not match.");
+    test:assertTrue((check paraFloat.get(float)) > 1234.0, "9th out parameter of procedure did not match.");
+    test:assertTrue((check paraReal.get(float)) > 1234.0, "10th out parameter of procedure did not match.");
     test:assertEquals(paraDouble.get(float), 1234.56, "11th out parameter of procedure did not match.");
 }
 
-isolated function queryMySQLClient(Client dbClient, sql:ParameterizedQuery sqlQuery)
-returns record {} {
-    stream<record{}, error?> streamData = dbClient->query(sqlQuery);
-    record {|record {} value;|}? data = checkpanic streamData.next();
-    checkpanic streamData.close();
+isolated function queryMySQLClient(Client dbClient, sql:ParameterizedQuery sqlQuery) 
+returns record {}|error {
+    stream<record {}, error?> streamData = dbClient->query(sqlQuery);
+    record {|record {} value;|}? data = check streamData.next();
+    check streamData.close();
     record {}? value = data?.value;
-    checkpanic dbClient.close();
-    if (value is ()) {
+    check dbClient.close();
+    if value is () {
         return {};
     } else {
         return value;

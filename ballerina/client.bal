@@ -32,6 +32,7 @@ public isolated client class Client {
     # + options - MySQL database options
     # + connectionPool - The `sql:ConnectionPool` to be used for the connection. If there is no
     #                    `connectionPool` provided, the global connection pool (shared by all clients) will be used
+    # + return - An `sql:Error` if the client creation fails
     public isolated function init(string host = "localhost", string? user = (), string? password = (), string? database = (),
         int port = 3306, Options? options = (), sql:ConnectionPool? connectionPool = ()) returns sql:Error? {
         ClientConfiguration clientConfig = {

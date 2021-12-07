@@ -17,8 +17,7 @@
 import ballerina/jballerina.java;
 import ballerina/sql;
 
-# The object type that is used as a structure to define a custom class with custom
-# implementations for nextResult and getNextQueryResult in the MySQL module.
+# The iterator for the stream returned in `query` function to be used overriding the default behaviour of `sql:ResultIterator`.
 public distinct class CustomResultIterator {
     *sql:CustomResultIterator;
 

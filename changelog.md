@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+## [1.2.0] - 2021-12-13
+
+### Changed
+- Released module on top of Swan Lake Beta6 distribution
+
 ## [1.1.0] - 2021-11-20
 
 ### Added

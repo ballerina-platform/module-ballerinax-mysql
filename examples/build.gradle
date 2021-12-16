@@ -54,7 +54,7 @@ task testExamples {
 
 task buildExamples {
     gradle.taskGraph.whenReady { graph ->
-        if (graph.hasTask(":java.jdbc-examples:test")) {
+        if (graph.hasTask(":mysql-examples:test")) {
             buildExamples.enabled = false
         }
     }

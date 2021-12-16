@@ -1,17 +1,19 @@
 # Ballerina MySQL Module Example Use Case - Employees Database
 
 ## Overview
-This example demonstrates how to use the Ballerina `MySQL` module to execute, and query in a MySQL database.
+This example demonstrates how to use the Ballerina `MySQL` module to execute statements and query a MySQL database.
 
-Here, a sample database is used to demonstrate the functionalities. This sample database models a company's employees 
-management system. The database contains a single table `Employees` which contains information regarding an employee
-such as the employee ID, name, contact details, hire date, employee ID of their manager and their job title.
+Here, a sample database is used to demonstrate the functionalities of the module. This sample database models a 
+company's employees management system. The database contains a single table `Employees` which contains information 
+regarding an employee such as their employee ID, name, contact details, hire date, employee ID of their manager, and '
+their job title.
 
 This consists of two separate examples, and covers the following features:
 * Connection
 * Query (`SELECT`)
 * Query row
 * Execution (`INSERT`, `UPDATE`, `DELETE`)
+* Batch Execution
 
 ### 1. Setup Example
 This example shows how to establish a connection to a MySQL database with the required configurations and connection

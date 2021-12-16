@@ -40,7 +40,7 @@ public function main() returns error? {
 }
 
 function createDatabase() returns error? {
-    mysql:Client dbClient = check new (host = HOST, user = USER, password = PASSWORD, port = PORT)
+    mysql:Client dbClient = check new (host = HOST, user = USER, password = PASSWORD, port = PORT);
     _ = check dbClient->execute(`DROP DATABASE IF EXISTS EmployeesDB`);
     _ = check dbClient->execute(`CREATE DATABASE EmployeesDB`);
 }

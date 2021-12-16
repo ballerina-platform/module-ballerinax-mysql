@@ -1,0 +1,14 @@
+[package]
+org = "wso2"
+name = "employees_example_service"
+version = "0.1.0"
+
+[[dependency]]
+org = "ballerinax"
+name = "mysql"
+version = "1.2.1"
+repository = "local"
+
+[[platform.java11.dependency]]
+path = "../../../ballerina/lib/mysql-connector-java-8.0.21.jar"
+

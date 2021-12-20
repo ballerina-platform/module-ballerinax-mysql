@@ -120,6 +120,7 @@ task build {
     dependsOn("${packageName}-compiler-plugin:build")
     dependsOn("${packageName}-ballerina:build")
     dependsOn("${packageName}-compiler-plugin-tests:build")
+    dependsOn("${packageName}-examples:build")
 }
 
 publishToMavenLocal.dependsOn build

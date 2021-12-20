@@ -51,10 +51,10 @@ In the `Config.toml` file, set the configuration variables to correspond to your
 ### 3. Establishing the connection
 * The following can be used to connect to a MySQL server using Ballerina
   ```ballerina
-  mysql:Client dbClient = check new (host = HOST, user = USER, password = PASSWORD, port = PORT,
+  mysql:Client dbClient = check new (host = HOST, user = USER, password = PASSWORD, port = PORT);
   ```
 
-* If it is required to connect to a database directly, the database parameter may be defined on client intialization
+* If it is required to connect to a database directly, the database parameter may be defined on client initialization
   ```ballerina
   mysql:Client dbClient = check new (host = HOST, user = USER, password = PASSWORD, port = PORT, database = "EmployeesDB");
   ```
@@ -107,7 +107,6 @@ database
   curl --location --request POST 'localhost:8080/employees/' \
   --header 'Content-Type: text/plain' \
   --data-raw '{
-    "employee_id": 6,
     "first_name": "test",
     "last_name": "test",
     "email": "test@test.com",

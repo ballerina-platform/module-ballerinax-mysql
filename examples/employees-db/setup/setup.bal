@@ -24,7 +24,7 @@ configurable string HOST = ?;
 configurable int PORT = ?;
 
 public type Employee record {
-    int employee_id;
+    int employee_id?;
     string first_name;
     string last_name;
     string email;
@@ -51,7 +51,7 @@ function createAndPopulateEmployeesTable() returns error? {
 
     _ = check dbClient->execute(`
         CREATE TABLE Employees (
-            employee_id INTEGER PRIMARY KEY,
+            employee_id INTEGER AUTO_INCREMENT PRIMARY KEY,
             first_name  VARCHAR(255) NOT NULL,
             last_name   VARCHAR(255) NOT NULL,
             email       VARCHAR(255) NOT NULL,

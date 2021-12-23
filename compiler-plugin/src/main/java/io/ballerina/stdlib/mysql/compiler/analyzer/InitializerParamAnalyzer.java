@@ -115,7 +115,7 @@ public class InitializerParamAnalyzer implements AnalysisTask<SyntaxNodeAnalysis
             ExpressionNode valueNode = ((SpecificFieldNode) field).valueExpr().get();
             switch (name) {
                 case Constants.ConnectionPool.MAX_OPEN_CONNECTIONS:
-                    int maxOpenConnections = Integer.parseInt(getTerminalNodeValue(valueNode));
+                    int maxOpenConnections = Integer.parseInt(getTerminalNodeValue(valueNode, "1"));
                     if (maxOpenConnections < 1) {
                         DiagnosticInfo diagnosticInfo = new DiagnosticInfo(SQL_101.getCode(), SQL_101.getMessage(),
                                 SQL_101.getSeverity());
@@ -126,7 +126,7 @@ public class InitializerParamAnalyzer implements AnalysisTask<SyntaxNodeAnalysis
                     }
                     break;
                 case Constants.ConnectionPool.MIN_IDLE_CONNECTIONS:
-                    int minIdleConnection = Integer.parseInt(getTerminalNodeValue(valueNode));
+                    int minIdleConnection = Integer.parseInt(getTerminalNodeValue(valueNode, "0"));
                     if (minIdleConnection < 0) {
                         DiagnosticInfo diagnosticInfo = new DiagnosticInfo(SQL_102.getCode(), SQL_102.getMessage(),
                                 SQL_102.getSeverity());
@@ -136,7 +136,7 @@ public class InitializerParamAnalyzer implements AnalysisTask<SyntaxNodeAnalysis
                     }
                     break;
                 case Constants.ConnectionPool.MAX_CONNECTION_LIFE_TIME:
-                    float maxConnectionTime = Float.parseFloat(getTerminalNodeValue(valueNode));
+                    float maxConnectionTime = Float.parseFloat(getTerminalNodeValue(valueNode, "30"));
                     if (maxConnectionTime < 30) {
                         DiagnosticInfo diagnosticInfo = new DiagnosticInfo(SQL_103.getCode(), SQL_103.getMessage(),
                                 SQL_103.getSeverity());

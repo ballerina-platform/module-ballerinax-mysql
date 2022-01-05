@@ -50,3 +50,7 @@ gradle-app.setting
 .project
 .settings
 .vscode
+
+#Ignore examples auto generated files
+examples/**/Dependencies.toml
+examples/**/Config.toml

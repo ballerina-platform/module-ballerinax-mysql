@@ -43,9 +43,10 @@ service /employees on new http:Listener(8080) {
     resource function get .() returns Employee[]|error? {
         Employee[] employees = [];
         stream<Employee, error?> resultStream = dbClient->query(`SELECT * FROM Employees`);
-        check resultStream.forEach(function(Employee employee) {
-            employees.push(employee);
-        });
+        check from Employee employee in resultStream
+            do {
+                employees.push(employee);
+            };
         check resultStream.close();
         return employees;
     }
@@ -98,9 +99,10 @@ service /employees on new http:Listener(8080) {
     resource function get subordinates/[int id]() returns Employee[]|error? {
         Employee[] employees = [];
         stream<Employee, error?> resultStream = dbClient->query(`SELECT * FROM Employees WHERE manager_id = ${id}`);
-        check resultStream.forEach(function(Employee employee) {
-            employees.push(employee);
-        });
+        check from Employee employee in resultStream
+            do {
+                employees.push(employee);
+            };
         check resultStream.close();
         return employees;
     }

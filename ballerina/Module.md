@@ -73,7 +73,7 @@ mysql:Client|sql:Error dbClient = new (user = "rootUser", password = "rootPass",
 #### Using SSL
 To connect to the MySQL database using an SSL connection, you must add the SSL configurations to `mysql:Options` when creating the `mysql:Client`.
 For the SSL Mode, you can select one of the modes: `mysql:SSL_PREFERRED`, `mysql:SSL_REQUIRED`, `mysql:SSL_VERIFY_CA`, or `mysql:SSL_VERIFY_IDENTITY` according to the requirement.
-For the key and cert files must be provided in the `.p12` format.
+The key and cert files must be provided in the `.p12` format.
 
 ```ballerina
 string clientStorePath = "/path/to/keystore.p12";

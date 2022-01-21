@@ -47,9 +47,9 @@ lifetime of the client.
 #
 # + host - Hostname of the MySQL server
 # + user - If the MySQL server is secured, the username
-# + password - The password of provided username
-# + database - The name fo the database
-# + port - Port number of the mysql server
+# + password - The password of the MySQL server for the provided username
+# + database - The name of the database
+# + port - Port number of the MySQL server
 # + options - MySQL database options
 # + connectionPool - The `sql:ConnectionPool` to be used for the connection. If there is no
 #                    `connectionPool` provided, the global connection pool (shared by all 
@@ -62,38 +62,35 @@ public isolated function init(string host = "localhost", string? user = (),
 
 **Configurations available for initializing the MySQL client:**
 * Connection properties:
-   ```ballerina
-   # Provides a set of configuration related to MySQL database.
-    #
-    # + ssl - SSL Configuration to be used
-    # + failoverConfig - Server Failover configurations to be used
-    # + useXADatasource - Enables XADatasource
-    # + connectTimeout - Timeout (in seconds) to be used when connecting to the mysql server
-    # + socketTimeout - Socket timeout (in seconds) during the read/write operations with 
-    #                   the MySQL server (0 means no socket timeout)
-    # + serverTimezone - Configures the connection time zone, which is used by the 
-    #                    `Connector/J` if the conversion between a Ballerina application and 
-    #                    a target time zone is needed when preserving instant temporal values
-    # + noAccessToProcedureBodies - With this option the user is allowed to invoke procedures 
-    #                               to whose metadata access is denied
-    public type Options record {|
-        SecureSocket ssl?;
-        FailoverConfig failoverConfig?;
-        boolean useXADatasource = false;
-        decimal connectTimeout = 30;
-        decimal socketTimeout = 0;
-        string serverTimezone?;
-        boolean noAccessToProcedureBodies = false;
-    |};
-   ```
+  ```ballerina
+  # Provides a set of additional configurations related to the MySQL database connection.
+  #
+  # + ssl - SSL configurations to be used
+  # + failoverConfig - Server failover configurations to be used
+  # + useXADatasource - Flag to enable or disable XADatasource
+  # + connectTimeout - Timeout (in seconds) to be used when establishing a connection to the MySQL server
+  # + socketTimeout - Socket timeout (in seconds) to be used during the read/write operations with the MySQL server
+  #                   (0 means no socket timeout)
+  # + serverTimezone - Configures the connection time zone, which is used by the `Connector/J` if the conversion between
+  #                    a Ballerina application and a target time zone is required when preserving instant temporal values
+  # + noAccessToProcedureBodies - With this option the user is allowed to invoke procedures with access to metadata restricted
+  public type Options record {|
+      SecureSocket ssl?;
+      FailoverConfig failoverConfig?;
+      boolean useXADatasource = false;
+      decimal connectTimeout = 30;
+      decimal socketTimeout = 0;
+      string serverTimezone?;
+      boolean noAccessToProcedureBodies = false;
+  |};
+  ```
 * Server Failover Support
    ```ballerina
-   # Configuration to be used for Server Failover.
+   # Configuration to be used for server failover.
    #
-   # + failoverServers - Array of `mysql:FailoverServer` for the secondary databases
-   # + timeBeforeRetry - Time the driver waits before trying to fall back to the primary host
-   # + queriesBeforeRetry - Number of queries that are executed before the driver tries to 
-   #                        fall back to the primary host
+   # + failoverServers - Array of `mysql:FailoverServer` for the secondary servers
+   # + timeBeforeRetry - Time the driver waits before attempting to fall back to the primary host
+   # + queriesBeforeRetry - Number of queries that are executed before the driver attempts to fall back to the primary host
    # + failoverReadOnly - Open connection to secondary host with READ ONLY mode.
    public type FailoverConfig record {|
        FailoverServer[] failoverServers;
@@ -106,8 +103,8 @@ public isolated function init(string host = "localhost", string? user = (),
    ```ballerina
    # Configuration for failover servers
    #
-   # + host - Hostname of the secondary database
-   # + port - Port of the secondary database
+   # + host - Hostname of the secondary server
+   # + port - Port of the secondary server
    public type FailoverServer record {|
        string host;
        int port;

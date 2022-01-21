@@ -126,7 +126,7 @@ connection pool handling. For its properties and possible values, see [`sql:Conn
     ```ballerina
     sql:ConnectionPool connPool = {maxOpenConnections: 5};
     
-    mysql:Client|sql:Error dbClient1 =       
+    mysql:Client|sql:Error dbClient1 =
                                new ("localhost", "rootUser", "rootPass",
                                connectionPool = connPool);
     mysql:Client|sql:Error dbClient2 = 
@@ -221,7 +221,7 @@ column is of type `int` and the other is of type `varchar`.
 The `CREATE` statement is executed via the `execute` remote function of the client.
 
 ```ballerina
-// Create the ‘Students’ table with the  ‘id’, 'age', and ‘name’ fields.
+// Create the ‘Students’ table with the ‘id’, 'age', and ‘name’ fields.
 sql:ExecutionResult result = 
                 check dbClient->execute(`CREATE TABLE student (
                                            id INT AUTO_INCREMENT,
@@ -406,7 +406,7 @@ parameterized SQL query as same as the above `execute` operations.
 ```ballerina
 // Create the table with the records that need to be inserted.
 var data = [
-  { name: "John", age: 25  },
+  { name: "John", age: 25 },
   { name: "Peter", age: 24 },
   { name: "jane", age: 22 }
 ];

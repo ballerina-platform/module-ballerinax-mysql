@@ -38,24 +38,25 @@ public type Employee record {
 final mysql:Client dbClient = check new (host = HOST, user = USER, password = PASSWORD, port = PORT,
     database = "EmployeesDB", connectionPool = {maxOpenConnections: 3, minIdleConnections: 1});
 
-service /employees on new http:Listener(8080) {
+isolated service /employees on new http:Listener(8080) {
 
-    resource function get .() returns Employee[]|error? {
+    isolated resource function get .() returns Employee[]|error? {
         Employee[] employees = [];
         stream<Employee, error?> resultStream = dbClient->query(`SELECT * FROM Employees`);
-        check resultStream.forEach(function(Employee employee) {
-            employees.push(employee);
-        });
+        check from Employee employee in resultStream
+            do {
+                employees.push(employee);
+            };
         check resultStream.close();
         return employees;
     }
 
-    resource function get [int id]() returns Employee|error? {
+    isolated resource function get [int id]() returns Employee|error? {
         Employee employee = check dbClient->queryRow(`SELECT * FROM Employees WHERE employee_id = ${id}`);
         return employee;
     }
 
-    resource function post .(@http:Payload Employee emp) returns string|int|error? {
+    isolated resource function post .(@http:Payload Employee emp) returns string|int|error? {
          sql:ExecutionResult result = check dbClient->execute(`
             INSERT INTO Employees (employee_id, first_name, last_name, email, phone, hire_date, manager_id, job_title)
             VALUES (${emp.employee_id}, ${emp.first_name}, ${emp.last_name}, ${emp.email}, ${emp.phone}, ${emp.hire_date},
@@ -69,7 +70,7 @@ service /employees on new http:Listener(8080) {
         }
     }
 
-    resource function put .(@http:Payload Employee emp) returns int|error? {
+    isolated resource function put .(@http:Payload Employee emp) returns int|error? {
         sql:ExecutionResult result = check dbClient->execute(`
             UPDATE Employees
             SET first_name = ${emp.first_name}, last_name = ${emp.last_name}, email = ${emp.email},
@@ -85,22 +86,23 @@ service /employees on new http:Listener(8080) {
         }
     }
 
-    resource function delete [int id]() returns int|error? {
+    isolated resource function delete [int id]() returns int|error? {
         sql:ExecutionResult result = check dbClient->execute(`DELETE FROM Employees WHERE employee_id = ${id}`);
         return result.affectedRowCount;
     }
 
-    resource function get count() returns int|error? {
+    isolated resource function get count() returns int|error? {
         int count = check dbClient->queryRow(`SELECT COUNT(*) FROM Employees`);
         return count;
     }
 
-    resource function get subordinates/[int id]() returns Employee[]|error? {
+    isolated resource function get subordinates/[int id]() returns Employee[]|error? {
         Employee[] employees = [];
         stream<Employee, error?> resultStream = dbClient->query(`SELECT * FROM Employees WHERE manager_id = ${id}`);
-        check resultStream.forEach(function(Employee employee) {
-            employees.push(employee);
-        });
+        check from Employee employee in resultStream
+            do {
+                employees.push(employee);
+            };
         check resultStream.close();
         return employees;
     }

@@ -9,7 +9,7 @@ _Issue_: [#2289](https://github.com/ballerina-platform/ballerina-standard-librar
 # Introduction
 
 This is the specification for the MySQL standard library, which the functionality required to access and manipulate data 
-stored in an MySQL database in the [Ballerina programming language](https://ballerina.io/), which is an open-source 
+stored in a MySQL database in the [Ballerina programming language](https://ballerina.io/), which is an open-source 
 programming language for the cloud that makes it easier to use, combine, and create network services.
 
 # Contents
@@ -23,7 +23,7 @@ programming language for the cloud that makes it easier to use, combine, and cre
 
 # 1. Overview
 
-This specification elaborates on usage of the MySQL `Client` interface to interface with an MySQL database.
+This specification elaborates on the usage of the MySQL `Client` interface to interface with a MySQL database.
 
 `Client` supports five database operations as follows,
 1. Executes the query, which may return multiple results.

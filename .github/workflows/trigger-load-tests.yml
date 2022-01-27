@@ -25,7 +25,7 @@ jobs:
         run: |
           clusterName="${{github.event.inputs.clusterName}}"
           if [ "$clusterName" = "" ]; then
-            clusterName="grpc-perf-cluster-test"
+            clusterName="mysql-perf-cluster-test"
           fi
           printf "::set-output name=clusterName::%s" $clusterName
       - name: Get latest ballerina runtime artifact
@@ -59,4 +59,4 @@ jobs:
           repo: ballerina-platform/ballerina-performance-cloud
           ref: refs/heads/main
           token: ${{ secrets.BALLERINA_BOT_TOKEN }}
-          inputs: '{ "repo-name": "module-ballerinax-mysql", "tests": "${{ steps.formatTestNames.outputs.testNames }}", "zipURL": ${{ steps.setRuntimeUrl.outputs.runtimeUrl}}, "clusterName": "${{ steps.processClusterName.outputs.clusterName }}", "dispatchType": "grpc-load-test" }'
+          inputs: '{ "repo-name": "module-ballerinax-mysql", "tests": "${{ steps.formatTestNames.outputs.testNames }}", "zipURL": ${{ steps.setRuntimeUrl.outputs.runtimeUrl}}, "clusterName": "${{ steps.processClusterName.outputs.clusterName }}", "dispatchType": "mysql-load-test" }'

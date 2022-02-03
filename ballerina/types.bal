@@ -17,7 +17,7 @@
 import ballerina/jballerina.java;
 import ballerina/sql;
 
-# The iterator for the stream returned in `query` function to be used overriding the default behaviour of `sql:ResultIterator`.
+# The iterator for the stream returned in `query` function to be used to override the default behaviour of `sql:ResultIterator`.
 public distinct class CustomResultIterator {
     *sql:CustomResultIterator;
 

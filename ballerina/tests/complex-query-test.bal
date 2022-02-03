@@ -219,14 +219,11 @@ function testColumnAlias() returns error? {
         DT2INT_TYPE: 100
     };
     int counter = 0;
-    check queryResult.forEach(function(record {} value) {
-        if value is ResultSetTestAlias {
+    check from ResultSetTestAlias value in queryResult
+        do {
             test:assertEquals(value, expectedData, "Expected record did not match.");
             counter = counter + 1;
-        } else {
-            test:assertFail("Expected data type is ResultSetTestAlias");
-        }
-    });
+        };
     test:assertEquals(counter, 1, "Expected only one data row.");
     check dbClient.close();
 }

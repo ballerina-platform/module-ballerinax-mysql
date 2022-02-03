@@ -1,0 +1,4 @@
+USER="root"
+PASSWORD="Test123#"
+HOST="localhost"
+PORT=3305

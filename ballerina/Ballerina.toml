@@ -12,7 +12,7 @@ distribution = "slbeta6"
 path = "../native/build/libs/mysql-native-1.2.1.jar"
 
 [[platform.java11.dependency]]
-path = "./lib/sql-native-1.2.1-20220201-131400-11b4211.jar"
+path = "./lib/sql-native-1.2.1.jar"
 
 [[platform.java11.dependency]]
 path = "./lib/mysql-connector-java-8.0.21.jar"

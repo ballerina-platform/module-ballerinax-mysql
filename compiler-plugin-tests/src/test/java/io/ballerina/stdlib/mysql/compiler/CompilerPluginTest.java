@@ -134,4 +134,17 @@ public class CompilerPluginTest {
             Assert.assertEquals(diagnostic.diagnosticInfo().messageFormat(), MYSQL_101.getMessage());
         });
     }
+
+    @Test
+    public void testOptionsWithVariables() {
+        Package currentPackage = loadPackage("sample4");
+        PackageCompilation compilation = currentPackage.getCompilation();
+        DiagnosticResult diagnosticResult = compilation.diagnosticResult();
+        List<Diagnostic> diagnosticErrorStream = diagnosticResult.diagnostics().stream()
+                .filter(r -> r.diagnosticInfo().severity().equals(DiagnosticSeverity.ERROR))
+                .collect(Collectors.toList());
+        long availableErrors = diagnosticErrorStream.size();
+
+        Assert.assertEquals(availableErrors, 0);
+    }
 }

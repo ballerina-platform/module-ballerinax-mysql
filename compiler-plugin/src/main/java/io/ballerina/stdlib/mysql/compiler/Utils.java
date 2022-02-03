@@ -82,7 +82,7 @@ public class Utils {
             switch (name) {
                 case Constants.Options.CONNECTION_TIMEOUT:
                 case Constants.Options.SOCKET_TIMEOUT:
-                    float fieldVal = Float.parseFloat(getTerminalNodeValue(valueNode));
+                    float fieldVal = Float.parseFloat(getTerminalNodeValue(valueNode, "0"));
                     if (fieldVal < 0) {
                         DiagnosticInfo diagnosticInfo = new DiagnosticInfo(MYSQL_101.getCode(), MYSQL_101.getMessage(),
                                 MYSQL_101.getSeverity());
@@ -111,7 +111,7 @@ public class Utils {
             ExpressionNode failoverValue = ((SpecificFieldNode) failoverField).valueExpr().get();
             if (failoverFiled.equals(Constants.FailOver.QUERY_BEFORE_RETRY) ||
                     failoverFiled.equals(Constants.FailOver.TIME_BEFORE_RETRY)) {
-                int value = Integer.parseInt(getTerminalNodeValue(failoverValue));
+                int value = Integer.parseInt(getTerminalNodeValue(failoverValue, "0"));
                 if (value < 0) {
                     DiagnosticInfo diagnosticInfo = new DiagnosticInfo(MYSQL_101.getCode(),
                             MYSQL_101.getMessage(), MYSQL_101.getSeverity());
@@ -122,8 +122,8 @@ public class Utils {
         }
     }
 
-    public static String getTerminalNodeValue(Node valueNode) {
-        String value = "";
+    public static String getTerminalNodeValue(Node valueNode, String defaultValue) {
+        String value = defaultValue;
         if (valueNode instanceof BasicLiteralNode) {
             value = ((BasicLiteralNode) valueNode).literalToken().text();
         } else if (valueNode instanceof UnaryExpressionNode) {
@@ -131,6 +131,7 @@ public class Utils {
             value = unaryExpressionNode.unaryOperator() +
                     ((BasicLiteralNode) unaryExpressionNode.expression()).literalToken().text();
         }
+        // Currently, we cannot process values from variables, this needs code flow analysis
         return value.replaceAll(UNNECESSARY_CHARS_REGEX, "");
     }
 }

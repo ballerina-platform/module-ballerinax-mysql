@@ -80,7 +80,7 @@ function insertIntoDataTable4() returns error? {
     sql:FloatValue floatType = new (124.34);
     sql:DoubleValue doubleType = new (29095039);
     sql:BooleanValue boolType = new (false);
-    sql:VarcharValue stringType = new ("stringvalue");
+    sql:VarcharValue stringType = new ("stringValue");
     decimal decimalVal = 25.45;
     sql:DecimalValue decimalType = new (decimalVal);
 
@@ -264,14 +264,14 @@ function insertIntoNumericTable3() returns error? {
     sql:BitValue bitType = new (1);
     decimal decimalVal = 1234.567;
     sql:DecimalValue decimalType = new (decimalVal);
-    sql:NumericValue numbericType = new (1234.567);
+    sql:NumericValue numericType = new (1234.567);
     sql:FloatValue floatType = new (1234.567);
     sql:RealValue realType = new (1234.567);
 
     sql:ParameterizedQuery sqlQuery = 
         `INSERT INTO NumericTypes (id, int_type, bigint_type, smallint_type, tinyint_type, bit_type, decimal_type,
         numeric_type, float_type, real_type) VALUES(${id},${intType},${bigIntType},${smallIntType},${tinyIntType},
-        ${bitType},${decimalType},${numbericType},${floatType},${realType})`;
+        ${bitType},${decimalType},${numericType},${floatType},${realType})`;
     validateResult(check executeQueryMysqlClient(sqlQuery), 1, 2);
 }
 

@@ -22,7 +22,7 @@ int sslPort = 3307;
 string sslDB = "SSL_CONNECT_DB";
 
 string clientStorePath = check file:getAbsolutePath("./tests/resources/keystore/client/client-keystore.p12");
-string turstStorePath = check file:getAbsolutePath("./tests/resources/keystore/client/client-truststore.p12");
+string trustStorePath = check file:getAbsolutePath("./tests/resources/keystore/client/client-truststore.p12");
 
 @test:Config {
     groups: ["connection", "ssl"]
@@ -36,7 +36,7 @@ function testSSLVerifyCert() returns error? {
                 password: "password"
             },
             cert: {
-                path: turstStorePath,
+                path: trustStorePath,
                 password: "password"
             }
         }
@@ -58,7 +58,7 @@ function testSSLPreferred() returns error? {
                 password: "password"
             },
             cert: {
-                path: turstStorePath,
+                path: trustStorePath,
                 password: "password"
             }
         }
@@ -98,7 +98,7 @@ function testSSLVerifyIdentity() {
                 password: "password"
             },
             cert: {
-                path: turstStorePath,
+                path: trustStorePath,
                 password: "password"
             }
         }

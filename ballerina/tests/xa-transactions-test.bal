@@ -74,7 +74,7 @@ function testXATransactionSuccessWithDataSource() returns error? {
 
 isolated function getCustomerCount(Client dbClient, string id) returns int|error {
     stream<XAResultCount, sql:Error?> streamData = dbClient->query(`Select COUNT(*) as
-        countval from Customers where customerId = ${id}`);
+        countVal from Customers where customerId = ${id}`);
     return getResult(streamData);
 }
 

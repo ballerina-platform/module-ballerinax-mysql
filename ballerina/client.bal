@@ -120,7 +120,7 @@ public isolated client class Client {
 # + user - If the MySQL server is secured, the username
 # + password - The password of the MySQL server for the provided username
 # + database - The name of the database
-# + options - MySQL datasource options of type `mysql:Options` to be configured
+# + options - MySQL datasource options of `mysql:Options` type to be configured
 # + connectionPool - Properties of the `sql:ConnectionPool` for the connection pool configuration
 type ClientConfiguration record {|
     string host;

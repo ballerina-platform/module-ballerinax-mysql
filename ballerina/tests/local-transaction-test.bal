@@ -372,7 +372,7 @@ isolated string rollbackOut = "";
 function testLocalTransactionFailed() returns error? {
     Client dbClient = check new (host, user, password, localTransactionDB, port);
 
-    string a = "beforetx";
+    string a = "beforeTrx";
 
     string|error ret = testLocalTransactionFailedHelper(dbClient);
     if ret is string {
@@ -383,7 +383,7 @@ function testLocalTransactionFailed() returns error? {
     a = a + " afterTrx";
     int count = check getCount(dbClient, "111");
     check dbClient.close();
-    test:assertEquals(a, "beforetx inTrx trxAborted inTrx trxAborted inTrx trapped afterTrx");
+    test:assertEquals(a, "beforeTrx inTrx trxAborted inTrx trxAborted inTrx trapped afterTrx");
     test:assertEquals(count, 0);
 }
 
@@ -426,7 +426,7 @@ function getError() returns error? {
 function testLocalTransactionSuccessWithFailed() returns error? {
     Client dbClient = check new (host, user, password, localTransactionDB, port);
 
-    string a = "beforetx";
+    string a = "beforeTrx";
     string|error ret = trap testLocalTransactionSuccessWithFailedHelper(a, dbClient);
     if ret is string {
         a = ret;
@@ -436,7 +436,7 @@ function testLocalTransactionSuccessWithFailed() returns error? {
     a = a + " afterTrx";
     int count = check getCount(dbClient, "222");
     check dbClient.close();
-    test:assertEquals(a, "beforetx inTrx inTrx inTrx committed afterTrx");
+    test:assertEquals(a, "beforeTrx inTrx inTrx inTrx committed afterTrx");
     test:assertEquals(count, 2);
 }
 
@@ -463,7 +463,7 @@ isolated function testLocalTransactionSuccessWithFailedHelper(string status, Cli
 
 isolated function getCount(Client dbClient, string id) returns int|error {
     stream<TransactionResultCount, sql:Error?> streamData = dbClient->query(`Select COUNT(*) as
-        countval from Customers where registrationID = ${id}`);
+        countVal from Customers where registrationID = ${id}`);
     record {|TransactionResultCount value;|}? data = check streamData.next();
     check streamData.close();
     TransactionResultCount? value = data?.value;

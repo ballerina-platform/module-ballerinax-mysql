@@ -94,8 +94,9 @@ public class Utils {
                         Constants.DatabaseProps.KEYSTORE_TYPE_PKCS12);
             }
 
-            boolean allowPublicKeyRetrieval = secureSocket.getBooleanValue(Constants.Options.ALLOW_PUBLICKEY_RETRIEVAL);
-            options.put(Constants.DatabaseProps.ALLOW_PUBLICKEY_RETRIEVAL, allowPublicKeyRetrieval);
+            boolean allowPublicKeyRetrieval = secureSocket.getBooleanValue(
+                                                                Constants.Options.ALLOW_PUBLIC_KEY_RETRIEVAL);
+            options.put(Constants.DatabaseProps.ALLOW_PUBLIC_KEY_RETRIEVAL, allowPublicKeyRetrieval);
         }
     }
 }

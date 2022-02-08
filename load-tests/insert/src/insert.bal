@@ -41,7 +41,7 @@ isolated service /db on new http:Listener(9092) {
             response.setPayload(result.toString());
         } else {
             response.statusCode = 200;
-            response.setPayload("Records inserted succesfully");
+            response.setPayload("Records inserted successfully");
         }
         _ = check caller->respond(response);
     }

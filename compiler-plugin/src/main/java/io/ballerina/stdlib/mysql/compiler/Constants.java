@@ -23,8 +23,8 @@ package io.ballerina.stdlib.mysql.compiler;
 public class Constants {
     public static final String BALLERINAX = "ballerinax";
     public static final String MYSQL = "mysql";
-    public static final String CONNECTION_POOL_PARM_NAME = "connectionPool";
-    public static final String OPTIONS_PARM_NAME = "options";
+    public static final String CONNECTION_POOL_PARAM_NAME = "connectionPool";
+    public static final String OPTIONS_PARAM_NAME = "options";
 
     /**
      * Constants related to Client object.

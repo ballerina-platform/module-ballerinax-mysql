@@ -39,8 +39,8 @@ import io.ballerina.tools.diagnostics.DiagnosticSeverity;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static io.ballerina.stdlib.mysql.compiler.Constants.CONNECTION_POOL_PARM_NAME;
-import static io.ballerina.stdlib.mysql.compiler.Constants.OPTIONS_PARM_NAME;
+import static io.ballerina.stdlib.mysql.compiler.Constants.CONNECTION_POOL_PARAM_NAME;
+import static io.ballerina.stdlib.mysql.compiler.Constants.OPTIONS_PARAM_NAME;
 import static io.ballerina.stdlib.mysql.compiler.Constants.UNNECESSARY_CHARS_REGEX;
 import static io.ballerina.stdlib.mysql.compiler.MySQLDiagnosticsCode.SQL_101;
 import static io.ballerina.stdlib.mysql.compiler.MySQLDiagnosticsCode.SQL_102;
@@ -83,10 +83,10 @@ public class InitializerParamAnalyzer implements AnalysisTask<SyntaxNodeAnalysis
         ExpressionNode connectionPool = null;
         if (namedNodeFound) {
             for (NamedArgumentNode node : namedArgumentNodes) {
-                if (node.argumentName().name().text().equals(OPTIONS_PARM_NAME)) {
+                if (node.argumentName().name().text().equals(OPTIONS_PARAM_NAME)) {
                     options = node.expression();
                 }
-                if (node.argumentName().name().text().equals(CONNECTION_POOL_PARM_NAME)) {
+                if (node.argumentName().name().text().equals(CONNECTION_POOL_PARAM_NAME)) {
                     connectionPool = node.expression();
                 }
             }

@@ -4,7 +4,7 @@ Ballerina MySQL Library
   [![Build](https://github.com/ballerina-platform/module-ballerinax-mysql/actions/workflows/build-timestamped-master.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerinax-mysql/actions/workflows/build-timestamped-master.yml)
   [![Trivy](https://github.com/ballerina-platform/module-ballerinax-mysql/actions/workflows/trivy-scan.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerinax-mysql/actions/workflows/trivy-scan.yml)
   [![GitHub Last Commit](https://img.shields.io/github/last-commit/ballerina-platform/module-ballerinax-mysql.svg)](https://github.com/ballerina-platform/module-ballerinax-mysql/commits/master)
-  [![Github issues](https://img.shields.io/github/issues/ballerina-platform/ballerina-standard-library/module/mysql.svg?label=Open%20Issues)](https://github.com/ballerina-platform/ballerina-standard-library/labels/module%2Fmysql)
+  [![GitHub issues](https://img.shields.io/github/issues/ballerina-platform/ballerina-standard-library/module/mysql.svg?label=Open%20Issues)](https://github.com/ballerina-platform/ballerina-standard-library/labels/module%2Fmysql)
   [![codecov](https://codecov.io/gh/ballerina-platform/module-ballerinax-mysql/branch/master/graph/badge.svg)](https://codecov.io/gh/ballerina-platform/module-ballerinax-mysql)
 
 The MySQL library is one of the standard library packages of the<a target="_blank" href="https://ballerina.io/"> Ballerina</a> language.
@@ -40,7 +40,7 @@ This repository only contains the source code for the package.
 
 2. Download and install [Docker](https://www.docker.com/get-started)
    
-3. Export Github Personal access token with read package permissions as follows,
+3. Export GitHub Personal access token with read package permissions as follows,
         
         export packageUser=<Username>
         export packagePAT=<Personal access token>

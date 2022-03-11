@@ -3,4 +3,4 @@ id = "mysql-compiler-plugin"
 class = "io.ballerina.stdlib.mysql.compiler.MySQLCompilerPlugin"
 
 [[dependency]]
-path = "../compiler-plugin/build/libs/mysql-compiler-plugin-1.3.2-SNAPSHOT.jar"
+path = "../compiler-plugin/build/libs/mysql-compiler-plugin-1.3.2.jar"

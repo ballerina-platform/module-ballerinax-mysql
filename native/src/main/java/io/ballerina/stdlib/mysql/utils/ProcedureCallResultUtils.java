@@ -21,14 +21,14 @@ import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.stdlib.mysql.parameterprocessor.MysqlResultParameterProcessor;
 
 /**
- * This class provides functionality for the `ProcedureCallResult` to iterate through the PostgreSQL result sets.
+ * This class provides functionality for the `ProcedureCallResult` to iterate through the MySQL result sets.
  */
 public class ProcedureCallResultUtils {
 
     private ProcedureCallResultUtils() {
     }
 
-    public static Object getNextQueryResult(BObject procedureCallResultset, BObject procedureCallResult) {
+    public static Object getNextQueryResult(BObject procedureCallResultSet, BObject procedureCallResult) {
         return io.ballerina.stdlib.sql.utils.ProcedureCallResultUtils
                 .getNextQueryResult(procedureCallResult, MysqlResultParameterProcessor.getInstance());
     }

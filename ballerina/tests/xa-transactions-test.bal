@@ -27,69 +27,69 @@ type XAResultCount record {
 @test:Config {
     groups: ["transaction", "xa-transaction"]
 }
-function testXATransactionSuccess() {
-    Client dbClient1 = checkpanic new (host, user, password, xaTransactionDB1, port,
+function testXATransactionSuccess() returns error? {
+    Client dbClient1 = check new (host, user, password, xaTransactionDB1, port, 
     connectionPool = {maxOpenConnections: 1});
-    Client dbClient2 = checkpanic new (host, user, password, xaTransactionDB2, port,
+    Client dbClient2 = check new (host, user, password, xaTransactionDB2, port, 
     connectionPool = {maxOpenConnections: 1});
 
     transaction {
-        _ = checkpanic dbClient1->execute(`insert into Customers (customerId, name, creditLimit, country)
+        _ = check dbClient1->execute(`insert into Customers (customerId, name, creditLimit, country)
                                 values (1, 'Anne', 1000, 'UK')`);
-        _ = checkpanic dbClient2->execute(`insert into Salary (id, value ) values (1, 1000)`);
-        checkpanic commit;
+        _ = check dbClient2->execute(`insert into Salary (id, value ) values (1, 1000)`);
+        check commit;
     }
 
-    int count1 = checkpanic getCustomerCount(dbClient1, "1");
-    int count2 = checkpanic getSalaryCount(dbClient2, "1");
-    test:assertEquals(count1, 1, "First transaction failed"); 
-    test:assertEquals(count2, 1, "Second transaction failed"); 
+    int count1 = check getCustomerCount(dbClient1, "1");
+    int count2 = check getSalaryCount(dbClient2, "1");
+    test:assertEquals(count1, 1, "First transaction failed");
+    test:assertEquals(count2, 1, "Second transaction failed");
 
-    checkpanic dbClient1.close();
-    checkpanic dbClient2.close();
+    check dbClient1.close();
+    check dbClient2.close();
 }
 
 @test:Config {
     groups: ["transaction", "xa-transaction"]
 }
-function testXATransactionSuccessWithDataSource() {
-    Client dbClient1 = checkpanic new (host, user, password, xaTransactionDB1, port);
-    Client dbClient2 = checkpanic new (host, user, password, xaTransactionDB2, port);
-    
-    transaction {
-        _ = checkpanic dbClient1->execute(`insert into Customers (customerId, name, creditLimit, country)
-                                values (10, 'Anne', 1000, 'UK')`);
-        _ = checkpanic dbClient2->execute(`insert into Salary (id, value ) values (10, 1000)`);
-        checkpanic commit;
-    }
-    
-    int count1 = checkpanic getCustomerCount(dbClient1, "10");
-    int count2 = checkpanic getSalaryCount(dbClient2, "10");
-    test:assertEquals(count1, 1, "First transaction failed"); 
-    test:assertEquals(count2, 1, "Second transaction failed"); 
+function testXATransactionSuccessWithDataSource() returns error? {
+    Client dbClient1 = check new (host, user, password, xaTransactionDB1, port);
+    Client dbClient2 = check new (host, user, password, xaTransactionDB2, port);
 
-    checkpanic dbClient1.close();
-    checkpanic dbClient2.close();
+    transaction {
+        _ = check dbClient1->execute(`insert into Customers (customerId, name, creditLimit, country)
+                                values (10, 'Anne', 1000, 'UK')`);
+        _ = check dbClient2->execute(`insert into Salary (id, value ) values (10, 1000)`);
+        check commit;
+    }
+
+    int count1 = check getCustomerCount(dbClient1, "10");
+    int count2 = check getSalaryCount(dbClient2, "10");
+    test:assertEquals(count1, 1, "First transaction failed");
+    test:assertEquals(count2, 1, "Second transaction failed");
+
+    check dbClient1.close();
+    check dbClient2.close();
 }
 
-isolated function getCustomerCount(Client dbClient, string id) returns int|error{
-    stream<XAResultCount,  sql:Error?> streamData = dbClient->query(`Select COUNT(*) as
-        countval from Customers where customerId = ${id}`);
+isolated function getCustomerCount(Client dbClient, string id) returns int|error {
+    stream<XAResultCount, sql:Error?> streamData = dbClient->query(`Select COUNT(*) as
+        countVal from Customers where customerId = ${id}`);
     return getResult(streamData);
 }
 
-isolated function getSalaryCount(Client dbClient, string id) returns int|error{
-    stream<XAResultCount,  sql:Error?> streamData = dbClient->query(`Select COUNT(*) as countval
+isolated function getSalaryCount(Client dbClient, string id) returns int|error {
+    stream<XAResultCount, sql:Error?> streamData = dbClient->query(`Select COUNT(*) as countval
     from Salary where id = ${id}`);
     return getResult(streamData);
 }
 
-isolated function getResult(stream<XAResultCount,  sql:Error?> streamData) returns int{
-    record {|XAResultCount value;|}? data = checkpanic streamData.next();
-    checkpanic streamData.close();
+isolated function getResult(stream<XAResultCount, sql:Error?> streamData) returns int|error {
+    record {|XAResultCount value;|}? data = check streamData.next();
+    check streamData.close();
     XAResultCount? value = data?.value;
-    if(value is XAResultCount){
-       return value.COUNTVAL;
+    if value is XAResultCount {
+        return value.COUNTVAL;
     }
     return 0;
 }

@@ -59,7 +59,7 @@ public final class Constants {
         public static final BString USE_XA_DATASOURCE = StringUtils.fromString("useXADatasource");
         public static final BString CONNECT_TIMEOUT = StringUtils.fromString("connectTimeout");
         public static final BString SOCKET_TIMEOUT = StringUtils.fromString("socketTimeout");
-        public static final BString ALLOW_PUBLICKEY_RETRIEVAL = StringUtils.fromString("allowPublicKeyRetrieval");
+        public static final BString ALLOW_PUBLIC_KEY_RETRIEVAL = StringUtils.fromString("allowPublicKeyRetrieval");
         public static final BString SERVER_TIMEZONE = StringUtils.fromString("serverTimezone");
         public static final BString ACCESS_TO_PROCEDURE_BODIES = StringUtils.fromString("noAccessToProcedureBodies");
         public static final BString FAILOVER_CONFIG = StringUtils.fromString("failoverConfig");
@@ -151,7 +151,7 @@ public final class Constants {
 
         public static final BString CONNECT_TIMEOUT = StringUtils.fromString("connectTimeout");
         public static final BString SOCKET_TIMEOUT = StringUtils.fromString("socketTimeout");
-        public static final BString ALLOW_PUBLICKEY_RETRIEVAL = StringUtils.fromString("allowPublicKeyRetrieval");
+        public static final BString ALLOW_PUBLIC_KEY_RETRIEVAL = StringUtils.fromString("allowPublicKeyRetrieval");
         public static final BString SERVER_TIMEZONE = StringUtils.fromString("serverTimezone");
         public static final BString ACCESS_TO_PROCEDURE_BODIES = StringUtils.fromString("noAccessToProcedureBodies");
         public static final BString TIME_BEFORE_RETRY = StringUtils.fromString("secondsBeforeRetryMaster");

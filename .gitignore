@@ -34,6 +34,7 @@ Ballerina.lock
 # generated files
 target
 .ballerina
+/compiler-plugin-tests/bin/
 
 # gradle
 .gradle
@@ -49,3 +50,7 @@ gradle-app.setting
 .project
 .settings
 .vscode
+
+#Ignore examples auto generated files
+examples/**/Dependencies.toml
+examples/**/Config.toml

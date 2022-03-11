@@ -15,11 +15,17 @@ rootProject.name = 'ballerina-mysql'
 
 include ':checkstyle'
 include ':mysql-native'
+include ':mysql-compiler-plugin'
 include ':mysql-ballerina'
+include ':mysql-compiler-plugin-tests'
+include ':mysql-examples'
 
 project(':checkstyle').projectDir = file("build-config${File.separator}checkstyle")
 project(':mysql-native').projectDir = file('native')
+project(':mysql-compiler-plugin').projectDir = file('compiler-plugin')
 project(':mysql-ballerina').projectDir = file('ballerina')
+project(':mysql-compiler-plugin-tests').projectDir = file('compiler-plugin-tests')
+project(':mysql-examples').projectDir = file('examples')
 
 gradleEnterprise {
     buildScan {

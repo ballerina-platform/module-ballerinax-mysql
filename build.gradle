@@ -92,6 +92,7 @@ subprojects {
         ballerinaStdLibs "io.ballerina.stdlib:oauth2-ballerina:${stdlibOAuth2Version}"
         ballerinaStdLibs "io.ballerina.stdlib:url-ballerina:${stdlibUrlVersion}"
         ballerinaStdLibs "io.ballerina.stdlib:http-ballerina:${stdlibHttpVersion}"
+        ballerinaStdLibs "io.ballerina.stdlib:observe-ballerina:${observeVersion}"
 
         externalJars (group: 'mysql', name: 'mysql-connector-java', version: "${mySQLDriverVersion}") {
             transitive = false
@@ -116,5 +117,12 @@ release {
 }
 
 task build {
+    dependsOn("${packageName}-native:build")
+    dependsOn("${packageName}-compiler-plugin:build")
     dependsOn("${packageName}-ballerina:build")
+    dependsOn("${packageName}-compiler-plugin-tests:build")
+    dependsOn("${packageName}-examples:build")
 }
+
+publishToMavenLocal.dependsOn build
+publish.dependsOn build

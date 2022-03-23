@@ -28,7 +28,7 @@ To access a database, you must first create a
 [`mysql:Client`](https://docs.central.ballerina.io/ballerinax/mysql/latest/clients/Client) object.
 The samples for creating a MySQL client can be found below.
 
-#### Creating a Client
+#### Create a client
 This sample shows the different ways of creating the `mysql:Client`.
 
 The client can be created with an empty constructor, and thereby, the client will be initialized with the default properties.
@@ -70,9 +70,9 @@ mysql:Client|sql:Error dbClient = new (user = "rootUser", password = "rootPass",
                               connectionPool = {maxOpenConnections: 5});
 ```
 
-#### Using SSL
+#### SSL usage
 To connect to the MySQL database using an SSL connection, you must add the SSL configurations to `mysql:Options` when creating the `mysql:Client`.
-For the SSL Mode, you can select one of the modes: `mysql:SSL_PREFERRED`, `mysql:SSL_REQUIRED`, `mysql:SSL_VERIFY_CA`, or `mysql:SSL_VERIFY_IDENTITY` according to the requirement.
+For the SSL mode, you can select one of the modes: `mysql:SSL_PREFERRED`, `mysql:SSL_REQUIRED`, `mysql:SSL_VERIFY_CA`, or `mysql:SSL_VERIFY_IDENTITY` according to the requirement.
 The key and cert files must be provided in the `.p12` format.
 
 ```ballerina
@@ -93,7 +93,7 @@ mysql:Options mysqlOptions = {
   }
 };
 ```
-#### Connection Pool Handling
+#### Handle connection pools
 
 All database modules share the same connection pooling concept and there are three possible scenarios for
 connection pool handling. For its properties and possible values, see [`sql:ConnectionPool`](https://docs.central.ballerina.io/ballerina/sql/latest/records/ConnectionPool).
@@ -143,7 +143,7 @@ The [`mysql:Client`](https://docs.central.ballerina.io/ballerinax/mysql/latest/c
 the [`sql:Client`](https://docs.central.ballerina.io/ballerina/sql/latest/clients/Client) and all the operations
 defined by the `sql:Client` will be supported by the `mysql:Client` as well.
  
-#### Closing the Client
+#### Close the client
 
 Once all the database operations are performed, you can close the client you have created by invoking the `close()`
 operation. This will close the corresponding connection pool if it is not shared by any other clients.
@@ -156,13 +156,13 @@ Or
 check dbClient.close();
 ```
 
-### Database Operations
+### Database operations
 
 Once the client is created, database operations can be executed through that client. This module defines the interface
 and common properties that are shared among multiple database clients. It also supports querying, inserting, deleting,
 updating, and batch updating data.
 
-#### Parameterized Query
+#### Parameterized query
 
 The `sql:ParameterizedQuery` is used to construct the SQL query to be executed by the client.
 You can create a query with constant or dynamic input data as follows.
@@ -214,7 +214,7 @@ sql:ParameterizedQuery sqlQuery =
                                           sql:arrayFlattenQuery(ids), `)`);
 ```
 
-#### Creating Tables
+#### Create tables
 
 This sample creates a table with three columns. The first column is a primary key of type `int`, while the second
 column is of type `int` and the other is of type `varchar`.
@@ -232,7 +232,7 @@ sql:ExecutionResult result =
 // A value of the sql:ExecutionResult type is returned for 'result'. 
 ```
 
-#### Inserting Data
+#### Insert data
 
 These samples show the data insertion by executing an `INSERT` statement using the `execute` remote function
 of the client.
@@ -272,7 +272,7 @@ sql:ParameterizedQuery query = `INSERT INTO student(age, name)
 sql:ExecutionResult result = check dbClient->execute(query);
 ```
 
-#### Inserting Data With Auto-generated Keys
+#### Insert data with auto-generated keys
 
 This sample demonstrates inserting data while returning the auto-generated keys. It achieves this by using the
 `execute` remote function to execute the `INSERT` statement.
@@ -292,7 +292,7 @@ int? count = result.affectedRowCount;
 string|int? generatedKey = result.lastInsertId;
 ```
 
-#### Querying Data
+#### Query data
 
 These samples show how to demonstrate the different usages of the `query` operation to query the
 database table and obtain the results.
@@ -375,7 +375,7 @@ sql:ParameterizedQuery query = `SELECT COUNT(*) FROM students WHERE age < ${age}
 int youngStudents = check dbClient->queryRow(query);
 ```
 
-#### Updating Data
+#### Update data
 
 This sample demonstrates modifying data by executing an `UPDATE` statement via the `execute` remote function of
 the client.
@@ -386,7 +386,7 @@ sql:ParameterizedQuery query = `UPDATE students SET name = 'John' WHERE age = ${
 sql:ExecutionResult result = check dbClient->execute(query);
 ```
 
-#### Deleting Data
+#### Delete data
 
 This sample demonstrates deleting data by executing a `DELETE` statement via the `execute` remote function of
 the client.
@@ -397,7 +397,7 @@ sql:ParameterizedQuery query = `DELETE from students WHERE name = ${name}`;
 sql:ExecutionResult result = check dbClient->execute(query);
 ```
 
-#### Batch Updating Data
+#### Batch update data
 
 This sample demonstrates how to insert multiple records with a single `INSERT` statement that is executed via the
 `batchExecute` remote function of the client. This is done by creating a `table` with multiple records and
@@ -418,7 +418,7 @@ sql:ParameterizedQuery[] batch = from var row in data
 sql:ExecutionResult[] result = check dbClient->batchExecute(batch);
 ```
 
-#### Execute Stored Procedures
+#### Execute stored procedures
 
 This sample demonstrates how to execute a stored procedure with a single `INSERT` statement that is executed via the
 `call` remote function of the client.

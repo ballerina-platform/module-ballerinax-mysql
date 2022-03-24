@@ -465,7 +465,7 @@ This repository only contains the source code for the package.
 
 2. Download and install [Docker](https://www.docker.com/get-started)
    
-3. Export GitHub personal access token with read package permissions as follows,
+3. Export your GitHub personal access token with read package permissions as follows,
         
         export packageUser=<Username>
         export packagePAT=<Personal access token>

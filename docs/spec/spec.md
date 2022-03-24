@@ -147,4 +147,4 @@ All the generic `sql` Queries and Values are supported. For more information, se
 4. Executes the SQL query with multiple sets of parameters in a batch. Only the metadata of the execution is returned.
 5. Executes a SQL query, which calls a stored procedure. This can either return results or nil.
 
-For more information on database operations see the [SQL specification](https://github.com/ballerina-platform/module-ballerina-sql/blob/master/docs/spec/spec.md#4-database-operations)
+For more information on database operations, see the [SQL specification](https://github.com/ballerina-platform/module-ballerina-sql/blob/master/docs/spec/spec.md#4-database-operations)

@@ -150,7 +150,7 @@ The [`mysql:Client`](https://docs.central.ballerina.io/ballerinax/mysql/latest/c
 the [`sql:Client`](https://docs.central.ballerina.io/ballerina/sql/latest/clients/Client) and all the operations
 defined by the `sql:Client` will be supported by the `mysql:Client` as well.
 
-#### Close the dlient
+#### Close the client
 
 Once all the database operations are performed, you can close the client you have created by invoking the `close()`
 operation. This will close the corresponding connection pool if it is not shared by any other clients.
@@ -465,7 +465,7 @@ This repository only contains the source code for the package.
 
 2. Download and install [Docker](https://www.docker.com/get-started)
    
-3. Export your GitHub personal access token with read package permissions as follows,
+3. Export your GitHub personal access token with read package permissions as follows.
         
         export packageUser=<Username>
         export packagePAT=<Personal access token>

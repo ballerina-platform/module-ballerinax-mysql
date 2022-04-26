@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Improve DB columns to Ballerina record Mapping through Annotation](https://github.com/ballerina-platform/ballerina-standard-library/issues/2652)
 
 ### Changed
+- [Change default username for client initialization to `root`](https://github.com/ballerina-platform/ballerina-standard-library/issues/2397)
 
 ## [1.3.1] - 2022-03-01
 

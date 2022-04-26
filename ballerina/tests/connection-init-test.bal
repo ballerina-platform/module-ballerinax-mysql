@@ -47,6 +47,15 @@ function testWithoutHost() returns error? {
 @test:Config {
     groups: ["connection", "connection-init"]
 }
+function testWithoutUser() returns error? {
+    Client dbClient = check new(host = host, port = port, password = password, database = connectDB);
+    sql:Error? closeResult = dbClient.close();
+    test:assertExactEquals(closeResult, (), "Initialising connection without user fails.");
+}
+
+@test:Config {
+    groups: ["connection", "connection-init"]
+}
 function testWithOptions() returns error? {
     Options options = {
         connectTimeout: 60

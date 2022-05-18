@@ -49,7 +49,7 @@ public isolated client class Client {
 
     # Executes the query, which may return multiple results.
     #
-    # + sqlQuery - The SQL query such as `` `SELECT * from Album WHERE name={albumName}` ``
+    # + sqlQuery - The SQL query such as `` `SELECT * from Album WHERE name=${albumName}` ``
     # + rowType - The `typedesc` of the record to which the result needs to be returned
     # + return - Stream of records in the `rowType` type
     remote isolated function query(sql:ParameterizedQuery sqlQuery, typedesc<record {}> rowType = <>)
@@ -61,7 +61,7 @@ public isolated client class Client {
     # Executes the query, which is expected to return at most one row of the result.
     # If the query does not return any results, `sql:NoRowsError` is returned.
     #
-    # + sqlQuery - The SQL query such as `` `SELECT * from Album WHERE name={albumName}` ``
+    # + sqlQuery - The SQL query such as `` `SELECT * from Album WHERE name=${albumName}` ``
     # + returnType - The `typedesc` of the record to which the result needs to be returned.
     #                It can be a basic type if the query result contains only one column
     # + return - Result in the `returnType` type or an `sql:Error`
@@ -73,7 +73,7 @@ public isolated client class Client {
 
     # Executes the SQL query. Only the metadata of the execution is returned (not the results from the query).
     #
-    # + sqlQuery - The SQL query such as `` `DELETE FROM Album WHERE artist={artistName}` ``
+    # + sqlQuery - The SQL query such as `` `DELETE FROM Album WHERE artist=${artistName}` ``
     # + return - Metadata of the query execution as an `sql:ExecutionResult` or an `sql:Error`
     remote isolated function execute(sql:ParameterizedQuery sqlQuery)
      returns sql:ExecutionResult|sql:Error = @java:Method {

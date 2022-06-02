@@ -10,10 +10,10 @@ license = ["Apache-2.0"]
 distribution = "2201.1.0"
 
 [[platform.java11.dependency]]
-path = "../native/build/libs/mysql-native-1.4.0-SNAPSHOT.jar"
+path = "../native/build/libs/mysql-native-1.4.0.jar"
 
 [[platform.java11.dependency]]
-path = "./lib/sql-native-1.4.0-20220527-170800-a2a0fb1.jar"
+path = "./lib/sql-native-1.4.0.jar"
 
 [[platform.java11.dependency]]
 path = "./lib/mysql-connector-java-8.0.21.jar"

@@ -5,9 +5,8 @@ _Reviewers_: @daneshk
 _Created_: 2022/01/14   
 _Updated_: 2022/04/25  
 _Edition_: Swan Lake  
-_Issue_: [#2289](https://github.com/ballerina-platform/ballerina-standard-library/issues/2289)
 
-# Introduction
+## Introduction
 
 This is the specification for the MySQL standard library of [Ballerina language](https://ballerina.io/), which the functionality required to access and manipulate data stored in a MySQL database.  
 
@@ -17,7 +16,7 @@ If you have any feedback or suggestions about the library, start a discussion vi
 
 The conforming implementation of the specification is released to Ballerina Central. Any deviation from the specification is considered a bug.
 
-# Contents
+## Contents
 
 1. [Overview](#1-overview)
 2. [Client](#2-client)  

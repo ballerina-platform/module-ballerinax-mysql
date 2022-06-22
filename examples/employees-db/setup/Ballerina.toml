@@ -10,4 +10,4 @@ version = "1.2.1"
 repository = "local"
 
 [[platform.java11.dependency]]
-path = "../../../ballerina/lib/mysql-connector-java-8.0.21.jar"
+path = "../../../ballerina/lib/mysql-connector-java-8.0.29.jar"

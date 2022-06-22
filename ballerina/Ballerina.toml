@@ -16,5 +16,5 @@ path = "../native/build/libs/mysql-native-1.4.1-SNAPSHOT.jar"
 path = "./lib/sql-native-1.4.1.jar"
 
 [[platform.java11.dependency]]
-path = "./lib/mysql-connector-java-8.0.29.jar"
+path = "./lib/mysql-connector-java-8.0.28.jar"
 scope = "testOnly"

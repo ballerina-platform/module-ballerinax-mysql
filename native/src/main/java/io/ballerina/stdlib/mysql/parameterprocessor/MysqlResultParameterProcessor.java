@@ -25,7 +25,6 @@ import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.runtime.api.values.BString;
 import io.ballerina.stdlib.mysql.utils.ModuleUtils;
-import io.ballerina.stdlib.sql.Constants;
 import io.ballerina.stdlib.sql.exception.DataError;
 import io.ballerina.stdlib.sql.exception.TypeMismatchError;
 import io.ballerina.stdlib.sql.parameterprocessor.DefaultResultParameterProcessor;
@@ -35,11 +34,8 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Calendar;
-import java.util.TimeZone;
 
 import static io.ballerina.runtime.api.utils.StringUtils.fromString;
 import static io.ballerina.stdlib.time.util.Constants.ANALOG_GIGA;
@@ -62,20 +58,11 @@ public class MysqlResultParameterProcessor extends DefaultResultParameterProcess
         return instance;
     }
 
-    private Time adjustTime(java.util.Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.setTimeZone(TimeZone.getTimeZone(Constants.TIMEZONE_UTC.getValue()));
-        LocalTime localTime = LocalTime.of(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
-                calendar.get(Calendar.SECOND), calendar.get(Calendar.MILLISECOND));
-        return Time.valueOf(localTime);
-    }
-
     @Override
     public Object convertTime(java.util.Date time, int sqlType, Type type) throws DataError {
         Utils.validatedInvalidFieldAssignment(sqlType, type, "SQL Date/Time");
         if (time instanceof Time) {
-            Time sqlTime = adjustTime(time);
+            Time sqlTime = (Time) time;
             switch (type.getTag()) {
                 case TypeTags.STRING_TAG:
                     return fromString(sqlTime.toString());
@@ -106,21 +93,11 @@ public class MysqlResultParameterProcessor extends DefaultResultParameterProcess
         return null;
     }
 
-    private Timestamp adjustTimestamp(java.util.Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.setTimeZone(TimeZone.getTimeZone(Constants.TIMEZONE_UTC.getValue()));
-        LocalDate localDate = LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1,
-                calendar.get(Calendar.DAY_OF_MONTH));
-        LocalTime localTime = LocalTime.of(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
-                calendar.get(Calendar.SECOND), calendar.get(Calendar.MILLISECOND));
-        return Timestamp.valueOf(LocalDateTime.of(localDate, localTime));
-    }
     @Override
     public Object convertTimeStamp(java.util.Date timestamp, int sqlType, Type type) throws DataError {
         Utils.validatedInvalidFieldAssignment(sqlType, type, "SQL Date/Time");
         if (timestamp instanceof Timestamp) {
-            Timestamp sqlTimestamp = adjustTimestamp(timestamp);
+            Timestamp sqlTimestamp = (Timestamp) timestamp;
             switch (type.getTag()) {
                 case TypeTags.STRING_TAG:
                     return fromString(sqlTimestamp.toString());

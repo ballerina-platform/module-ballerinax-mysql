@@ -13,8 +13,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.4.1] - 2022-06-27
 
-### Added
-
 ### Changed
 - [Fix incorrect retrieval of time types](https://github.com/ballerina-platform/ballerina-standard-library/issues/3023)
 - [Fix NullPointerException when retrieving record with default value](https://github.com/ballerina-platform/ballerina-standard-library/issues/2985)

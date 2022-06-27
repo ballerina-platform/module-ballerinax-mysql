@@ -1,7 +1,7 @@
 [package]
 org = "ballerinax"
 name = "mysql"
-version = "1.4.1"
+version = "1.5.0"
 authors = ["Ballerina"]
 keywords = ["database", "client", "network", "SQL", "RDBMS", "MySQL"]
 repository = "https://github.com/ballerina-platform/module-ballerinax-mysql"
@@ -10,7 +10,7 @@ license = ["Apache-2.0"]
 distribution = "2201.1.0"
 
 [[platform.java11.dependency]]
-path = "../native/build/libs/mysql-native-1.4.1.jar"
+path = "../native/build/libs/mysql-native-1.5.0-SNAPSHOT.jar"
 
 [[platform.java11.dependency]]
 path = "./lib/sql-native-1.4.1.jar"

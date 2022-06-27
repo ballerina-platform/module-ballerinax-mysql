@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - [Change default username for client initialization to `root`](https://github.com/ballerina-platform/ballerina-standard-library/issues/2397)
 - [Fix incorrect retrieval of time types](https://github.com/ballerina-platform/ballerina-standard-library/issues/3023)
+- [Fix NullPointerException when retrieving record with default value](https://github.com/ballerina-platform/ballerina-standard-library/issues/2985)
 
 ## [1.4.0] - 2022-05-30
 

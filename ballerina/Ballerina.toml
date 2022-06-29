@@ -13,7 +13,7 @@ distribution = "2201.2.0"
 path = "../native/build/libs/mysql-native-1.5.0-SNAPSHOT.jar"
 
 [[platform.java11.dependency]]
-path = "./lib/sql-native-1.5.0-20220627-145200-40ad224.jar"
+path = "./lib/sql-native-1.5.0-20220701-115900-61cf131.jar"
 
 [[platform.java11.dependency]]
 path = "./lib/mysql-connector-java-8.0.29.jar"

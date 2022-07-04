@@ -757,7 +757,7 @@ function queryValueNegative2() returns error? {
     check dbClient.close();
     if queryResult is error {
         test:assertEquals(queryResult.message(), 
-                        "SQL Type 'Retrieved SQL type' cannot be converted to ballerina type 'int'.", 
+                        "SQL Type 'VARCHAR' cannot be converted to ballerina type 'int'.",
                         "Incorrect error message");
     } else {
         test:assertFail("Expected error when query returns unexpected result type.");

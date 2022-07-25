@@ -13,6 +13,9 @@ distribution = "2201.2.0"
 path = "../native/build/libs/mysql-native-@project.version@.jar"
 
 [[platform.java11.dependency]]
+groupId = "io.ballerina.stdlib"
+artifactId = "sql-native"
+version = "@sql.version@"
 path = "./lib/sql-native-@sql.native.version@.jar"
 
 [[platform.java11.dependency]]

@@ -3,9 +3,6 @@
     "includes": [
       {
         "pattern": "\\Qcom/mysql/cj/TlsSettings.properties\\E"
-      },
-      {
-        "pattern": "\\Qorg/quartz/core/quartz-build.properties\\E"
       }
     ]
   },

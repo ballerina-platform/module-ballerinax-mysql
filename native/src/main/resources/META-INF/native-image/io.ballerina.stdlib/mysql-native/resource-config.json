@@ -1,15 +1,20 @@
 {
-  "resources":{
-  "includes":[
+  "resources": {
+    "includes": [
+      {
+        "pattern": "\\Qcom/mysql/cj/TlsSettings.properties\\E"
+      },
+      {
+        "pattern": "\\Qorg/quartz/core/quartz-build.properties\\E"
+      }
+    ]
+  },
+  "bundles": [
     {
-      "pattern":"\\Qcom/mysql/cj/TlsSettings.properties\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/quartz/core/quartz-build.properties\\E"
+      "name": "com.mysql.cj.LocalizedErrorMessages",
+      "locales": [
+        ""
+      ]
     }
-  ]},
-  "bundles":[{
-      "name":"com.mysql.cj.LocalizedErrorMessages",
-      "locales":[""]
-    }]
+  ]
 }

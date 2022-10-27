@@ -49,13 +49,13 @@ isolated client class SchemaClient {
                     tables.push(result.table_name.toString());
                 };
         } on fail error e {
-            return error("Error - recieved sql data is of type SQL:Error", cause = e);
+            return error(string `Error while listing the tables in  the ${self.database} database.`, cause = e);
         }
 
         do {
             check results.close();
         } on fail error e {
-            return error("Closing of the Stream Failed", cause = e);
+            return error("Error while closing the result stream.", cause = e);
         }
 
         return tables;
@@ -73,8 +73,8 @@ isolated client class SchemaClient {
     # + return - An 'sql:TableDefinition' with the relevant table information or an `sql:Error`
     isolated remote function getTableInfo(string tableName, sql:ColumnRetrievalOptions include = sql:COLUMNS_ONLY) returns sql:TableDefinition|sql:Error {
         record {}|sql:Error 'table = self.dbClient->queryRow(
-            `SELECT TABLE_TYPE FROM information_schema.tables 
-             WHERE (table_schema=${self.database} and table_name = ${tableName});`
+            `SELECT TABLE_TYPE FROM INFORMATION_SCHEMA.TABLES 
+             WHERE (TABLE_SCHEMA=${self.database} AND TABLE_NAME = ${tableName});`
         );
 
         if 'table is sql:NoRowsError {
@@ -90,8 +90,8 @@ isolated client class SchemaClient {
             if !(include == sql:NO_COLUMNS) {
                 sql:ColumnDefinition[] columns = [];
                 stream<record {}, sql:Error?> colResults = self.dbClient->query(
-                    `SELECT COLUMN_NAME, DATA_TYPE, COLUMN_DEFAULT, IS_NULLABLE FROM information_schema.columns 
-                     WHERE (table_schema=${self.database} and table_name = ${tableName});`
+                    `SELECT COLUMN_NAME, DATA_TYPE, COLUMN_DEFAULT, IS_NULLABLE FROM INFORMATION_SCHEMA.COLUMNS 
+                     WHERE (TABLE_SCHEMA=${self.database} AND TABLE_NAME = ${tableName});`
                 );
                 do {
                     check from record {} result in colResults
@@ -105,9 +105,14 @@ isolated client class SchemaClient {
                             columns.push(column);
                         };
                 } on fail error e {
-                    return error("Error - recieved sql data is of type SQL:Error", cause = e);
+                    return error(string `Error while reading column info in the ${tableName} table, in the ${self.database} database.`, cause = e);
                 }
-                check colResults.close();
+
+                do {
+                    check colResults.close();
+                } on fail error e {
+                    return error("Error while closing the result stream.", cause = e);
+                }
 
                 tableDef.columns = columns;
 
@@ -115,7 +120,7 @@ isolated client class SchemaClient {
                     map<sql:CheckConstraint[]> checkConstMap = {};
 
                     stream<record {}, sql:Error?> checkResults = self.dbClient->query(
-                        `SELECT CONSTRAINT_NAME, CHECK_CLAUSE FROM information_schema.check_constraints 
+                        `SELECT CONSTRAINT_NAME, CHECK_CLAUSE FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS 
                         WHERE CONSTRAINT_SCHEMA=${self.database};`
                     );
                     do {
@@ -133,14 +138,19 @@ isolated client class SchemaClient {
                                 checkConstMap.get(colName).push('check);
                             };
                     } on fail error e {
-                        return error("Error - recieved sql data is of type SQL:Error", cause = e);
+                        return error(string `Error while reading check constraints in the ${self.database} database.`, cause = e);
                     }
-                    check checkResults.close();
+
+                    do {
+                        check checkResults.close();
+                    } on fail error e {
+                        return error("Error while closing the result stream.", cause = e);
+                    }
 
                     _ = checkpanic from sql:ColumnDefinition col in <sql:ColumnDefinition[]>tableDef.columns
                         do {
                             sql:CheckConstraint[]? checkConst = checkConstMap[col.name];
-                            if !(checkConst is ()) && checkConst.length() != 0 {
+                            if checkConst is sql:CheckConstraint[] && checkConst.length() != 0 {
                                 col.checkConstraints = checkConst;
                             }
                         };
@@ -148,13 +158,13 @@ isolated client class SchemaClient {
                     map<sql:ReferentialConstraint[]> refConstMap = {};
 
                     stream<record {}, sql:Error?> refResults = self.dbClient->query(
-                        `SELECT kcu.CONSTRAINT_NAME, kcu.TABLE_NAME, kcu.COLUMN_NAME, rc.UPDATE_RULE, rc.DELETE_RULE
-                        FROM information_schema.referential_constraints rc 
-                        JOIN information_schema.key_column_usage as kcu
-                        ON kcu.CONSTRAINT_CATALOG = rc.CONSTRAINT_CATALOG 
-                        AND kcu.CONSTRAINT_SCHEMA = rc.CONSTRAINT_SCHEMA
-                        AND kcu.CONSTRAINT_NAME = rc.CONSTRAINT_NAME
-                        WHERE (rc.CONSTRAINT_SCHEMA=${self.database}  and kcu.TABLE_NAME = ${tableName});`
+                        `SELECT KCU.CONSTRAINT_NAME, KCU.TABLE_NAME, KCU.COLUMN_NAME, RC.UPDATE_RULE, RC.DELETE_RULE
+                        FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS RC 
+                        JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE as KCU
+                        ON KCU.CONSTRAINT_CATALOG = RC.CONSTRAINT_CATALOG 
+                        AND KCU.CONSTRAINT_SCHEMA = RC.CONSTRAINT_SCHEMA
+                        AND KCU.CONSTRAINT_NAME = RC.CONSTRAINT_NAME
+                        WHERE (RC.CONSTRAINT_SCHEMA=${self.database} AND KCU.TABLE_NAME = ${tableName});`
                     );
                     do {
                         check from record {} result in refResults
@@ -174,18 +184,22 @@ isolated client class SchemaClient {
                                 refConstMap.get(colName).push(ref);
                             };
                     } on fail error e {
-                        return error sql:Error("Error - recieved sql data is of type SQL:Error", cause = e);
+                        return error sql:Error(string `Error while reading referential constraints in the ${tableName} table, in the ${self.database} database.`, cause = e);
                     }
 
                     _ = checkpanic from sql:ColumnDefinition col in <sql:ColumnDefinition[]>tableDef.columns
                         do {
                             sql:ReferentialConstraint[]? refConst = refConstMap[col.name];
-                            if !(refConst is ()) && refConst.length() != 0 {
+                            if refConst is sql:ReferentialConstraint[] && refConst.length() != 0 {
                                 col.referentialConstraints = refConst;
                             }
                         };
 
-                    check refResults.close();
+                    do {
+                        check refResults.close();
+                    } on fail error e {
+                        return error("Error while closing the result stream.", cause = e);
+                    }
                 }
             }
 
@@ -209,13 +223,13 @@ isolated client class SchemaClient {
                     routines.push(result.routine_name.toString());
                 };
         } on fail error e {
-            return error("Error - recieved sql data is of type SQL:Error", cause = e);
+            return error(string `Error while listing the routines in  the ${self.database} database.`, cause = e);
         }
 
         do {
             check results.close();
         } on fail error e {
-            return error("Closing of the Stream Failed", cause = e);
+            return error("Error while closing the result stream.", cause = e);
         }
 
         return routines;
@@ -239,11 +253,11 @@ isolated client class SchemaClient {
             sql:ParameterDefinition[] parameterList = [];
 
             stream<sql:ParameterDefinition, sql:Error?> paramResults = self.dbClient->query(
-                `SELECT p.PARAMETER_MODE, p.PARAMETER_NAME, p.DATA_TYPE
-                FROM INFORMATION_SCHEMA.PARAMETERS AS p
-                JOIN INFORMATION_SCHEMA.ROUTINES AS r
-                ON p.SPECIFIC_NAME = r.SPECIFIC_NAME
-                WHERE (p.SPECIFIC_SCHEMA = ${self.database} AND r.ROUTINE_NAME = ${name});`
+                `SELECT P.PARAMETER_MODE, P.PARAMETER_NAME, P.DATA_TYPE
+                FROM INFORMATION_SCHEMA.PARAMETERS AS P
+                JOIN INFORMATION_SCHEMA.ROUTINES AS R
+                ON P.SPECIFIC_NAME = R.SPECIFIC_NAME
+                WHERE (P.SPECIFIC_SCHEMA = ${self.database} AND R.ROUTINE_NAME = ${name});`
             );
             do {
                 check from sql:ParameterDefinition parameters in paramResults
@@ -258,7 +272,12 @@ isolated client class SchemaClient {
             } on fail error e {
                 return error sql:Error("Error - recieved sql data is of type SQL:Error", cause = e);
             }
-            check paramResults.close();
+
+            do {
+                check paramResults.close();
+            } on fail error e {
+                return error("Error while closing the result stream.", cause = e);
+            }
 
             sql:RoutineDefinition routineDef = {
                 name: name,
@@ -272,6 +291,10 @@ isolated client class SchemaClient {
     }
 
     public isolated function close() returns error? {
-        _ = check self.dbClient.close();
+        do {
+            _ = check self.dbClient.close();
+        } on fail error e {
+            return error("Error while closing the client", cause = e);
+        }
     }
 }

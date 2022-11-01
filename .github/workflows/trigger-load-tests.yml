@@ -12,7 +12,7 @@ on:
         default: 'mysql-perf-cluster-test'
         required: false
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 11 * * *'
 
 jobs:
   invokeLoadTests:

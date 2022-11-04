@@ -26,7 +26,6 @@ import io.ballerina.projects.directory.BuildProject;
 import io.ballerina.projects.environment.Environment;
 import io.ballerina.projects.environment.EnvironmentBuilder;
 import io.ballerina.tools.diagnostics.Diagnostic;
-import io.ballerina.tools.diagnostics.DiagnosticInfo;
 import io.ballerina.tools.diagnostics.DiagnosticSeverity;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -57,34 +56,6 @@ public class CompilerPluginTest {
         Path projectDirPath = RESOURCE_DIRECTORY.resolve(path);
         BuildProject project = BuildProject.load(getEnvironmentBuilder(), projectDirPath);
         return project.currentPackage();
-    }
-
-    @Test
-    public void testFunctionHints() {
-        Package currentPackage = loadPackage("sample1");
-        PackageCompilation compilation = currentPackage.getCompilation();
-        DiagnosticResult diagnosticResult = compilation.diagnosticResult();
-        long availableErrors = diagnosticResult.diagnostics().stream()
-                .filter(r -> r.diagnosticInfo().severity().equals(DiagnosticSeverity.ERROR)).count();
-        Assert.assertEquals(availableErrors, 3);
-
-        List<Diagnostic> diagnosticHints = diagnosticResult.diagnostics().stream()
-                .filter(r -> r.diagnosticInfo().severity().equals(DiagnosticSeverity.HINT))
-                .collect(Collectors.toList());
-        long availableHints = diagnosticHints.size();
-        Assert.assertEquals(availableHints, 3);
-
-        DiagnosticInfo hint1 = diagnosticHints.get(0).diagnosticInfo();
-        Assert.assertEquals(hint1.code(), MySQLDiagnosticsCode.MYSQL_901.getCode());
-        Assert.assertEquals(hint1.messageFormat(), MySQLDiagnosticsCode.MYSQL_901.getMessage());
-
-        DiagnosticInfo hint2 = diagnosticHints.get(1).diagnosticInfo();
-        Assert.assertEquals(hint2.code(), MySQLDiagnosticsCode.MYSQL_902.getCode());
-        Assert.assertEquals(hint2.messageFormat(), MySQLDiagnosticsCode.MYSQL_902.getMessage());
-
-        DiagnosticInfo hint3 = diagnosticHints.get(2).diagnosticInfo();
-        Assert.assertEquals(hint3.code(), MySQLDiagnosticsCode.MYSQL_901.getCode());
-        Assert.assertEquals(hint3.messageFormat(), MySQLDiagnosticsCode.MYSQL_901.getMessage());
     }
 
     @Test

@@ -32,9 +32,13 @@ isolated client class SchemaClient {
     # + user - The username to access the database
     # + password - The password to access the database
     # + database - The name of the database to be accessed
+    # + port - The port the database will be accessed on
+    # + options - MySQL database options
+    # + connectionPool - The `sql:ConnectionPool` to be used for the connection. If there is no
+    #                    `connectionPool` provided, the global connection pool (shared by all clients) will be used                  
     # + return - An `sql:Error` or `()`
     public function init(string host, string user, string password, string database, int port, 
-            Options? options, sql:ConnectionPool? connectionPool) returns sql:Error? {
+            Options? options = (), sql:ConnectionPool? connectionPool = ()) returns sql:Error? {
         self.database = database;
         self.dbClient = check new (host, user, password, database, port, options, connectionPool);
     }

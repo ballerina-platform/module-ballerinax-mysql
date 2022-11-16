@@ -100,28 +100,22 @@ function testWithConnectionParams() returns error? {
     groups: ["connection", "connection-init2"]
 }
 function testConnectionServerRejection() returns error? {
-    Client dbClient = check new (host, user, password, connectDB, port);
+    Client dbClient = check new (host, user, password, connectDB, port = 3303);
     _ = check dbClient->execute(`SET GLOBAL max_connections = 2`);
 
-    Client dbClient2 = check new (host, user, password, connectDB, port);
-    Client dbClient3 = check new (host, user, password, connectDB, port);
-    Client dbClient4 = check new (host, user, password, connectDB, port);
+    Client dbClient2 = check new (host, user, password, connectDB, port = 3303);
+    Client dbClient3 = check new (host, user, password, connectDB, port = 3303);
+    Client dbClient4 = check new (host, user, password, connectDB, port = 3303);
 
     stream<record {}, error?> streamData = dbClient->query(`SELECT * FROM Customers`);
     stream<record {}, error?> streamData2 = dbClient2->query(`SELECT * FROM Customers`);
     stream<record {}, error?> streamData3 = dbClient3->query(`SELECT * FROM Customers`);
     stream<record {}, error?> streamData4 = dbClient4->query(`SELECT * FROM Customers`);
 
-    record {|record {} value;|}? data = check streamData.next();
-    record {|record {} value;|}? data2 = check streamData2.next();
-    record {|record {} value;|}? data3 = check streamData3.next();
+    record {|record {} value;|}|error? data = streamData.next();
+    record {|record {} value;|}|error? data2 = streamData2.next();
+    record {|record {} value;|}|error? data3 = streamData3.next();
     record {|record {} value;|}|error? data4 = streamData4.next();
-
-    if data4 is error {
-        test:assertTrue(strings:includes(data4.message(), "Data source rejected establishment of connection"), data4.message());
-    } else {
-        test:assertFail("Error expected.");
-    }
 
     _ = check streamData.close();
     _ = check streamData2.close();
@@ -134,6 +128,16 @@ function testConnectionServerRejection() returns error? {
     _ = check dbClient2.close();
     _ = check dbClient3.close();
     _ = check dbClient4.close();
+
+    if data is error || data2 is error || data3 is error {
+        test:assertFail("Connection failed before limit was reached.");
+    }
+
+    if data4 is error {
+        test:assertTrue(strings:includes(data4.message(), "Data source rejected establishment of connection"), data4.message());
+    } else {
+        test:assertFail("Error expected.");
+    }
 }
 
 @test:Config {

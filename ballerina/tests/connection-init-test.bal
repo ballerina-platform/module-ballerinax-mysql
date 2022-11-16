@@ -97,6 +97,40 @@ function testWithConnectionParams() returns error? {
 }
 
 @test:Config {
+    groups: ["connection", "connection-init"]
+}
+function testConnectionPoolLimitClient() returns error? {
+    sql:ConnectionPool connectionPool = {
+        maxOpenConnections: 3
+    };
+    Options options = {
+        connectTimeout: 5
+    };
+    Client dbClient = check new (host, user, password, connectDB, port, options, connectionPool);
+    //Client dbClient2 = check new (host, user, password, connectDB, port, options, connectionPool);
+
+    stream<record {}, error?> streamData = check dbClient->query(`SELECT * FROM Customers`);
+    stream<record {}, error?> streamData2 = check dbClient->query(`SELECT * FROM Customers`);
+    stream<record {}, error?> streamData3 = check dbClient->query(`SELECT * FROM Customers`);
+
+    record {|record {} value;|}? data = check streamData.next();
+    record {|record {} value;|}? data2 = check streamData2.next();
+    record {|record {} value;|}|error? data3 = check streamData3.next();
+
+    if data3 is error {
+        test:assertTrue(data3.message().indexOf("Connection is not available, request timed out after") != -1);
+    } else {
+        test:assertFail("Error expected.");
+    }
+
+    _ = check streamData.close();
+    _ = check streamData2.close();
+    _ = check streamData3.close();
+    _ = check dbClient.close();
+    //_ = check dbClient2.close();
+}
+
+@test:Config {
     groups: ["connection", "connection-init2"]
 }
 function testConnectionServerRejection() returns error? {
@@ -118,7 +152,7 @@ function testConnectionServerRejection() returns error? {
     record {|record {} value;|}|error? data4 = streamData4.next();
 
     if data4 is error {
-        test:assertTrue(strings:includes(data4.message(), "Data source rejected establishment of connection"), data4.message());
+        test:assertTrue(strings:includes(data4.message(), "Data source rejected establishment of connection."), data4.message());
     } else {
         test:assertFail("Error expected.");
     }

@@ -314,8 +314,10 @@ test.dependsOn ":${packageName}-native:build"
 build.dependsOn ":${packageName}-compiler-plugin:build"
 test.dependsOn ":${packageName}-compiler-plugin:build"
 build.finalizedBy stopTestDockerContainer
+build.finalizedBy stopTestLimitedDockerContainer
 build.finalizedBy stopTestDockerTrxContainer
 build.finalizedBy stopTestSslDockerContainer
 test.dependsOn startTestDockerContainer
+test.dependsOn startTestLimitedDockerContainer
 test.dependsOn startTestDockerTrxContainer
 test.dependsOn startTestSslDockerContainer

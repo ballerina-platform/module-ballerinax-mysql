@@ -97,7 +97,7 @@ function testWithConnectionParams() returns error? {
 }
 
 @test:Config {
-    groups: ["connection", "connection-init2"]
+    groups: ["connection", "connection-init"]
 }
 function testConnectionServerRejection() returns error? {
     Client dbClient = check new (host, user, password, connectDB, port = 3303);

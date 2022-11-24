@@ -177,7 +177,7 @@ task startTestDockerContainer(type: Exec) {
     }
 }
 
-task startTestDockerLimitedContainer(type: Exec) {
+task startTestLimitedDockerContainer(type: Exec) {
     if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
         def standardOutput = new ByteArrayOutputStream()
         commandLine 'sh', '-c', 'docker run --rm -d --name ballerina-mysql-limited -p 3303:3306 -t ballerina-mysql'
@@ -256,7 +256,7 @@ task stopTestDockerContainer() {
     }
 }
 
-task stopTestDockerLimitedContainer() {
+task stopTestLimitedDockerContainer() {
     doLast {
         if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
             try {

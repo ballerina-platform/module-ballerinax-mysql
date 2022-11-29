@@ -13,13 +13,13 @@ distribution = "2201.3.0"
 groupId = "io.ballerina.stdlib"
 artifactId = "mysql-native"
 version = "1.6.0"
-path = "../native/build/libs/mysql-native-1.6.0-SNAPSHOT.jar"
+path = "../native/build/libs/mysql-native-1.6.0.jar"
 
 [[platform.java11.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "sql-native"
 version = "1.6.0"
-path = "./lib/sql-native-1.6.0-20221124-212700-5827a5c.jar"
+path = "./lib/sql-native-1.6.0.jar"
 
 [[platform.java11.dependency]]
 path = "./lib/mysql-connector-java-8.0.29.jar"

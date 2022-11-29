@@ -95,10 +95,7 @@ subprojects {
         ballerinaStdLibs "io.ballerina.stdlib:http-ballerina:${stdlibHttpVersion}"
         ballerinaStdLibs "io.ballerina.stdlib:observe-ballerina:${observeVersion}"
         ballerinaStdLibs "io.ballerina:observe-ballerina:${observeInternalVersion}"
-
-        externalJars (group: 'mysql', name: 'mysql-connector-java', version: "${mySQLDriverVersion}") {
-            transitive = false
-        }
+        ballerinaStdLibs "io.ballerina.stdlib:mysql.driver-ballerina:${stdlibMysqlDriverVersion}"
     }
 }
 

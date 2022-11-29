@@ -79,7 +79,6 @@ task updateTomlFiles {
         newConfig = newConfig.replace('@toml.version@', tomlVersion)
         newConfig = newConfig.replace('@sql.version@', stdlibDependentSqlVersion)
         newConfig = newConfig.replace('@sql.native.version@', project.stdlibSqlVersion)
-        newConfig = newConfig.replace('@mysql.driver.version@', project.mySQLDriverVersion)
         newConfig = newConfig.replace('@stdlib.sql.version@', stdlibDependentSqlVersion)
         ballerinaTomlFile.text = newConfig
 

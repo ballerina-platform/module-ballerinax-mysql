@@ -19,7 +19,7 @@ path = "../native/build/libs/mysql-native-1.6.0-SNAPSHOT.jar"
 groupId = "io.ballerina.stdlib"
 artifactId = "sql-native"
 version = "1.6.0"
-path = "./lib/sql-native-1.6.0-20221124-105600-de8e991.jar"
+path = "./lib/sql-native-1.6.0-20221124-212700-5827a5c.jar"
 
 [[platform.java11.dependency]]
 path = "./lib/mysql-connector-java-8.0.29.jar"

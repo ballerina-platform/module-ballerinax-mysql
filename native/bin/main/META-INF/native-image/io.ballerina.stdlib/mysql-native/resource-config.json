@@ -1,0 +1,17 @@
+{
+  "resources": {
+    "includes": [
+      {
+        "pattern": "\\Qcom/mysql/cj/TlsSettings.properties\\E"
+      }
+    ]
+  },
+  "bundles": [
+    {
+      "name": "com.mysql.cj.LocalizedErrorMessages",
+      "locales": [
+        ""
+      ]
+    }
+  ]
+}

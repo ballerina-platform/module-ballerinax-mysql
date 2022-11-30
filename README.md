@@ -11,7 +11,7 @@ This library provides the functionality required to access and manipulate data s
 
 ### Prerequisite
 It is required to import the MySQL driver dependency in order to connect to a MySQL database. The `ballerinax/mysql.driver`
-package bundles the latest MySQL driver so that mysql connector can be used in ballerina projects easily.
+package bundles the latest MySQL driver so that the mysql connector can be used in Ballerina projects easily.
 
 ```ballerina
 import ballerinax/mysql.driver as _;

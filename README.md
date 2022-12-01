@@ -2,10 +2,11 @@ Ballerina MySQL Library
 ===================
 
   [![Build](https://github.com/ballerina-platform/module-ballerinax-mysql/actions/workflows/build-timestamped-master.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerinax-mysql/actions/workflows/build-timestamped-master.yml)
+  [![codecov](https://codecov.io/gh/ballerina-platform/module-ballerinax-mysql/branch/master/graph/badge.svg)](https://codecov.io/gh/ballerina-platform/module-ballerinax-mysql)
   [![Trivy](https://github.com/ballerina-platform/module-ballerinax-mysql/actions/workflows/trivy-scan.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerinax-mysql/actions/workflows/trivy-scan.yml)
+  [![GraalVM Check](https://img.shields.io/github/workflow/status/ballerina-platform/module-ballerinax-mysql/Build%20with%20bal%20test%20native?label=GraalVM%20Check)](https://github.com/ballerina-platform/module-ballerinax-mysql/actions/workflows/build-with-bal-test-native.yml)
   [![GitHub Last Commit](https://img.shields.io/github/last-commit/ballerina-platform/module-ballerinax-mysql.svg)](https://github.com/ballerina-platform/module-ballerinax-mysql/commits/master)
   [![GitHub issues](https://img.shields.io/github/issues/ballerina-platform/ballerina-standard-library/module/mysql.svg?label=Open%20Issues)](https://github.com/ballerina-platform/ballerina-standard-library/labels/module%2Fmysql)
-  [![codecov](https://codecov.io/gh/ballerina-platform/module-ballerinax-mysql/branch/master/graph/badge.svg)](https://codecov.io/gh/ballerina-platform/module-ballerinax-mysql)
 
 This library provides the functionality required to access and manipulate data stored in a MySQL database.
 

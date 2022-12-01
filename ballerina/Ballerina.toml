@@ -20,7 +20,3 @@ groupId = "io.ballerina.stdlib"
 artifactId = "sql-native"
 version = "1.7.0"
 path = "./lib/sql-native-1.7.0-20221104-172000-addd057.jar"
-
-[[platform.java11.dependency]]
-path = "./lib/mysql-connector-java-8.0.29.jar"
-scope = "testOnly"

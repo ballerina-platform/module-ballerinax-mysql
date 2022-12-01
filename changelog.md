@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - [Remove SQL_901 diagnostic hint](https://github.com/ballerina-platform/ballerina-standard-library/issues/3609)
 
+## [1.6.1] - 2022-12-91
+
+### Changed
+- [Updated API Docs on `mysql.driver` usages](https://github.com/ballerina-platform/ballerina-standard-library/issues/3710)
+
 ## [1.6.0] - 2022-11-29
 
 ### Changed

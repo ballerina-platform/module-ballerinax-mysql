@@ -3,18 +3,28 @@
 This module provides the functionality required to access and manipulate data stored in a MySQL database.
 
 ### Prerequisite
-Add the MySQL driver JAR as a native library dependency in your Ballerina project's `Ballerina.toml` file. 
-It is recommended to use a MySQL driver version greater than 8.0.13 as this module uses the database properties 
-from the MySQL driver version 8.0.13 onwards.
-    
+Add the MySQL driver as a dependency to the Ballerina project.
+
+>**Note:** `ballerinax/mysql` supports MySQL driver versions above 8.0.13.
+
+You can achieve this by importing the `ballerinax/mysql.driver` module,
+ ```ballerina
+ import ballerinax/mysql.driver as _;
+ ```
+
+`ballerinax/mysql.driver` package bundles the latest MySQL driver JAR.
+
+>**Tip:** GraalVM native build is supported when `ballerinax/mysql` is used along with the `ballerinax/mysql.driver`
+
+If you want to add a MySQL driver of a specific version, you can add it as a dependency in Ballerina.toml.
 Follow one of the following ways to add the JAR in the file:
-        
+
 * Download the JAR and update the path
     ```
     [[platform.java11.dependency]]
     path = "PATH"
     ```
- 
+
 * Add JAR with a maven dependency params
     ```
     [[platform.java11.dependency]]

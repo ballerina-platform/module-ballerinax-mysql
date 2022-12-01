@@ -391,7 +391,7 @@ modules = [
 [[package]]
 org = "ballerinax"
 name = "mysql"
-version = "1.6.0"
+version = "1.6.1"
 dependencies = [
 	{org = "ballerina", name = "crypto"},
 	{org = "ballerina", name = "file"},
@@ -403,10 +403,20 @@ dependencies = [
 	{org = "ballerina", name = "sql"},
 	{org = "ballerina", name = "test"},
 	{org = "ballerina", name = "time"},
-	{org = "ballerinai", name = "transaction"}
+	{org = "ballerinai", name = "transaction"},
+	{org = "ballerinax", name = "mysql.driver"}
 ]
 modules = [
 	{org = "ballerinax", packageName = "mysql", moduleName = "mysql"}
+]
+
+[[package]]
+org = "ballerinax"
+name = "mysql.driver"
+version = "1.4.0"
+scope = "testOnly"
+modules = [
+	{org = "ballerinax", packageName = "mysql.driver", moduleName = "mysql.driver"}
 ]
 
 

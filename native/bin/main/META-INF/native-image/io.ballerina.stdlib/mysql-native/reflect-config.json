@@ -1,0 +1,229 @@
+[
+  {
+    "name": "com.mysql.cj.conf.url.FailoverConnectionUrl",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "com.mysql.cj.conf.ConnectionUrlParser",
+          "java.util.Properties"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "com.mysql.cj.conf.url.SingleConnectionUrl",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "com.mysql.cj.conf.ConnectionUrlParser",
+          "java.util.Properties"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "com.mysql.cj.exceptions.CJCommunicationsException",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "com.mysql.cj.exceptions.CJException",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "com.mysql.cj.exceptions.ConnectionIsClosedException",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "com.mysql.cj.jdbc.MysqlDataSource",
+    "queryAllPublicMethods": true,
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      },
+      {
+        "name": "setAllowPublicKeyRetrieval",
+        "parameterTypes": [
+          "boolean"
+        ]
+      },
+      {
+        "name": "setClientCertificateKeyStorePassword",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setClientCertificateKeyStoreType",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setClientCertificateKeyStoreUrl",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setConnectTimeout",
+        "parameterTypes": [
+          "int"
+        ]
+      },
+      {
+        "name": "setFailOverReadOnly",
+        "parameterTypes": [
+          "boolean"
+        ]
+      },
+      {
+        "name": "setNoAccessToProcedureBodies",
+        "parameterTypes": [
+          "boolean"
+        ]
+      },
+      {
+        "name": "setPassword",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setQueriesBeforeRetryMaster",
+        "parameterTypes": [
+          "int"
+        ]
+      },
+      {
+        "name": "setSecondsBeforeRetryMaster",
+        "parameterTypes": [
+          "int"
+        ]
+      },
+      {
+        "name": "setSocketTimeout",
+        "parameterTypes": [
+          "int"
+        ]
+      },
+      {
+        "name": "setSslMode",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setTrustCertificateKeyStorePassword",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setTrustCertificateKeyStoreType",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setTrustCertificateKeyStoreUrl",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setUrl",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setUser",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "com.mysql.cj.log.StandardLogger",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "com.mysql.cj.protocol.StandardSocketFactory",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "java.sql.Connection",
+    "methods": [
+      {
+        "name": "clearWarnings",
+        "parameterTypes": []
+      },
+      {
+        "name": "getAutoCommit",
+        "parameterTypes": []
+      },
+      {
+        "name": "getNetworkTimeout",
+        "parameterTypes": []
+      },
+      {
+        "name": "getTransactionIsolation",
+        "parameterTypes": []
+      },
+      {
+        "name": "isReadOnly",
+        "parameterTypes": []
+      },
+      {
+        "name": "isValid",
+        "parameterTypes": [
+          "int"
+        ]
+      },
+      {
+        "name": "setNetworkTimeout",
+        "parameterTypes": [
+          "java.util.concurrent.Executor",
+          "int"
+        ]
+      }
+    ]
+  }
+]

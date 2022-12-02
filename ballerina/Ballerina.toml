@@ -1,0 +1,22 @@
+[package]
+org = "ballerinax"
+name = "mysql"
+version = "1.6.1"
+authors = ["Ballerina"]
+keywords = ["database", "client", "network", "SQL", "RDBMS", "MySQL"]
+repository = "https://github.com/ballerina-platform/module-ballerinax-mysql"
+icon = "icon.png"
+license = ["Apache-2.0"]
+distribution = "2201.3.0"
+
+[[platform.java11.dependency]]
+groupId = "io.ballerina.stdlib"
+artifactId = "mysql-native"
+version = "1.6.1"
+path = "../native/build/libs/mysql-native-1.6.1.jar"
+
+[[platform.java11.dependency]]
+groupId = "io.ballerina.stdlib"
+artifactId = "sql-native"
+version = "1.6.0"
+path = "./lib/sql-native-1.6.0.jar"

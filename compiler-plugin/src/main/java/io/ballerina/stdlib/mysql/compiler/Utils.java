@@ -31,8 +31,10 @@ import io.ballerina.compiler.syntax.tree.SeparatedNodeList;
 import io.ballerina.compiler.syntax.tree.SpecificFieldNode;
 import io.ballerina.compiler.syntax.tree.UnaryExpressionNode;
 import io.ballerina.projects.plugins.SyntaxNodeAnalysisContext;
+import io.ballerina.tools.diagnostics.Diagnostic;
 import io.ballerina.tools.diagnostics.DiagnosticFactory;
 import io.ballerina.tools.diagnostics.DiagnosticInfo;
+import io.ballerina.tools.diagnostics.DiagnosticSeverity;
 
 import java.util.Optional;
 
@@ -43,6 +45,16 @@ import static io.ballerina.stdlib.mysql.compiler.MySQLDiagnosticsCode.MYSQL_101;
  * Utils class.
  */
 public class Utils {
+
+    public static boolean hasCompilationErrors(SyntaxNodeAnalysisContext ctx) {
+        for (Diagnostic diagnostic : ctx.compilation().diagnosticResult().diagnostics()) {
+            if (diagnostic.diagnosticInfo().severity() == DiagnosticSeverity.ERROR) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static boolean isMySQLClientObject(SyntaxNodeAnalysisContext ctx, ExpressionNode node) {
         Optional<TypeSymbol> objectType = ctx.semanticModel().typeOf(node);
         if (objectType.isEmpty()) {

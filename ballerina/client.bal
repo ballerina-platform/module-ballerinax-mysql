@@ -22,7 +22,8 @@ import ballerina/sql;
 public isolated client class Client {
     *sql:Client;
 
-    # Initializes the MySQL Client.
+    # Initializes the MySQL Client. It should be kept open throughout the entirety of the application
+    # to perform the operations.
     #
     # + host - Hostname of the MySQL server
     # + user - If the MySQL server is secured, the username
@@ -48,6 +49,7 @@ public isolated client class Client {
     }
 
     # Executes the query, which may return multiple results.
+    # When processing the stream, make sure to consume all fetched data or close the stream.
     #
     # + sqlQuery - The SQL query such as `` `SELECT * from Album WHERE name=${albumName}` ``
     # + rowType - The `typedesc` of the record to which the result needs to be returned
@@ -65,7 +67,7 @@ public isolated client class Client {
     # + returnType - The `typedesc` of the record to which the result needs to be returned.
     #                It can be a basic type if the query result contains only one column
     # + return - Result in the `returnType` type or an `sql:Error`
-    remote isolated function queryRow(sql:ParameterizedQuery sqlQuery, typedesc<anydata> returnType = <>) 
+    remote isolated function queryRow(sql:ParameterizedQuery sqlQuery, typedesc<anydata> returnType = <>)
     returns returnType|sql:Error = @java:Method {
         'class: "io.ballerina.stdlib.mysql.nativeimpl.QueryProcessor",
         name: "nativeQueryRow"
@@ -94,6 +96,7 @@ public isolated client class Client {
     }
 
     # Executes an SQL query, which calls a stored procedure. This may or may not return results.
+    # Once the results are processed, invoke the `close` method on the `sql:ProcedureCallResult`.
     #
     # + sqlQuery - The SQL query such as `` `CALL sp_GetAlbums();` ``
     # + rowTypes - `typedesc` array of the records to which the results need to be returned

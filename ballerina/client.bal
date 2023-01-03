@@ -107,7 +107,7 @@ public isolated client class Client {
         name: "nativeCall"
     } external;
 
-    # Closes the SQL client and shuts down the connection pool. The client must be closed only at the end of the
+    # Closes the MySQL client and shuts down the connection pool. The client must be closed only at the end of the
     # application lifetime (or closed for graceful stops in a service).
     #
     # + return - Possible `sql:Error` when closing the client

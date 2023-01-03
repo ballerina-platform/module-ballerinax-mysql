@@ -38,10 +38,10 @@ To access a database, you must first create a
 [`mysql:Client`](https://docs.central.ballerina.io/ballerinax/mysql/latest/clients/Client) object.
 The samples for creating a MySQL client can be found below.
 
+> **Tip**: The client should be used throughout the application lifetime.
+
 #### Create a client
 This sample shows the different ways of creating the `mysql:Client`.
-
-> **Tip**: The client should be used throughout the application lifetime.
 
 The client can be created with an empty constructor, and thereby, the client will be initialized with the default properties.
 

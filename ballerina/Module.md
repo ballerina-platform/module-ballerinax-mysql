@@ -5,7 +5,7 @@ This module provides the functionality required to access and manipulate data st
 ### Prerequisite
 Add the MySQL driver as a dependency to the Ballerina project.
 
->**Note:** `ballerinax/mysql` supports MySQL driver versions above 8.0.13.
+>**Note**: `ballerinax/mysql` supports MySQL driver versions above 8.0.13.
 
 You can achieve this by importing the `ballerinax/mysql.driver` module,
  ```ballerina
@@ -14,7 +14,7 @@ You can achieve this by importing the `ballerinax/mysql.driver` module,
 
 `ballerinax/mysql.driver` package bundles the latest MySQL driver JAR.
 
->**Tip:** GraalVM native build is supported when `ballerinax/mysql` is used along with the `ballerinax/mysql.driver`
+>**Tip**: GraalVM native build is supported when `ballerinax/mysql` is used along with the `ballerinax/mysql.driver`
 
 If you want to add a MySQL driver of a specific version, you can add it as a dependency in Ballerina.toml.
 Follow one of the following ways to add the JAR in the file:
@@ -41,7 +41,7 @@ The samples for creating a MySQL client can be found below.
 #### Create a client
 This sample shows the different ways of creating the `mysql:Client`.
 
-> **Tip** : The client should be used throughout the application lifetime.
+> **Tip**: The client should be used throughout the application lifetime.
 
 The client can be created with an empty constructor, and thereby, the client will be initialized with the default properties.
 
@@ -374,7 +374,7 @@ check from record{} student in resultStream
     };
 ```
 
-There are situations in which you may not want to iterate through the database and in that case, you may decide
+There are situations in which you may not want to iterate through the database, and in that case, you may decide
 to use the `sql:queryRow()` operation. If the provided return type is a record, this method returns only the first row
 retrieved by the query as a record.
 
@@ -460,4 +460,4 @@ check result.close();
 
 >**Note**: Once the results are processed, the `close` method on the `sql:ProcedureCallResult` must be called.
 
->**Note:** The default thread pool size used in Ballerina is: `the number of processors available * 2`. You can configure the thread pool size by using the `BALLERINA_MAX_POOL_SIZE` environment variable.
+>**Note**: The default thread pool size used in Ballerina is: `the number of processors available * 2`. You can configure the thread pool size by using the `BALLERINA_MAX_POOL_SIZE` environment variable.

@@ -5,7 +5,7 @@ This package provides the functionality required to access and manipulate data s
 ### Prerequisite
 Add the MySQL driver as a dependency to the Ballerina project.
 
->**Note:** `ballerinax/mysql` supports MySQL driver versions above 8.0.13.
+>**Note**: `ballerinax/mysql` supports MySQL driver versions above 8.0.13.
 
 You can achieve this by importing the `ballerinax/mysql.driver` module,
  ```ballerina
@@ -14,7 +14,7 @@ You can achieve this by importing the `ballerinax/mysql.driver` module,
 
 `ballerinax/mysql.driver` package bundles the latest MySQL driver JAR.
 
->**Tip:** GraalVM native build is supported when `ballerinax/mysql` is used along with the `ballerinax/mysql.driver`
+>**Tip**: GraalVM native build is supported when `ballerinax/mysql` is used along with the `ballerinax/mysql.driver`
 
 If you want to add a MySQL driver of a specific version, you can add it as a dependency in Ballerina.toml.
 Follow one of the following ways to add the JAR in the file:
@@ -41,7 +41,7 @@ The samples for creating a MySQL client can be found below.
 #### Create a client
 This sample shows the different ways of creating the `mysql:Client`.
 
-> **Tip** : The client should be used throughout the application lifetime.
+> **Tip**: The client should be used throughout the application lifetime.
 
 The client can be created with an empty constructor, and thereby, the client will be initialized with the default properties.
 
@@ -163,7 +163,7 @@ defined by the `sql:Client` will be supported by the `mysql:Client` as well.
 Once all the database operations are performed, you can close the client you have created by invoking the `close()`
 operation. This will close the corresponding connection pool if it is not shared by any other clients.
 
-> **Note** : The client must be closed only at the end of the application lifetime (or closed for graceful stops in a service).
+> **Note**: The client must be closed only at the end of the application lifetime (or closed for graceful stops in a service).
 
 ```ballerina
 error? e = dbClient.close();
@@ -460,7 +460,7 @@ check result.close();
 
 >**Note**: Once the results are processed, the `close` method on the `sql:ProcedureCallResult` must be called.
 
->**Note:** The default thread pool size used in Ballerina is: `the number of processors available * 2`. You can configure the thread pool size by using the `BALLERINA_MAX_POOL_SIZE` environment variable.
+>**Note**: The default thread pool size used in Ballerina is: `the number of processors available * 2`. You can configure the thread pool size by using the `BALLERINA_MAX_POOL_SIZE` environment variable.
 
 ## Report issues
 

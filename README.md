@@ -46,10 +46,10 @@ To access a database, you must first create a
 [`mysql:Client`](https://docs.central.ballerina.io/ballerinax/mysql/latest/clients/Client) object.
 The samples for creating a MySQL client can be found below.
 
+> **Tip**: The client should be used throughout the application lifetime.
+
 #### Create a client
 This sample shows the different ways of creating the `mysql:Client`.
-
-> **Tip**: The client should be used throughout the application lifetime.
 
 The client can be created with an empty constructor, and thereby, the client will be initialized with the default properties.
 
@@ -119,7 +119,7 @@ mysql:Options mysqlOptions = {
 All database libraries share the same connection pooling concept and there are three possible scenarios for
 connection pool handling. For its properties and possible values, see [`sql:ConnectionPool`](https://docs.central.ballerina.io/ballerina/sql/latest/records/ConnectionPool).
 
->**Note**: Connection pooling is used to optimize opening and closing connections to the database. However, the pool comes with an overhead. It is best to configure the connection pool properties as per the application need to get the best performance.
+> **Note**: Connection pooling is used to optimize opening and closing connections to the database. However, the pool comes with an overhead. It is best to configure the connection pool properties as per the application need to get the best performance.
 
 1. Global, shareable, default connection pool
 

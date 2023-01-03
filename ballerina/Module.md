@@ -163,7 +163,7 @@ defined by the `sql:Client` will be supported by the `mysql:Client` as well.
 Once all the database operations are performed, you can close the client you have created by invoking the `close()`
 operation. This will close the corresponding connection pool if it is not shared by any other clients.
 
-> **Note** : The client must be closed only at the end of the application lifetime (or closed for graceful stops in a service).
+> **Note**: The client must be closed only at the end of the application lifetime (or closed for graceful stops in a service).
 
 ```ballerina
 error? e = dbClient.close();

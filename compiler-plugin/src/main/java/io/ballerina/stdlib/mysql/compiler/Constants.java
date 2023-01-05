@@ -31,8 +31,6 @@ public class Constants {
      */
     public static class Client {
         public static final String CLIENT = "Client";
-        public static final String QUERY = "query";
-        public static final String QUERY_ROW = "queryRow";
     }
 
     /**

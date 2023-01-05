@@ -3,18 +3,28 @@
 This module provides the functionality required to access and manipulate data stored in a MySQL database.
 
 ### Prerequisite
-Add the MySQL driver JAR as a native library dependency in your Ballerina project's `Ballerina.toml` file. 
-It is recommended to use a MySQL driver version greater than 8.0.13 as this module uses the database properties 
-from the MySQL driver version 8.0.13 onwards.
-    
+Add the MySQL driver as a dependency to the Ballerina project.
+
+>**Note**: `ballerinax/mysql` supports MySQL driver versions above 8.0.13.
+
+You can achieve this by importing the `ballerinax/mysql.driver` module,
+ ```ballerina
+ import ballerinax/mysql.driver as _;
+ ```
+
+`ballerinax/mysql.driver` package bundles the latest MySQL driver JAR.
+
+>**Tip**: GraalVM native build is supported when `ballerinax/mysql` is used along with the `ballerinax/mysql.driver`
+
+If you want to add a MySQL driver of a specific version, you can add it as a dependency in Ballerina.toml.
 Follow one of the following ways to add the JAR in the file:
-        
+
 * Download the JAR and update the path
     ```
     [[platform.java11.dependency]]
     path = "PATH"
     ```
- 
+
 * Add JAR with a maven dependency params
     ```
     [[platform.java11.dependency]]
@@ -27,6 +37,8 @@ Follow one of the following ways to add the JAR in the file:
 To access a database, you must first create a
 [`mysql:Client`](https://docs.central.ballerina.io/ballerinax/mysql/latest/clients/Client) object.
 The samples for creating a MySQL client can be found below.
+
+> **Tip**: The client should be used throughout the application lifetime.
 
 #### Create a client
 This sample shows the different ways of creating the `mysql:Client`.
@@ -93,10 +105,13 @@ mysql:Options mysqlOptions = {
   }
 };
 ```
+
 #### Handle connection pools
 
 All database modules share the same connection pooling concept and there are three possible scenarios for
 connection pool handling. For its properties and possible values, see [`sql:ConnectionPool`](https://docs.central.ballerina.io/ballerina/sql/latest/records/ConnectionPool).
+
+>**Note**: Connection pooling is used to optimize opening and closing connections to the database. However, the pool comes with an overhead. It is best to configure the connection pool properties as per the application need to get the best performance.
 
 1. Global, shareable, default connection pool
 
@@ -136,17 +151,19 @@ connection pool handling. For its properties and possible values, see [`sql:Conn
                                new ("localhost", "rootUser", "rootPass",
                                connectionPool = connPool);
     ```
-   
+
 For more details about each property, see the [`mysql:Client`](https://docs.central.ballerina.io/ballerinax/mysql/latest/clients/Client) constructor.
 
 The [`mysql:Client`](https://docs.central.ballerina.io/ballerinax/mysql/latest/clients/Client) references
 the [`sql:Client`](https://docs.central.ballerina.io/ballerina/sql/latest/clients/Client) and all the operations
 defined by the `sql:Client` will be supported by the `mysql:Client` as well.
- 
+
 #### Close the client
 
 Once all the database operations are performed, you can close the client you have created by invoking the `close()`
 operation. This will close the corresponding connection pool if it is not shared by any other clients.
+
+> **Note**: The client must be closed only at the end of the application lifetime (or closed for graceful stops in a service).
 
 ```ballerina
 error? e = dbClient.close();
@@ -218,7 +235,7 @@ sql:ParameterizedQuery sqlQuery =
 
 This sample creates a table with three columns. The first column is a primary key of type `int`, while the second
 column is of type `int` and the other is of type `varchar`.
-The `CREATE` statement is executed via the `execute` remote function of the client.
+The `CREATE` statement is executed via the `execute` remote method of the client.
 
 ```ballerina
 // Create the ‘Students’ table with the ‘id’, 'age', and ‘name’ fields.
@@ -234,11 +251,11 @@ sql:ExecutionResult result =
 
 #### Insert data
 
-These samples show the data insertion by executing an `INSERT` statement using the `execute` remote function
+These samples show the data insertion by executing an `INSERT` statement using the `execute` remote method
 of the client.
 
 In this sample, the query parameter values are passed directly into the query statement of the `execute`
-remote function.
+remote method.
 
 ```ballerina
 sql:ExecutionResult result = check dbClient->execute(`INSERT INTO student(age, name)
@@ -246,7 +263,7 @@ sql:ExecutionResult result = check dbClient->execute(`INSERT INTO student(age, n
 ```
 
 In this sample, the parameter values, which are assigned to local variables are used to parameterize the SQL query in
-the `execute` remote function. This type of parameterized SQL query can be used with any primitive Ballerina type
+the `execute` remote method. This type of parameterized SQL query can be used with any primitive Ballerina type
 such as `string`, `int`, `float`, or `boolean` and in that case, the corresponding SQL type of the parameter is derived
 from the type of the Ballerina variable that is passed.
 
@@ -259,7 +276,7 @@ sql:ParameterizedQuery query = `INSERT INTO student(age, name)
 sql:ExecutionResult result = check dbClient->execute(query);
 ```
 
-In this sample, the parameter values are passed as a `sql:TypedValue` to the `execute` remote function. Use the
+In this sample, the parameter values are passed as a `sql:TypedValue` to the `execute` remote method. Use the
 corresponding subtype of the `sql:TypedValue` such as `sql:VarcharValue`, `sql:CharValue`, `sql:IntegerValue`, etc., when you need to
 provide more details such as the exact SQL type of the parameter.
 
@@ -275,7 +292,7 @@ sql:ExecutionResult result = check dbClient->execute(query);
 #### Insert data with auto-generated keys
 
 This sample demonstrates inserting data while returning the auto-generated keys. It achieves this by using the
-`execute` remote function to execute the `INSERT` statement.
+`execute` remote method to execute the `INSERT` statement.
 
 ```ballerina
 int age = 31;
@@ -295,7 +312,9 @@ string|int? generatedKey = result.lastInsertId;
 #### Query data
 
 These samples show how to demonstrate the different usages of the `query` operation to query the
-database table and obtain the results.
+database table and obtain the results as a stream.
+
+>**Note**: When processing the stream, make sure to consume all fetched data or close the stream.
 
 This sample demonstrates querying data from a table in a database.
 First, a type is created to represent the returned result set. This record can be defined as an open or a closed record
@@ -305,7 +324,7 @@ Note the mapping of the database column to the returned record's property is cas
 record(i.e., the `ID` column in the result can be mapped to the `id` property in the record). Additional column names are
 added to the returned record as in the SQL query. If the record is defined as a closed record, only defined fields in the
 record are returned or gives an error when additional columns present in the SQL query. Next, the `SELECT` query is executed
-via the `query` remote function of the client. Once the query is executed, each data record can be retrieved by iterating through
+via the `query` remote method of the client. Once the query is executed, each data record can be retrieved by iterating through
 the result set. The `stream` returned by the `SELECT` operation holds a pointer to the actual data in the database, and it
 loads data from the table only when it is accessed. This stream can be iterated only once.
 
@@ -377,7 +396,7 @@ int youngStudents = check dbClient->queryRow(query);
 
 #### Update data
 
-This sample demonstrates modifying data by executing an `UPDATE` statement via the `execute` remote function of
+This sample demonstrates modifying data by executing an `UPDATE` statement via the `execute` remote method of
 the client.
 
 ```ballerina
@@ -388,7 +407,7 @@ sql:ExecutionResult result = check dbClient->execute(query);
 
 #### Delete data
 
-This sample demonstrates deleting data by executing a `DELETE` statement via the `execute` remote function of
+This sample demonstrates deleting data by executing a `DELETE` statement via the `execute` remote method of
 the client.
 
 ```ballerina
@@ -400,7 +419,7 @@ sql:ExecutionResult result = check dbClient->execute(query);
 #### Batch update data
 
 This sample demonstrates how to insert multiple records with a single `INSERT` statement that is executed via the
-`batchExecute` remote function of the client. This is done by creating a `table` with multiple records and
+`batchExecute` remote method of the client. This is done by creating a `table` with multiple records and
 parameterized SQL query as same as the above `execute` operations.
 
 ```ballerina
@@ -421,7 +440,7 @@ sql:ExecutionResult[] result = check dbClient->batchExecute(batch);
 #### Execute stored procedures
 
 This sample demonstrates how to execute a stored procedure with a single `INSERT` statement that is executed via the
-`call` remote function of the client.
+`call` remote method of the client.
 
 ```ballerina
 int uid = 10;
@@ -438,6 +457,7 @@ if resultStr is stream<record{}, sql:Error?> {
 }
 check result.close();
 ```
-Note that you have to invoke the close operation explicitly on the `sql:ProcedureCallResult` to release the connection resources and avoid a connection leak as shown above.
 
->**Note:** The default thread pool size used in Ballerina is: `the number of processors available * 2`. You can configure the thread pool size by using the `BALLERINA_MAX_POOL_SIZE` environment variable.
+>**Note**: Once the results are processed, the `close` method on the `sql:ProcedureCallResult` must be called.
+
+>**Note**: The default thread pool size used in Ballerina is: `the number of processors available * 2`. You can configure the thread pool size by using the `BALLERINA_MAX_POOL_SIZE` environment variable.

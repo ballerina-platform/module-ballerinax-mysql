@@ -7,7 +7,7 @@ keywords = ["database", "client", "network", "SQL", "RDBMS", "MySQL"]
 repository = "https://github.com/ballerina-platform/module-ballerinax-mysql"
 icon = "icon.png"
 license = ["Apache-2.0"]
-distribution = "2201.3.0"
+distribution = "2201.4.0"
 
 [[platform.java11.dependency]]
 groupId = "io.ballerina.stdlib"
@@ -20,7 +20,3 @@ groupId = "io.ballerina.stdlib"
 artifactId = "sql-native"
 version = "@sql.version@"
 path = "./lib/sql-native-@sql.native.version@.jar"
-
-[[platform.java11.dependency]]
-path = "./lib/mysql-connector-java-@mysql.driver.version@.jar"
-scope = "testOnly"

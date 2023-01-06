@@ -145,7 +145,7 @@ function testGetRoutineInfoNegative() returns error? {
     sql:RoutineDefinition|sql:Error routine = client1->getRoutineInfo("getEmpsNames");
     check client1.close();
     if routine is sql:Error {
-        test:assertEquals(routine.message(), "Selected routine does not exist in the database, or the user does not have required privilege level to view it.");
+        test:assertEquals(routine.message(), "Selected routine does not exist in the metadataDB database, or the user does not have required privilege level to view it.");
     } else {
         test:assertFail("Expected result not recieved");
     }

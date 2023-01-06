@@ -87,18 +87,12 @@ isolated client class SchemaClient {
             };
 
             if !(include == sql:NO_COLUMNS) {
-                sql:TableDefinition|sql:Error tableDefError = self.getColumns(tableName, tableDef);
-        
-                if tableDefError is sql:TableDefinition {
-                    tableDef = tableDefError;
-                }
+                sql:ColumnDefinition[] columns = check self.getColumns(tableName);
+
+                tableDef.columns = columns;
 
                 if include == sql:COLUMNS_WITH_CONSTRAINTS {
-                    tableDefError = self.getConstraints(tableName, tableDef);
-
-                    if tableDefError is sql:TableDefinition {
-                        tableDef = tableDefError;
-                    }
+                    tableDef = check self.getConstraints(tableName, tableDef);
                 }    
             }
 
@@ -133,21 +127,24 @@ isolated client class SchemaClient {
     # + name - The name of the routine
     # + return - An 'sql:RoutineDefinition' with the relevant routine information or an `sql:Error`
     isolated remote function getRoutineInfo(string name) returns sql:RoutineDefinition|sql:Error {
-        sql:RoutineDefinition|sql:Error routine = self.dbClient->queryRow(
-            `SELECT ROUTINE_TYPE, DATA_TYPE FROM INFORMATION_SCHEMA.ROUTINES 
+        record {}|sql:Error routineRecord = self.dbClient->queryRow(
+            `SELECT SPECIFIC_NAME, ROUTINE_TYPE, DATA_TYPE FROM INFORMATION_SCHEMA.ROUTINES 
              WHERE ROUTINE_NAME = ${name};`
         );
 
-        if routine is sql:NoRowsError {
-            return error sql:NoRowsError("Selected routine does not exist in the database, or the user does not have required privilege level to view it.");
-        } else if routine is sql:Error {
-            return routine;
+        if routineRecord is sql:NoRowsError {
+            return error sql:NoRowsError(string `Selected routine does not exist in the ${self.database} database, or the user does not have required privilege level to view it.`);
+        } else if routineRecord is sql:Error {
+            return routineRecord;
         } else {
-            sql:RoutineDefinition|sql:Error routineError = self.getParameters(name, routine);
+            sql:ParameterDefinition[] params = check self.getParameters(name);
 
-            if routineError is sql:RoutineDefinition {
-                routine = routineError;
-            }
+            sql:RoutineDefinition routine = {
+                name: <string>routineRecord["SPECIFIC_NAME"],
+                'type: <sql:RoutineType>routineRecord["ROUTINE_TYPE"],
+                returnType: <string?>routineRecord["DATA_TYPE"],
+                parameters: params
+            };            
 
             return routine;
         }
@@ -156,9 +153,8 @@ isolated client class SchemaClient {
     # Retrieves column information of the provided table in the database.
     #
     # + tableName - The name of the table
-    # + tableDef - The table definition created in getTableInfo()
-    # + return - An 'sql:TableDefinition' now including the column information or an `sql:Error`
-    isolated function getColumns(string tableName, sql:TableDefinition tableDef) returns sql:TableDefinition|sql:Error {
+    # + return - An 'sql:ColumnDefinition[]' or an `sql:Error`
+    isolated function getColumns(string tableName) returns sql:ColumnDefinition[]|sql:Error {
         sql:ColumnDefinition[] columns = [];
         stream<record {}, sql:Error?> colResults = self.dbClient->query(
             `SELECT COLUMN_NAME, DATA_TYPE, COLUMN_DEFAULT, IS_NULLABLE FROM INFORMATION_SCHEMA.COLUMNS 
@@ -181,9 +177,7 @@ isolated client class SchemaClient {
 
         check colResults.close();
 
-        tableDef.columns = columns;
-
-        return tableDef;
+        return columns;
     }
 
     # Retrieves constraints information of the provided table in the database.
@@ -250,13 +244,12 @@ isolated client class SchemaClient {
             return error sql:Error(string `Error while reading referential constraints in the ${tableName} table, in the ${self.database} database.`, cause = e);
         }
 
-        _ = checkpanic from sql:ColumnDefinition col in <sql:ColumnDefinition[]>tableDef.columns
-            do {
-                sql:ReferentialConstraint[]? refConst = refConstMap[col.name];
-                if refConst is sql:ReferentialConstraint[] && refConst.length() != 0 {
-                    col.referentialConstraints = refConst;
-                }
-            };
+        foreach sql:ColumnDefinition col in <sql:ColumnDefinition[]>tableDef.columns {
+            sql:ReferentialConstraint[]? refConst = refConstMap[col.name];
+            if refConst is sql:ReferentialConstraint[] && refConst.length() != 0 {
+                col.referentialConstraints = refConst;
+            }
+        }
 
         check refResults.close();
 
@@ -266,9 +259,8 @@ isolated client class SchemaClient {
     # Retrieves parameter information of the provided routine in the database.
     #
     # + name - The name of the routine
-    # + routine - The routine definition created in getRoutineInfo()
-    # + return - An 'sql:RoutineDefinition' now including the parameter information or an `sql:Error`
-    isolated function getParameters(string name, sql:RoutineDefinition routine) returns sql:RoutineDefinition|sql:Error {
+    # + return - An 'sql:ParameterDefinition[]' or an `sql:Error`
+    isolated function getParameters(string name) returns sql:ParameterDefinition[]|sql:Error {
         sql:ParameterDefinition[] parameterList = [];
 
         stream<sql:ParameterDefinition, sql:Error?> paramResults = self.dbClient->query(
@@ -294,14 +286,7 @@ isolated client class SchemaClient {
 
         check paramResults.close();
 
-        sql:RoutineDefinition routineDef = {
-            name: name,
-            'type: <sql:RoutineType>routine["ROUTINE_TYPE"],
-            returnType: <string>routine["DATA_TYPE"],
-            parameters: parameterList
-        };
-
-        return routineDef;
+        return parameterList;
     }
 
     public isolated function close() returns error? {

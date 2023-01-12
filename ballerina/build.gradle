@@ -71,6 +71,13 @@ dependencies {
     }
 }
 
+// TODO: Remove this task after this improvement(https://github.com/ballerina-platform/ballerina-lang/issues/38826)
+task removeTrasactionTestsForNativeTest {
+    if (project.hasProperty('balNativeTest')) {
+        delete "${project.projectDir}/tests/local-transaction-test.bal"
+    }
+}
+
 task updateTomlFiles {
     doLast {
         def stdlibDependentSqlVersion = stripBallerinaExtensionVersion(project.stdlibSqlVersion)
@@ -320,3 +327,4 @@ test.dependsOn startTestDockerContainer
 test.dependsOn startTestLimitedDockerContainer
 test.dependsOn startTestDockerTrxContainer
 test.dependsOn startTestSslDockerContainer
+test.dependsOn removeTrasactionTestsForNativeTest

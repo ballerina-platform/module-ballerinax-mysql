@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Enable non-Hikari logs](https://github.com/ballerina-platform/ballerina-standard-library/issues/3763)
 - [Improve API docs based on Best practices](https://github.com/ballerina-platform/ballerina-standard-library/issues/3857)
 
+## [1.6.2] - 2023-02-09
+
+### Changed
+- [Improve API docs based on Best practices](https://github.com/ballerina-platform/ballerina-standard-library/issues/3857)
+- [Fix compiler plugin failure when the diagnostic code is null](https://github.com/ballerina-platform/ballerina-standard-library/issues/4054)
+
 ## [1.6.1] - 2022-12-91
 
 ### Changed

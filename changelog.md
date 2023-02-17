@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- [To Support Metadata Client for MySQL] (https://github.com/ballerina-platform/ballerina-standard-library/issues/3919)
 
 ### Changed
 - [Remove SQL_901 diagnostic hint](https://github.com/ballerina-platform/ballerina-standard-library/issues/3609)

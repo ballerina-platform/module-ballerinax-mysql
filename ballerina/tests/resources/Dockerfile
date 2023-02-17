@@ -44,6 +44,9 @@ COPY sql-scripts/transaction/local-transaction-test-data.sql /docker-entrypoint-
 COPY sql-scripts/transaction/xa-transaction-test-data-1.sql /docker-entrypoint-initdb.d/
 COPY sql-scripts/transaction/xa-transaction-test-data-2.sql /docker-entrypoint-initdb.d/
 
+#Schema Client test case
+COPY sql-scripts/schema/schema-client-test-data.sql /docker-entrypoint-initdb.d/
+
 RUN mkdir -p /etc/ssl
 COPY keystore/server/ /etc/ssl/
 RUN chown -R mysql /etc/ssl

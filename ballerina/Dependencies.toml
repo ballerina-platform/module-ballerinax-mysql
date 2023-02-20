@@ -220,6 +220,9 @@ scope = "testOnly"
 dependencies = [
 	{org = "ballerina", name = "jballerina.java"}
 ]
+modules = [
+	{org = "ballerina", packageName = "lang.transaction", moduleName = "lang.transaction"}
+]
 
 [[package]]
 org = "ballerina"
@@ -396,6 +399,7 @@ dependencies = [
 	{org = "ballerina", name = "jballerina.java"},
 	{org = "ballerina", name = "lang.runtime"},
 	{org = "ballerina", name = "lang.string"},
+	{org = "ballerina", name = "lang.transaction"},
 	{org = "ballerina", name = "sql"},
 	{org = "ballerina", name = "test"},
 	{org = "ballerina", name = "time"},

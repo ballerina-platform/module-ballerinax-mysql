@@ -24,9 +24,8 @@ jobs:
         run: ./gradlew build
       - name: Generate Codecov Report
         uses: codecov/codecov-action@v2
-#       Disable temporarily as there is an issue with the token
-#         with:
-#           token: ${{ secrets.CODECOV_TOKEN }}
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   windows-build:
     name: Build on Windows

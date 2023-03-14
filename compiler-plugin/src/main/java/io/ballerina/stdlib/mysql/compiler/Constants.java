@@ -26,11 +26,17 @@ public class Constants {
     public static final String CONNECTION_POOL_PARAM_NAME = "connectionPool";
     public static final String OPTIONS_PARAM_NAME = "options";
 
+    private Constants() {
+    }
+
     /**
      * Constants related to Client object.
      */
     public static class Client {
         public static final String CLIENT = "Client";
+
+        private Client() {
+        }
     }
 
     /**
@@ -40,6 +46,9 @@ public class Constants {
         public static final String MAX_OPEN_CONNECTIONS = "maxOpenConnections";
         public static final String MAX_CONNECTION_LIFE_TIME = "maxConnectionLifeTime";
         public static final String MIN_IDLE_CONNECTIONS = "minIdleConnections";
+
+        private ConnectionPool() {
+        }
     }
 
     /**
@@ -50,6 +59,9 @@ public class Constants {
         public static final String CONNECTION_TIMEOUT = "connectTimeout";
         public static final String SOCKET_TIMEOUT = "socketTimeout";
         public static final String FAILOVER = "failoverConfig";
+
+        private Options() {
+        }
     }
 
     /**
@@ -59,6 +71,9 @@ public class Constants {
         public static final String NAME = "FailoverConfig";
         public static final String TIME_BEFORE_RETRY = "timeBeforeRetry";
         public static final String QUERY_BEFORE_RETRY = "queriesBeforeRetry";
+
+        private FailOver() {
+        }
     }
 
     public static final String UNNECESSARY_CHARS_REGEX = "\"|\\n";

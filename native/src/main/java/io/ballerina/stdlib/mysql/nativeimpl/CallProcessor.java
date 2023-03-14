@@ -29,13 +29,13 @@ import io.ballerina.stdlib.mysql.parameterprocessor.MysqlStatementParameterProce
  *
  * @since 1.2.0
  */
-public class CallProcessor { 
-    private CallProcessor() { 
+public class CallProcessor {
+    private CallProcessor() {
     }
-    
+
     public static Object nativeCall(Environment env, BObject client, BObject paramSQLString, BArray recordTypes) {
         return io.ballerina.stdlib.sql.nativeimpl.CallProcessor.nativeCall(env, client, paramSQLString,
-            recordTypes, MysqlStatementParameterProcessor.getInstance(),
-            MysqlResultParameterProcessor.getInstance());
+                recordTypes, MysqlStatementParameterProcessor.getInstance(),
+                MysqlResultParameterProcessor.getInstance());
     }
 }

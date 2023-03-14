@@ -27,7 +27,7 @@ import io.ballerina.stdlib.mysql.parameterprocessor.MysqlStatementParameterProce
 
 /**
  * This class provides the methods for query processing which executes sql queries.
- * 
+ *
  * @since 1.2.0
  */
 public class QueryProcessor {

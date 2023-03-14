@@ -95,7 +95,7 @@ public class Utils {
             }
 
             boolean allowPublicKeyRetrieval = secureSocket.getBooleanValue(
-                                                                Constants.Options.ALLOW_PUBLIC_KEY_RETRIEVAL);
+                    Constants.Options.ALLOW_PUBLIC_KEY_RETRIEVAL);
             options.put(Constants.DatabaseProps.ALLOW_PUBLIC_KEY_RETRIEVAL, allowPublicKeyRetrieval);
         }
     }

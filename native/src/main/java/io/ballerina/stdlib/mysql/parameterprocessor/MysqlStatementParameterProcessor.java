@@ -25,13 +25,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 /**
- *  This class has implementation of methods required process the MySQL Prepared Statement.
- *  Setters are used to set designated parameters to the PreparedStatement.
+ * This class has implementation of methods required process the MySQL Prepared Statement.
+ * Setters are used to set designated parameters to the PreparedStatement.
  */
 public class MysqlStatementParameterProcessor extends DefaultStatementParameterProcessor {
     private static final MysqlStatementParameterProcessor instance = new MysqlStatementParameterProcessor();
 
-    private MysqlStatementParameterProcessor(){
+    private MysqlStatementParameterProcessor() {
     }
 
     public static MysqlStatementParameterProcessor getInstance() {

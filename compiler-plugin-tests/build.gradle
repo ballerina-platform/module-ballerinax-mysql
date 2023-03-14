@@ -75,7 +75,7 @@ jacocoTestReport {
     reports {
         xml.enabled true
     }
-    sourceSets project(':java.jdbc-compiler-plugin').sourceSets.main
+    sourceSets project(':mysql-compiler-plugin').sourceSets.main
 }
 
 spotbugsTest {

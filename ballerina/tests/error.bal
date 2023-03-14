@@ -342,3 +342,16 @@ function TestInsertedValueTooLarge() returns error? {
                 "INSERT INTO test(A) VALUES ('123'). Data truncation: Data too long for column 'A' at row 1."), 
                 sqlerror.message());
 }
+
+@test:Config {
+    groups: ["error"]
+}
+function TestArrayDataType() returns error? {
+    string[] stringArray = [];
+    Client dbClient = check new (host, user, password, errorDB, port);
+    string|error err = dbClient->queryRow(`SELECT * from DataTable WHERE ROW_ID = ${stringArray}`);
+    check dbClient.close();
+    test:assertTrue(err is sql:DataError);
+    sql:DataError sqlerror = <sql:DataError>err;
+    test:assertTrue(strings:includes(sqlerror.message(), "MySQL does not support ARRAY data type."), sqlerror.message());
+}

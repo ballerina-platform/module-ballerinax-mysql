@@ -5,6 +5,7 @@
 
 [ballerina]
 dependencies-toml-version = "2"
+distribution-version = "2201.5.0-20230324-130500-5a85c635"
 
 [[package]]
 org = "ballerina"
@@ -73,7 +74,7 @@ modules = [
 [[package]]
 org = "ballerina"
 name = "http"
-version = "2.6.1"
+version = "2.7.0"
 scope = "testOnly"
 dependencies = [
 	{org = "ballerina", name = "auth"},
@@ -170,7 +171,9 @@ name = "lang.int"
 version = "0.0.0"
 scope = "testOnly"
 dependencies = [
-	{org = "ballerina", name = "jballerina.java"}
+	{org = "ballerina", name = "jballerina.java"},
+	{org = "ballerina", name = "lang.__internal"},
+	{org = "ballerina", name = "lang.object"}
 ]
 
 [[package]]
@@ -272,7 +275,7 @@ dependencies = [
 [[package]]
 org = "ballerina"
 name = "observe"
-version = "1.0.6"
+version = "1.0.7"
 scope = "testOnly"
 dependencies = [
 	{org = "ballerina", name = "jballerina.java"}
@@ -301,7 +304,7 @@ dependencies = [
 [[package]]
 org = "ballerina"
 name = "sql"
-version = "1.7.0"
+version = "1.8.0"
 dependencies = [
 	{org = "ballerina", name = "io"},
 	{org = "ballerina", name = "jballerina.java"},
@@ -337,7 +340,7 @@ modules = [
 [[package]]
 org = "ballerina"
 name = "time"
-version = "2.2.3"
+version = "2.2.4"
 dependencies = [
 	{org = "ballerina", name = "jballerina.java"}
 ]
@@ -392,7 +395,7 @@ modules = [
 [[package]]
 org = "ballerinax"
 name = "mysql"
-version = "1.7.1"
+version = "1.8.0"
 dependencies = [
 	{org = "ballerina", name = "crypto"},
 	{org = "ballerina", name = "file"},

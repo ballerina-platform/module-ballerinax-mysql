@@ -290,7 +290,7 @@ dependencies = [
 [[package]]
 org = "ballerina"
 name = "sql"
-version = "1.8.2"
+version = "1.8.1"
 dependencies = [
 	{org = "ballerina", name = "io"},
 	{org = "ballerina", name = "jballerina.java"},

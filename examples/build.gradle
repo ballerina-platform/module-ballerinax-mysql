@@ -32,16 +32,22 @@ clean {
     }
 }
 
+def graalvmFlag = ""
+
 task testExamples {
+    if (project.hasProperty('balGraalVMTest')) {
+        graalvmFlag = '--graalvm'
+    }
+
     doLast {
         examples.each { example ->
             try {
                 exec {
                     workingDir "${project.projectDir}/${example}"
                     if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                        commandLine 'cmd', '/c', "${ballerinaDist}/bin/bal.bat test --offline && exit %%ERRORLEVEL%%"
+                        commandLine 'cmd', '/c', "${ballerinaDist}/bin/bal.bat test --offline ${graalvmFlag} && exit %%ERRORLEVEL%%"
                     } else {
-                        commandLine 'sh', '-c', "${ballerinaDist}/bin/bal test --offline"
+                        commandLine 'sh', '-c', "${ballerinaDist}/bin/bal test --offline ${graalvmFlag}"
                     }
                 }
             } catch (Exception e) {

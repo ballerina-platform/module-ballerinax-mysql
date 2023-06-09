@@ -118,4 +118,17 @@ public class CompilerPluginTest {
 
         Assert.assertEquals(availableErrors, 0);
     }
+
+    @Test
+    public void testOptionsWithVariables1() {
+        Package currentPackage = loadPackage("sample5");
+        PackageCompilation compilation = currentPackage.getCompilation();
+        DiagnosticResult diagnosticResult = compilation.diagnosticResult();
+        List<Diagnostic> diagnosticErrorStream = diagnosticResult.diagnostics().stream()
+                .filter(r -> r.diagnosticInfo().severity().equals(DiagnosticSeverity.ERROR))
+                .collect(Collectors.toList());
+        long availableErrors = diagnosticErrorStream.size();
+
+        Assert.assertEquals(availableErrors, 0);
+    }
 }

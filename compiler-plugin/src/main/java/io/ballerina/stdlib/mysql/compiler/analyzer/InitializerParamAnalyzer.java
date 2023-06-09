@@ -27,6 +27,7 @@ import io.ballerina.compiler.syntax.tree.NamedArgumentNode;
 import io.ballerina.compiler.syntax.tree.PositionalArgumentNode;
 import io.ballerina.compiler.syntax.tree.SeparatedNodeList;
 import io.ballerina.compiler.syntax.tree.SpecificFieldNode;
+import io.ballerina.compiler.syntax.tree.SpreadFieldNode;
 import io.ballerina.projects.plugins.AnalysisTask;
 import io.ballerina.projects.plugins.SyntaxNodeAnalysisContext;
 import io.ballerina.stdlib.mysql.compiler.Constants;
@@ -105,9 +106,19 @@ public class InitializerParamAnalyzer implements AnalysisTask<SyntaxNodeAnalysis
     private void validateConnectionPool(SyntaxNodeAnalysisContext ctx, MappingConstructorExpressionNode pool) {
         SeparatedNodeList<MappingFieldNode> fields = pool.fields();
         for (MappingFieldNode field : fields) {
-            String name = ((SpecificFieldNode) field).fieldName().toString()
-                    .trim().replaceAll(UNNECESSARY_CHARS_REGEX, "");
-            ExpressionNode valueNode = ((SpecificFieldNode) field).valueExpr().get();
+            String name;
+            ExpressionNode valueNode;
+            if (field instanceof SpreadFieldNode) {
+                SpreadFieldNode spreadFieldNode = ((SpreadFieldNode) field);
+                name = spreadFieldNode.toSourceCode().trim()
+                        .replaceAll(UNNECESSARY_CHARS_REGEX, "");
+                valueNode = spreadFieldNode.valueExpr();
+            } else {
+                SpecificFieldNode specificFieldNode = ((SpecificFieldNode) field);
+                name = specificFieldNode.fieldName().toString().trim().
+                        replaceAll(UNNECESSARY_CHARS_REGEX, "");
+                valueNode = specificFieldNode.valueExpr().get();
+            }
             switch (name) {
                 case Constants.ConnectionPool.MAX_OPEN_CONNECTIONS:
                     int maxOpenConnections = Integer.parseInt(getTerminalNodeValue(valueNode, "1"));

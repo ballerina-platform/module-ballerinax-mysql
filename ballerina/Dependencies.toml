@@ -21,11 +21,29 @@ modules = [
 
 [[package]]
 org = "ballerina"
+name = "file"
+version = "1.7.1"
+scope = "testOnly"
+dependencies = [
+	{org = "ballerina", name = "io"},
+	{org = "ballerina", name = "jballerina.java"},
+	{org = "ballerina", name = "os"},
+	{org = "ballerina", name = "time"}
+]
+modules = [
+	{org = "ballerina", packageName = "file", moduleName = "file"}
+]
+
+[[package]]
+org = "ballerina"
 name = "io"
 version = "1.4.1"
 dependencies = [
 	{org = "ballerina", name = "jballerina.java"},
 	{org = "ballerina", name = "lang.value"}
+]
+modules = [
+	{org = "ballerina", packageName = "io", moduleName = "io"}
 ]
 
 [[package]]
@@ -51,6 +69,16 @@ dependencies = [
 
 [[package]]
 org = "ballerina"
+name = "os"
+version = "1.6.0"
+scope = "testOnly"
+dependencies = [
+	{org = "ballerina", name = "io"},
+	{org = "ballerina", name = "jballerina.java"}
+]
+
+[[package]]
+org = "ballerina"
 name = "sql"
 version = "1.9.0"
 dependencies = [
@@ -61,6 +89,18 @@ dependencies = [
 ]
 modules = [
 	{org = "ballerina", packageName = "sql", moduleName = "sql"}
+]
+
+[[package]]
+org = "ballerina"
+name = "test"
+version = "0.0.0"
+scope = "testOnly"
+dependencies = [
+	{org = "ballerina", name = "jballerina.java"}
+]
+modules = [
+	{org = "ballerina", packageName = "test", moduleName = "test"}
 ]
 
 [[package]]
@@ -77,8 +117,11 @@ name = "mysql"
 version = "1.9.0"
 dependencies = [
 	{org = "ballerina", name = "crypto"},
+	{org = "ballerina", name = "file"},
+	{org = "ballerina", name = "io"},
 	{org = "ballerina", name = "jballerina.java"},
-	{org = "ballerina", name = "sql"}
+	{org = "ballerina", name = "sql"},
+	{org = "ballerina", name = "test"}
 ]
 modules = [
 	{org = "ballerinax", packageName = "mysql", moduleName = "mysql"}

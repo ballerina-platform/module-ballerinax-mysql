@@ -98,7 +98,7 @@ public class InitializerParamAnalyzer implements AnalysisTask<SyntaxNodeAnalysis
         }
 
         if (options instanceof MappingConstructorExpressionNode) {
-            Utils.validateOptionConfig(ctx, options);
+            Utils.validateOptionConfig(ctx, (MappingConstructorExpressionNode) options);
         }
         if (connectionPool instanceof MappingConstructorExpressionNode) {
             SeparatedNodeList<MappingFieldNode> fields = ((MappingConstructorExpressionNode) connectionPool).fields();
@@ -108,7 +108,7 @@ public class InitializerParamAnalyzer implements AnalysisTask<SyntaxNodeAnalysis
                     validateConnectionPool(ctx, specificFieldNode.fieldName().toString().trim().
                             replaceAll(UNNECESSARY_CHARS_REGEX, ""), specificFieldNode.valueExpr().get());
                 } else if (field instanceof SpreadFieldNode) {
-                    NodeList<Node> recordFields = Utils.getSpreadFieldType(ctx, field);
+                    NodeList<Node> recordFields = Utils.getSpreadFieldType(ctx, (SpreadFieldNode) field);
                     for (Node recordField : recordFields) {
                         if (recordField instanceof RecordFieldWithDefaultValueNode) {
                             RecordFieldWithDefaultValueNode fieldWithDefaultValueNode =

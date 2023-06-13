@@ -103,15 +103,14 @@ public class Utils {
         return objectName.equals(Constants.Client.CLIENT);
     }
 
-    public static void validateOptionConfig(SyntaxNodeAnalysisContext ctx, ExpressionNode options) {
-        SeparatedNodeList<MappingFieldNode> fields = ((MappingConstructorExpressionNode) options).fields();
-        for (MappingFieldNode field: fields) {
+    public static void validateOptionConfig(SyntaxNodeAnalysisContext ctx, MappingConstructorExpressionNode options) {
+        for (MappingFieldNode field: options.fields()) {
             if (field instanceof SpecificFieldNode) {
                 SpecificFieldNode specificFieldNode = ((SpecificFieldNode) field);
                 validateOptions(ctx, specificFieldNode.fieldName().toString().trim().
                         replaceAll(UNNECESSARY_CHARS_REGEX, ""), specificFieldNode.valueExpr().get());
             } else if (field instanceof SpreadFieldNode) {
-                NodeList<Node> recordFields = Utils.getSpreadFieldType(ctx, field);
+                NodeList<Node> recordFields = Utils.getSpreadFieldType(ctx, ((SpreadFieldNode) field));
                 for (Node recordField : recordFields) {
                     if (recordField instanceof RecordFieldWithDefaultValueNode) {
                         RecordFieldWithDefaultValueNode fieldWithDefaultValueNode =
@@ -156,7 +155,7 @@ public class Utils {
                 validateFailover(ctx, specificFieldNode.fieldName().toString().trim().
                         replaceAll(UNNECESSARY_CHARS_REGEX, ""), specificFieldNode.valueExpr().get());
             } else if (failoverField instanceof SpreadFieldNode) {
-                NodeList<Node> recordFields = Utils.getSpreadFieldType(ctx, failoverField);
+                NodeList<Node> recordFields = Utils.getSpreadFieldType(ctx, (SpreadFieldNode) failoverField);
                 for (Node recordField : recordFields) {
                     if (recordField instanceof RecordFieldWithDefaultValueNode) {
                         RecordFieldWithDefaultValueNode fieldWithDefaultValueNode =
@@ -184,8 +183,7 @@ public class Utils {
         }
     }
 
-    public static NodeList<Node> getSpreadFieldType(SyntaxNodeAnalysisContext ctx, MappingFieldNode field) {
-        SpreadFieldNode spreadFieldNode = ((SpreadFieldNode) field);
+    public static NodeList<Node> getSpreadFieldType(SyntaxNodeAnalysisContext ctx, SpreadFieldNode spreadFieldNode) {
         List<Symbol> symbols = ctx.semanticModel().moduleSymbols();
         Object[] entries = spreadFieldNode.valueExpr().childEntries().toArray();
         ModulePartNode modulePartNode = ctx.syntaxTree().rootNode();

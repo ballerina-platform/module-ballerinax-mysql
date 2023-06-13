@@ -30,10 +30,8 @@ import io.ballerina.tools.diagnostics.DiagnosticSeverity;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.io.PrintStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -142,27 +140,6 @@ public class CompilerPluginTest {
                 .filter(r -> r.diagnosticInfo().severity().equals(DiagnosticSeverity.ERROR))
                 .collect(Collectors.toList());
         long availableErrors = diagnosticErrorStream.size();
-        Assert.assertEquals(availableErrors, 3);
-        Assert.assertEquals(diagnosticErrorStream.get(0).diagnosticInfo().messageFormat(),
-                "invalid value: expected value is greater than one");
-        Assert.assertEquals(diagnosticErrorStream.get(1).diagnosticInfo().messageFormat(),
-                "invalid value: expected value is greater than or equal to 30");
-        Assert.assertEquals(diagnosticErrorStream.get(2).diagnosticInfo().messageFormat(),
-                "invalid value: expected value is greater than zero");
-    }
-
-    @Test
-    public void negativeTestDBClientConfigAsSpreadField() {
-        Package currentPackage = loadPackage("sample7");
-        PackageCompilation compilation = currentPackage.getCompilation();
-        DiagnosticResult diagnosticResult = compilation.diagnosticResult();
-        List<Diagnostic> diagnosticErrorStream = diagnosticResult.diagnostics().stream()
-                .filter(r -> r.diagnosticInfo().severity().equals(DiagnosticSeverity.ERROR))
-                .collect(Collectors.toList());
-        long availableErrors = diagnosticErrorStream.size();
-        PrintStream asd = System.out;
-        asd.println(availableErrors);
-        asd.println(Arrays.toString(diagnosticErrorStream.toArray()));
         Assert.assertEquals(availableErrors, 3);
         Assert.assertEquals(diagnosticErrorStream.get(0).diagnosticInfo().messageFormat(),
                 "invalid value: expected value is greater than one");

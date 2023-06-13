@@ -24,7 +24,10 @@ import io.ballerina.compiler.syntax.tree.ImplicitNewExpressionNode;
 import io.ballerina.compiler.syntax.tree.MappingConstructorExpressionNode;
 import io.ballerina.compiler.syntax.tree.MappingFieldNode;
 import io.ballerina.compiler.syntax.tree.NamedArgumentNode;
+import io.ballerina.compiler.syntax.tree.Node;
+import io.ballerina.compiler.syntax.tree.NodeList;
 import io.ballerina.compiler.syntax.tree.PositionalArgumentNode;
+import io.ballerina.compiler.syntax.tree.RecordFieldWithDefaultValueNode;
 import io.ballerina.compiler.syntax.tree.SeparatedNodeList;
 import io.ballerina.compiler.syntax.tree.SpecificFieldNode;
 import io.ballerina.compiler.syntax.tree.SpreadFieldNode;
@@ -45,7 +48,6 @@ import static io.ballerina.stdlib.mysql.compiler.MySQLDiagnosticsCode.SQL_101;
 import static io.ballerina.stdlib.mysql.compiler.MySQLDiagnosticsCode.SQL_102;
 import static io.ballerina.stdlib.mysql.compiler.MySQLDiagnosticsCode.SQL_103;
 import static io.ballerina.stdlib.mysql.compiler.Utils.getTerminalNodeValue;
-import static io.ballerina.stdlib.mysql.compiler.Utils.validateOptions;
 
 /**
  * Validate fields of sql:Connection pool fields.
@@ -96,66 +98,66 @@ public class InitializerParamAnalyzer implements AnalysisTask<SyntaxNodeAnalysis
         }
 
         if (options instanceof MappingConstructorExpressionNode) {
-            validateOptions(ctx, (MappingConstructorExpressionNode) options);
+            Utils.validateOptionConfig(ctx, options);
         }
         if (connectionPool instanceof MappingConstructorExpressionNode) {
-            validateConnectionPool(ctx, (MappingConstructorExpressionNode) connectionPool);
-        }
-    }
-
-    private void validateConnectionPool(SyntaxNodeAnalysisContext ctx, MappingConstructorExpressionNode pool) {
-        SeparatedNodeList<MappingFieldNode> fields = pool.fields();
-        for (MappingFieldNode field : fields) {
-            String name;
-            ExpressionNode valueNode;
-            if (field instanceof SpreadFieldNode) {
-                SpreadFieldNode spreadFieldNode = ((SpreadFieldNode) field);
-                name = spreadFieldNode.toSourceCode().trim()
-                        .replaceAll(UNNECESSARY_CHARS_REGEX, "");
-                valueNode = spreadFieldNode.valueExpr();
-            } else {
-                SpecificFieldNode specificFieldNode = ((SpecificFieldNode) field);
-                name = specificFieldNode.fieldName().toString().trim().
-                        replaceAll(UNNECESSARY_CHARS_REGEX, "");
-                valueNode = specificFieldNode.valueExpr().get();
-            }
-            switch (name) {
-                case Constants.ConnectionPool.MAX_OPEN_CONNECTIONS:
-                    int maxOpenConnections = Integer.parseInt(getTerminalNodeValue(valueNode, "1"));
-                    if (maxOpenConnections < 1) {
-                        DiagnosticInfo diagnosticInfo = new DiagnosticInfo(SQL_101.getCode(), SQL_101.getMessage(),
-                                SQL_101.getSeverity());
-
-                        ctx.reportDiagnostic(
-                                DiagnosticFactory.createDiagnostic(diagnosticInfo, valueNode.location()));
-
+            SeparatedNodeList<MappingFieldNode> fields = ((MappingConstructorExpressionNode) connectionPool).fields();
+            for (MappingFieldNode field: fields) {
+                if (field instanceof SpecificFieldNode) {
+                    SpecificFieldNode specificFieldNode = ((SpecificFieldNode) field);
+                    validateConnectionPool(ctx, specificFieldNode.fieldName().toString().trim().
+                            replaceAll(UNNECESSARY_CHARS_REGEX, ""), specificFieldNode.valueExpr().get());
+                } else if (field instanceof SpreadFieldNode) {
+                    NodeList<Node> recordFields = Utils.getSpreadFieldType(ctx, field);
+                    for (Node recordField : recordFields) {
+                        if (recordField instanceof RecordFieldWithDefaultValueNode) {
+                            RecordFieldWithDefaultValueNode fieldWithDefaultValueNode =
+                                    (RecordFieldWithDefaultValueNode) recordField;
+                            validateConnectionPool(ctx, fieldWithDefaultValueNode.fieldName().toString().
+                                    trim().replaceAll(UNNECESSARY_CHARS_REGEX, ""),
+                                    fieldWithDefaultValueNode.expression());
+                        }
                     }
-                    break;
-                case Constants.ConnectionPool.MIN_IDLE_CONNECTIONS:
-                    int minIdleConnection = Integer.parseInt(getTerminalNodeValue(valueNode, "0"));
-                    if (minIdleConnection < 0) {
-                        DiagnosticInfo diagnosticInfo = new DiagnosticInfo(SQL_102.getCode(), SQL_102.getMessage(),
-                                SQL_102.getSeverity());
-                        ctx.reportDiagnostic(
-                                DiagnosticFactory.createDiagnostic(diagnosticInfo, valueNode.location()));
-
-                    }
-                    break;
-                case Constants.ConnectionPool.MAX_CONNECTION_LIFE_TIME:
-                    float maxConnectionTime = Float.parseFloat(getTerminalNodeValue(valueNode, "30"));
-                    if (maxConnectionTime < 30) {
-                        DiagnosticInfo diagnosticInfo = new DiagnosticInfo(SQL_103.getCode(), SQL_103.getMessage(),
-                                SQL_103.getSeverity());
-                        ctx.reportDiagnostic(
-                                DiagnosticFactory.createDiagnostic(diagnosticInfo, valueNode.location()));
-
-                    }
-                    break;
-                default:
-                    // Can ignore all other fields
-                    continue;
+                }
             }
         }
     }
 
+    private void validateConnectionPool(SyntaxNodeAnalysisContext ctx, String name, ExpressionNode valueNode) {
+        switch (name) {
+            case Constants.ConnectionPool.MAX_OPEN_CONNECTIONS:
+                int maxOpenConnections = Integer.parseInt(getTerminalNodeValue(valueNode, "1"));
+                if (maxOpenConnections < 1) {
+                    DiagnosticInfo diagnosticInfo = new DiagnosticInfo(SQL_101.getCode(), SQL_101.getMessage(),
+                            SQL_101.getSeverity());
+
+                    ctx.reportDiagnostic(
+                            DiagnosticFactory.createDiagnostic(diagnosticInfo, valueNode.location()));
+
+                }
+                break;
+            case Constants.ConnectionPool.MIN_IDLE_CONNECTIONS:
+                int minIdleConnection = Integer.parseInt(getTerminalNodeValue(valueNode, "0"));
+                if (minIdleConnection < 0) {
+                    DiagnosticInfo diagnosticInfo = new DiagnosticInfo(SQL_102.getCode(), SQL_102.getMessage(),
+                            SQL_102.getSeverity());
+                    ctx.reportDiagnostic(
+                            DiagnosticFactory.createDiagnostic(diagnosticInfo, valueNode.location()));
+
+                }
+                break;
+            case Constants.ConnectionPool.MAX_CONNECTION_LIFE_TIME:
+                float maxConnectionTime = Float.parseFloat(getTerminalNodeValue(valueNode, "30"));
+                if (maxConnectionTime < 30) {
+                    DiagnosticInfo diagnosticInfo = new DiagnosticInfo(SQL_103.getCode(), SQL_103.getMessage(),
+                            SQL_103.getSeverity());
+                    ctx.reportDiagnostic(
+                            DiagnosticFactory.createDiagnostic(diagnosticInfo, valueNode.location()));
+
+                }
+                break;
+            default:
+                // Can ignore all other fields
+        }
+    }
 }

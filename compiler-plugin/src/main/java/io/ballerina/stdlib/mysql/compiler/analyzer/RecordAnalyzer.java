@@ -38,7 +38,7 @@ import java.util.Optional;
 import static io.ballerina.stdlib.mysql.compiler.Constants.BALLERINAX;
 import static io.ballerina.stdlib.mysql.compiler.Constants.MYSQL;
 import static io.ballerina.stdlib.mysql.compiler.Utils.validateFailOverConfig;
-import static io.ballerina.stdlib.mysql.compiler.Utils.validateOptions;
+import static io.ballerina.stdlib.mysql.compiler.Utils.validateOptionConfig;
 
 /**
  * Analyser for validation mysql:Options and mysql:FailoverConfig.
@@ -65,7 +65,7 @@ public class RecordAnalyzer implements AnalysisTask<SyntaxNodeAnalysisContext> {
                 if (recordNode.isEmpty()) {
                     return;
                 }
-                validateOptions(ctx, recordNode.get());
+                validateOptionConfig(ctx, recordNode.get());
             }
         }
     }

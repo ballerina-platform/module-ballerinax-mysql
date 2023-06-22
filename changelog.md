@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- [Support retrieval of enum types](https://github.com/ballerina-platform/ballerina-standard-library/issues/4588)
+
+## [1.8.0] - 2023-04-10
+
+### Changed
 - [Handle unsupported array type gracefully](https://github.com/ballerina-platform/ballerina-standard-library/issues/4201)
 
 ## [1.7.0] - 2023-02-20

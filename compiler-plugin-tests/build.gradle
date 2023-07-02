@@ -48,7 +48,7 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-sourceCompatibility = JavaVersion.VERSION_11
+sourceCompatibility = JavaVersion.VERSION_17
 
 test {
     systemProperty "ballerina.offline.flag", "true"
@@ -73,7 +73,7 @@ test {
 jacocoTestReport {
     dependsOn test
     reports {
-        xml.enabled true
+        xml.required = true
     }
     sourceSets project(':mysql-compiler-plugin').sourceSets.main
 }

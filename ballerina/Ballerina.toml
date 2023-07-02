@@ -9,16 +9,16 @@ icon = "icon.png"
 license = ["Apache-2.0"]
 distribution = "2201.7.0"
 
-[platform.java11]
+[platform.java17]
 graalvmCompatible = true
 
-[[platform.java11.dependency]]
+[[platform.java17.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "mysql-native"
 version = "1.10.0"
 path = "../native/build/libs/mysql-native-1.10.0-SNAPSHOT.jar"
 
-[[platform.java11.dependency]]
+[[platform.java17.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "sql-native"
 version = "1.10.0"

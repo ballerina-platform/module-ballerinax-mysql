@@ -21,13 +21,13 @@ Follow one of the following ways to add the JAR in the file:
 
 * Download the JAR and update the path
     ```
-    [[platform.java11.dependency]]
+    [[platform.java17.dependency]]
     path = "PATH"
     ```
 
 * Add JAR with a maven dependency params
     ```
-    [[platform.java11.dependency]]
+    [[platform.java17.dependency]]
     groupId = "mysql"
     artifactId = "mysql-connector-java"
     version = "8.0.20"

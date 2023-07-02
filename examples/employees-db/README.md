@@ -29,13 +29,13 @@ Follow one of the following ways to add the MySQL JDBC driver JAR in the `Baller
 
 * Download the JAR and update the path
     ```
-    [[platform.java11.dependency]]
+    [[platform.java17.dependency]]
     path = "PATH"
     ```
 
 * Replace the above path with a maven dependency parameter
     ```
-    [[platform.java11.dependency]]
+    [[platform.java17.dependency]]
     groupId = "mysql"
     artifactId = "mysql-connector-java"
     version = "8.0.26"

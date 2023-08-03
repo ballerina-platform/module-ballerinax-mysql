@@ -27,7 +27,7 @@ import io.ballerina.runtime.api.values.BString;
  */
 public final class Constants {
 
-    private Constants(){
+    private Constants() {
     }
 
     /**

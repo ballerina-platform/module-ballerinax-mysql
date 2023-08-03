@@ -29,13 +29,13 @@ Follow one of the following ways to add the JAR in the file:
 
 * Download the JAR and update the path
     ```
-    [[platform.java11.dependency]]
+    [[platform.java17.dependency]]
     path = "PATH"
     ```
 
 * Add JAR with a maven dependency params
     ```
-    [[platform.java11.dependency]]
+    [[platform.java17.dependency]]
     groupId = "mysql"
     artifactId = "mysql-connector-java"
     version = "8.0.20"
@@ -480,8 +480,8 @@ This repository only contains the source code for the package.
 
 ### Set up the prerequisites
 
-1. Download and install Java SE Development Kit (JDK) version 11 (from one of the following locations).
-   * [Oracle](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html)
+1. Download and install Java SE Development Kit (JDK) version 17 (from one of the following locations).
+   * [Oracle](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
    * [OpenJDK](https://adoptium.net/)
 
 2. Download and install [Docker](https://www.docker.com/get-started)

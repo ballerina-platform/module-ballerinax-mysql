@@ -118,16 +118,16 @@ publishing {
     }
 }
 
-def checkExecResult(execResult, failText, standardOutput) {
-    if (execResult) {
-        if (execResult.getExitValue() != 0) {
-            throw new GradleException('Non-zero exit value: ' + execResult.getExitValue())
+def checkExecResult(executionResult, failText, standardOutput) {
+    if (executionResult) {
+        if (executionResult.get().getExitValue() != 0) {
+            throw new GradleException('Non-zero exit value: ' + executionResult.get().getExitValue())
         }
         if (standardOutput.toString().contains(failText)) {
             throw new GradleException('"' + failText + '" string in output: ' + standardOutput.toString())
         }
     } else {
-        throw new GradleException('Returned a null execResult object')
+        throw new GradleException('Returned a null executionResult object')
     }
 }
 
@@ -137,7 +137,7 @@ task createTestDockerImage(type: Exec) {
         commandLine 'sh', '-c', "docker build -f $project.projectDir/tests/resources/Dockerfile -t ballerina-mysql" +
                 " -q $project.projectDir/tests/resources/"
         doLast {
-            checkExecResult(execResult, 'Error', standardOutput)
+            checkExecResult(executionResult, 'Error', standardOutput)
             sleep(10 * 1000)
         }
     }
@@ -163,7 +163,7 @@ task startTestDockerContainer(type: Exec) {
         def healthCheck = 1
         def counter = 0
         doLast {
-            checkExecResult(execResult, 'Error', standardOutput)
+            checkExecResult(executionResult, 'Error', standardOutput)
             while (healthCheck != 0 && counter < 12) {
                 sleep(5 * 1000)
                 healthCheck = checkTestDockerContainerStatus('ballerina-mysql')
@@ -183,7 +183,7 @@ task startTestLimitedDockerContainer(type: Exec) {
         def healthCheck = 1
         def counter = 0
         doLast {
-            checkExecResult(execResult, 'Error', standardOutput)
+            checkExecResult(executionResult, 'Error', standardOutput)
             while (healthCheck != 0 && counter < 12) {
                 sleep(5 * 1000)
                 healthCheck = checkTestDockerContainerStatus('ballerina-mysql-limited')
@@ -203,7 +203,7 @@ task startTestDockerTrxContainer(type: Exec) {
         def healthCheck = 1
         def counter = 0
         doLast {
-            checkExecResult(execResult, 'Error', standardOutput)
+            checkExecResult(executionResult, 'Error', standardOutput)
             while (healthCheck != 0 && counter < 12) {
                 sleep(5 * 1000)
                 healthCheck = checkTestDockerContainerStatus('ballerina-mysql-trx')
@@ -226,7 +226,7 @@ task startTestSslDockerContainer(type: Exec) {
         def healthCheck = 1
         def counter = 0
         doLast {
-            checkExecResult(execResult, 'Error', standardOutput)
+            checkExecResult(executionResult, 'Error', standardOutput)
             while (healthCheck != 0 && counter < 12) {
                 sleep(5 * 1000)
                 healthCheck = checkTestDockerContainerStatus('ballerina-mysql-ssl')

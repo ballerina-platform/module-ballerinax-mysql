@@ -16,4 +16,12 @@
   ~ under the License.
   -->
 <FindBugsFilter>
+    <Match>
+        <Class name="io.ballerina.stdlib.mysql.parameterprocessor.MysqlResultParameterProcessor"/>
+        <Bug pattern="EI_EXPOSE_REP" />
+    </Match>
+    <Match>
+        <Class name="io.ballerina.stdlib.mysql.parameterprocessor.MysqlStatementParameterProcessor"/>
+        <Bug pattern="MS_EXPOSE_REP" />
+    </Match>
 </FindBugsFilter>

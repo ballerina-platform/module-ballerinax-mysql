@@ -18,24 +18,39 @@
 package io.ballerina.stdlib.mysql.compiler;
 
 import io.ballerina.compiler.api.symbols.ModuleSymbol;
+import io.ballerina.compiler.api.symbols.Symbol;
+import io.ballerina.compiler.api.symbols.SymbolKind;
 import io.ballerina.compiler.api.symbols.TypeDescKind;
 import io.ballerina.compiler.api.symbols.TypeReferenceTypeSymbol;
 import io.ballerina.compiler.api.symbols.TypeSymbol;
 import io.ballerina.compiler.api.symbols.UnionTypeSymbol;
 import io.ballerina.compiler.syntax.tree.BasicLiteralNode;
+import io.ballerina.compiler.syntax.tree.ChildNodeEntry;
 import io.ballerina.compiler.syntax.tree.ExpressionNode;
 import io.ballerina.compiler.syntax.tree.MappingConstructorExpressionNode;
 import io.ballerina.compiler.syntax.tree.MappingFieldNode;
+import io.ballerina.compiler.syntax.tree.ModulePartNode;
 import io.ballerina.compiler.syntax.tree.Node;
+import io.ballerina.compiler.syntax.tree.NodeList;
+import io.ballerina.compiler.syntax.tree.NonTerminalNode;
+import io.ballerina.compiler.syntax.tree.RecordFieldNode;
+import io.ballerina.compiler.syntax.tree.RecordFieldWithDefaultValueNode;
+import io.ballerina.compiler.syntax.tree.RecordTypeDescriptorNode;
 import io.ballerina.compiler.syntax.tree.SeparatedNodeList;
+import io.ballerina.compiler.syntax.tree.SimpleNameReferenceNode;
 import io.ballerina.compiler.syntax.tree.SpecificFieldNode;
+import io.ballerina.compiler.syntax.tree.SpreadFieldNode;
+import io.ballerina.compiler.syntax.tree.TypeDefinitionNode;
+import io.ballerina.compiler.syntax.tree.TypedBindingPatternNode;
 import io.ballerina.compiler.syntax.tree.UnaryExpressionNode;
 import io.ballerina.projects.plugins.SyntaxNodeAnalysisContext;
 import io.ballerina.tools.diagnostics.Diagnostic;
 import io.ballerina.tools.diagnostics.DiagnosticFactory;
 import io.ballerina.tools.diagnostics.DiagnosticInfo;
 import io.ballerina.tools.diagnostics.DiagnosticSeverity;
+import io.ballerina.tools.diagnostics.Location;
 
+import java.util.List;
 import java.util.Optional;
 
 import static io.ballerina.stdlib.mysql.compiler.Constants.UNNECESSARY_CHARS_REGEX;
@@ -88,32 +103,46 @@ public class Utils {
         return objectName.equals(Constants.Client.CLIENT);
     }
 
-    public static void validateOptions(SyntaxNodeAnalysisContext ctx, MappingConstructorExpressionNode options) {
-        SeparatedNodeList<MappingFieldNode> fields = options.fields();
-        for (MappingFieldNode field : fields) {
-            String name = ((SpecificFieldNode) field).fieldName().toString()
-                    .trim().replaceAll(UNNECESSARY_CHARS_REGEX, "");
-            ExpressionNode valueNode = ((SpecificFieldNode) field).valueExpr().get();
-            switch (name) {
-                case Constants.Options.CONNECTION_TIMEOUT:
-                case Constants.Options.SOCKET_TIMEOUT:
-                    float fieldVal = Float.parseFloat(getTerminalNodeValue(valueNode, "0"));
-                    if (fieldVal < 0) {
-                        DiagnosticInfo diagnosticInfo = new DiagnosticInfo(MYSQL_101.getCode(), MYSQL_101.getMessage(),
-                                MYSQL_101.getSeverity());
-                        ctx.reportDiagnostic(
-                                DiagnosticFactory.createDiagnostic(diagnosticInfo, valueNode.location()));
+    public static void validateOptionConfig(SyntaxNodeAnalysisContext ctx, MappingConstructorExpressionNode options) {
+        for (MappingFieldNode field: options.fields()) {
+            if (field instanceof SpecificFieldNode) {
+                SpecificFieldNode specificFieldNode = ((SpecificFieldNode) field);
+                validateOptions(ctx, specificFieldNode.fieldName().toString().trim().
+                        replaceAll(UNNECESSARY_CHARS_REGEX, ""), specificFieldNode.valueExpr().get());
+            } else if (field instanceof SpreadFieldNode) {
+                NodeList<Node> recordFields = Utils.getSpreadFieldType(ctx, ((SpreadFieldNode) field));
+                for (Node recordField : recordFields) {
+                    if (recordField instanceof RecordFieldWithDefaultValueNode) {
+                        RecordFieldWithDefaultValueNode fieldWithDefaultValueNode =
+                                (RecordFieldWithDefaultValueNode) recordField;
+                        validateOptions(ctx, fieldWithDefaultValueNode.fieldName().toString().
+                                        trim().replaceAll(UNNECESSARY_CHARS_REGEX, ""),
+                                fieldWithDefaultValueNode.expression());
                     }
-                    break;
-                case Constants.Options.FAILOVER:
-                    if (valueNode instanceof MappingConstructorExpressionNode) {
-                        validateFailOverConfig(ctx, (MappingConstructorExpressionNode) valueNode);
-                    }
-                    break;
-                default:
-                    // Can ignore all other fields
-                    continue;
+                }
             }
+        }
+    }
+
+    public static void validateOptions(SyntaxNodeAnalysisContext ctx, String name, ExpressionNode valueNode) {
+        switch (name) {
+            case Constants.Options.CONNECTION_TIMEOUT:
+            case Constants.Options.SOCKET_TIMEOUT:
+                float fieldVal = Float.parseFloat(getTerminalNodeValue(valueNode, "0"));
+                if (fieldVal < 0) {
+                    DiagnosticInfo diagnosticInfo = new DiagnosticInfo(MYSQL_101.getCode(), MYSQL_101.getMessage(),
+                            MYSQL_101.getSeverity());
+                    ctx.reportDiagnostic(
+                            DiagnosticFactory.createDiagnostic(diagnosticInfo, valueNode.location()));
+                }
+                break;
+            case Constants.Options.FAILOVER:
+                if (valueNode instanceof MappingConstructorExpressionNode) {
+                    validateFailOverConfig(ctx, (MappingConstructorExpressionNode) valueNode);
+                }
+                break;
+            default:
+                // Can ignore all other fields
         }
     }
 
@@ -121,20 +150,150 @@ public class Utils {
         SeparatedNodeList<MappingFieldNode> failoverFields =
                 node.fields();
         for (MappingFieldNode failoverField : failoverFields) {
-            String failoverFiled = ((SpecificFieldNode) failoverField).fieldName().toString()
-                    .trim().replaceAll(UNNECESSARY_CHARS_REGEX, "");
-            ExpressionNode failoverValue = ((SpecificFieldNode) failoverField).valueExpr().get();
-            if (failoverFiled.equals(Constants.FailOver.QUERY_BEFORE_RETRY) ||
-                    failoverFiled.equals(Constants.FailOver.TIME_BEFORE_RETRY)) {
-                int value = Integer.parseInt(getTerminalNodeValue(failoverValue, "0"));
-                if (value < 0) {
-                    DiagnosticInfo diagnosticInfo = new DiagnosticInfo(MYSQL_101.getCode(),
-                            MYSQL_101.getMessage(), MYSQL_101.getSeverity());
-                    ctx.reportDiagnostic(DiagnosticFactory.createDiagnostic(
-                            diagnosticInfo, failoverValue.location()));
+            if (failoverField instanceof SpecificFieldNode) {
+                SpecificFieldNode specificFieldNode = ((SpecificFieldNode) failoverField);
+                validateFailover(ctx, specificFieldNode.fieldName().toString().trim().
+                        replaceAll(UNNECESSARY_CHARS_REGEX, ""), specificFieldNode.valueExpr().get());
+            } else if (failoverField instanceof SpreadFieldNode) {
+                NodeList<Node> recordFields = Utils.getSpreadFieldType(ctx, (SpreadFieldNode) failoverField);
+                for (Node recordField : recordFields) {
+                    if (recordField instanceof RecordFieldWithDefaultValueNode) {
+                        RecordFieldWithDefaultValueNode fieldWithDefaultValueNode =
+                                (RecordFieldWithDefaultValueNode) recordField;
+                        validateFailover(ctx, fieldWithDefaultValueNode.fieldName().toString().
+                                        trim().replaceAll(UNNECESSARY_CHARS_REGEX, ""),
+                                fieldWithDefaultValueNode.expression());
+                    }
                 }
             }
         }
+    }
+
+    private static void validateFailover(SyntaxNodeAnalysisContext ctx, String failoverFiled,
+                                         ExpressionNode failoverValue) {
+        if (failoverFiled.equals(Constants.FailOver.QUERY_BEFORE_RETRY) ||
+                failoverFiled.equals(Constants.FailOver.TIME_BEFORE_RETRY)) {
+            int value = Integer.parseInt(getTerminalNodeValue(failoverValue, "0"));
+            if (value < 0) {
+                DiagnosticInfo diagnosticInfo = new DiagnosticInfo(MYSQL_101.getCode(),
+                        MYSQL_101.getMessage(), MYSQL_101.getSeverity());
+                ctx.reportDiagnostic(DiagnosticFactory.createDiagnostic(
+                        diagnosticInfo, failoverValue.location()));
+            }
+        }
+    }
+
+    public static NodeList<Node> getSpreadFieldType(SyntaxNodeAnalysisContext ctx, SpreadFieldNode spreadFieldNode) {
+        List<Symbol> symbols = ctx.semanticModel().moduleSymbols();
+        Object[] entries = spreadFieldNode.valueExpr().childEntries().toArray();
+        ModulePartNode modulePartNode = ctx.syntaxTree().rootNode();
+        ChildNodeEntry type = Utils.getVariableType(symbols, entries, modulePartNode);
+        RecordTypeDescriptorNode typeDescriptor = Utils.getFirstSpreadFieldRecordTypeDescriptorNode(symbols,
+                type, modulePartNode);
+        typeDescriptor = Utils.getEndSpreadFieldRecordType(symbols, entries, modulePartNode,
+                typeDescriptor);
+        return typeDescriptor.fields();
+    }
+
+    public static ChildNodeEntry getVariableType(List<Symbol> symbols, Object[] entries,
+                                                 ModulePartNode modulePartNode) {
+        for (Symbol symbol : symbols) {
+            if (!symbol.kind().equals(SymbolKind.VARIABLE)) {
+                continue;
+            }
+            Optional<String> symbolName = symbol.getName();
+            Optional<Node> childNodeEntry = ((ChildNodeEntry) entries[0]).node();
+            if (symbolName.isPresent() && childNodeEntry.isPresent() &&
+                    symbolName.get().equals(childNodeEntry.get().toString())) {
+                Optional<Location> location = symbol.getLocation();
+                if (location.isPresent()) {
+                    Location loc = location.get();
+                    NonTerminalNode node = modulePartNode.findNode(loc.textRange());
+                    if (node instanceof TypedBindingPatternNode) {
+                        TypedBindingPatternNode typedBindingPatternNode = (TypedBindingPatternNode) node;
+                        return  (ChildNodeEntry) typedBindingPatternNode.childEntries().toArray()[0];
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public static RecordTypeDescriptorNode getFirstSpreadFieldRecordTypeDescriptorNode(List<Symbol> symbols,
+                                                                                       ChildNodeEntry type,
+                                                                                       ModulePartNode modulePartNode) {
+        if (type != null && type.node().isPresent()) {
+            for (Symbol symbol : symbols) {
+                if (!symbol.kind().equals(SymbolKind.TYPE_DEFINITION)) {
+                    continue;
+                }
+                if (symbol.getName().isPresent() &&
+                        symbol.getName().get().equals(type.node().get().toString().trim())) {
+                    Optional<Location> loc = symbol.getLocation();
+                    if (loc.isPresent()) {
+                        Location location = loc.get();
+                        Node node = modulePartNode.findNode(location.textRange());
+                        if (node instanceof TypeDefinitionNode) {
+                            TypeDefinitionNode typeDefinitionNode = (TypeDefinitionNode) node;
+                            return  (RecordTypeDescriptorNode) typeDefinitionNode.typeDescriptor();
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public static RecordTypeDescriptorNode getEndSpreadFieldRecordType(List<Symbol> symbols, Object[] entries,
+                                                                       ModulePartNode modulePartNode,
+                                                                       RecordTypeDescriptorNode typeDescriptor) {
+        if (typeDescriptor != null) {
+            for (int i = 1; i < entries.length; i++) {
+                String childNodeEntry = ((ChildNodeEntry) entries[i]).node().get().toString();
+                NodeList<Node> recordFields = typeDescriptor.fields();
+                if (childNodeEntry.equals(".")) {
+                    continue;
+                }
+                for (Node recordField : recordFields) {
+                    String fieldName;
+                    Node fieldType;
+                    if (recordField instanceof RecordFieldWithDefaultValueNode) {
+                        RecordFieldWithDefaultValueNode fieldWithDefaultValueNode =
+                                (RecordFieldWithDefaultValueNode) recordField;
+                        fieldName = fieldWithDefaultValueNode.fieldName().text().trim();
+                        fieldType = fieldWithDefaultValueNode.typeName();
+                    } else {
+                        RecordFieldNode fieldNode = (RecordFieldNode) recordField;
+                        fieldName = fieldNode.fieldName().text().trim();
+                        fieldType = fieldNode.typeName();
+                    }
+                    if (fieldName.equals(childNodeEntry.trim())) {
+                        if (fieldType instanceof SimpleNameReferenceNode) {
+                            SimpleNameReferenceNode nameReferenceNode = (SimpleNameReferenceNode) fieldType;
+                            for (Symbol symbol : symbols) {
+                                if (!symbol.kind().equals(SymbolKind.TYPE_DEFINITION)) {
+                                    continue;
+                                }
+                                if (symbol.getName().isPresent() &&
+                                        symbol.getName().get().equals(nameReferenceNode.name().text().trim())) {
+                                    Optional<Location> loc = symbol.getLocation();
+                                    if (loc.isPresent()) {
+                                        Location location = loc.get();
+                                        Node node = modulePartNode.findNode(location.textRange());
+                                        if (node instanceof TypeDefinitionNode) {
+                                            TypeDefinitionNode typeDefinitionNode = (TypeDefinitionNode) node;
+                                            typeDescriptor = (RecordTypeDescriptorNode) typeDefinitionNode.
+                                                    typeDescriptor();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return typeDescriptor;
     }
 
     public static String getTerminalNodeValue(Node valueNode, String defaultValue) {

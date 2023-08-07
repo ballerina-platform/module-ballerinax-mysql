@@ -71,7 +71,7 @@ modules = [
 [[package]]
 org = "ballerina"
 name = "http"
-version = "2.9.0"
+version = "2.10.0"
 scope = "testOnly"
 dependencies = [
 	{org = "ballerina", name = "auth"},
@@ -299,7 +299,7 @@ dependencies = [
 [[package]]
 org = "ballerina"
 name = "sql"
-version = "1.10.0"
+version = "1.11.0"
 dependencies = [
 	{org = "ballerina", name = "io"},
 	{org = "ballerina", name = "jballerina.java"},
@@ -390,7 +390,7 @@ modules = [
 [[package]]
 org = "ballerinax"
 name = "mysql"
-version = "1.10.1"
+version = "1.11.0"
 dependencies = [
 	{org = "ballerina", name = "crypto"},
 	{org = "ballerina", name = "file"},
@@ -412,7 +412,7 @@ modules = [
 [[package]]
 org = "ballerinax"
 name = "mysql.driver"
-version = "1.4.1"
+version = "1.5.0"
 scope = "testOnly"
 modules = [
 	{org = "ballerinax", packageName = "mysql.driver", moduleName = "mysql.driver"}

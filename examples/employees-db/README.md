@@ -24,24 +24,7 @@ This example shows how an HTTP RESTful service can be created to insert and retr
 
 ## Prerequisites
 
-### 1. Add the MySQL JDBC driver
-Follow one of the following ways to add the MySQL JDBC driver JAR in the `Ballerina.toml` file:
-
-* Download the JAR and update the path
-    ```
-    [[platform.java11.dependency]]
-    path = "PATH"
-    ```
-
-* Replace the above path with a maven dependency parameter
-    ```
-    [[platform.java11.dependency]]
-    groupId = "mysql"
-    artifactId = "mysql-connector-java"
-    version = "8.0.26"
-    ```
-
-### 2. Setting the configuration variables
+### 1. Setting the configuration variables
 In the `Config.toml` file, set the configuration variables to correspond to your MySQL server.
 * `USER`: The username used to connect to the MySQL server
 * `PASSWORD`: The password used to connect to the MySQL server
@@ -106,7 +89,7 @@ database
 * Example CURL request:
   ```shell
   curl --location --request POST 'localhost:8080/employees/' \
-  --header 'Content-Type: text/plain' \
+  --header 'Content-Type: application/json' \
   --data-raw '{
     "first_name": "test",
     "last_name": "test",
@@ -127,7 +110,7 @@ database
 * Example CURL request:
   ```shell
   curl --location --request PUT 'localhost:8080/employees/' \
-  --header 'Content-Type: text/plain' \
+  --header 'Content-Type: application/json' \
   --data-raw '{
     "employee_id": 6,
     "first_name": "test",

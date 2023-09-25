@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+
+## [1.10.0] - 2023-06-30
+
+### Added
+
+### Changed
 - [Support retrieval of enum types](https://github.com/ballerina-platform/ballerina-standard-library/issues/4588)
 
 ## [1.8.0] - 2023-04-10

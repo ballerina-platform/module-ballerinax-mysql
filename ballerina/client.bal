@@ -199,8 +199,12 @@ public const SSL_VERIFY_CA = "VERIFY_CA";
 # in the certificate that the server sends to the client.
 public const SSL_VERIFY_IDENTITY = "VERIFY_IDENTITY";
 
+# Establish an unencrypted connection to the server. If the server supports encrypted connections, the connection
+# attempt fails.
+public const SSL_DISABLED = "DISABLED";
+
 # `SSLMode` as a union of available SSL modes.
-public type SSLMode SSL_PREFERRED|SSL_REQUIRED|SSL_VERIFY_CA|SSL_VERIFY_IDENTITY;
+public type SSLMode SSL_PREFERRED|SSL_REQUIRED|SSL_VERIFY_CA|SSL_VERIFY_IDENTITY|SSL_DISABLED;
 
 # SSL Configuration to be used when connecting to the MySQL server.
 #

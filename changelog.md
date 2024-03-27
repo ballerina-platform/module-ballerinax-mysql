@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- [Fix SSL mode being set to `DISABLED` when ssl config is not provided in options](https://github.com/ballerina-platform/ballerina-library/issues/6234)
 
 ## [1.10.0] - 2023-06-30
 

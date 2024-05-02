@@ -16,3 +16,5 @@ CREATE TABLE Customers(
 
 INSERT INTO Customers (firstName,lastName,registrationID,creditLimit,country)
                 VALUES ('Peter', 'Stuart', 1, 5000.75, 'USA');
+INSERT INTO Customers (firstName,lastName,registrationID,creditLimit,country)
+                VALUES ('Tom', 'John', 2, 6000.75, 'UK');

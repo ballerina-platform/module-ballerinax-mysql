@@ -64,9 +64,7 @@ public class Utils {
     }
 
     public static void addSSLOptions(BMap secureSocket, BMap<BString, Object> options) {
-        if (secureSocket == null) {
-            options.put(Constants.DatabaseProps.SSL_MODE, Constants.DatabaseProps.SSL_MODE_DISABLED);
-        } else {
+        if (secureSocket != null) {
             BString mode = secureSocket.getStringValue(Constants.SecureSocket.MODE);
             options.put(Constants.DatabaseProps.SSL_MODE, mode);
 
@@ -95,7 +93,7 @@ public class Utils {
             }
 
             boolean allowPublicKeyRetrieval = secureSocket.getBooleanValue(
-                                                                Constants.Options.ALLOW_PUBLIC_KEY_RETRIEVAL);
+                    Constants.Options.ALLOW_PUBLIC_KEY_RETRIEVAL);
             options.put(Constants.DatabaseProps.ALLOW_PUBLIC_KEY_RETRIEVAL, allowPublicKeyRetrieval);
         }
     }

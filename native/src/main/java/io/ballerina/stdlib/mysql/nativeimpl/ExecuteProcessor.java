@@ -21,7 +21,7 @@ package io.ballerina.stdlib.mysql.nativeimpl;
 import io.ballerina.runtime.api.Environment;
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BObject;
-import io.ballerina.stdlib.sql.parameterprocessor.DefaultStatementParameterProcessor;
+import io.ballerina.stdlib.mysql.parameterprocessor.MysqlStatementParameterProcessor;
 
 /**
  * This class contains methods for executing SQL queries.
@@ -34,11 +34,11 @@ public class ExecuteProcessor {
 
     public static Object nativeExecute(Environment env, BObject client, BObject paramSQLString) {
         return io.ballerina.stdlib.sql.nativeimpl.ExecuteProcessor.nativeExecute(env, client, paramSQLString,
-          DefaultStatementParameterProcessor.getInstance());
+                MysqlStatementParameterProcessor.getInstance());
     }
 
     public static Object nativeBatchExecute(Environment env, BObject client, BArray paramSQLStrings) {
         return io.ballerina.stdlib.sql.nativeimpl.ExecuteProcessor.nativeBatchExecute(env, client, paramSQLStrings,
-                DefaultStatementParameterProcessor.getInstance());    
+                MysqlStatementParameterProcessor.getInstance());
     }
 }

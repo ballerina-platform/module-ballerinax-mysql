@@ -22,20 +22,20 @@ import io.ballerina.runtime.api.Environment;
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BObject;
 import io.ballerina.stdlib.mysql.parameterprocessor.MysqlResultParameterProcessor;
-import io.ballerina.stdlib.sql.parameterprocessor.DefaultStatementParameterProcessor;
+import io.ballerina.stdlib.mysql.parameterprocessor.MysqlStatementParameterProcessor;
 
 /**
  * This class holds the utility methods involved with executing the call statements.
  *
  * @since 1.2.0
  */
-public class CallProcessor { 
-    private CallProcessor() { 
+public class CallProcessor {
+    private CallProcessor() {
     }
-    
+
     public static Object nativeCall(Environment env, BObject client, BObject paramSQLString, BArray recordTypes) {
         return io.ballerina.stdlib.sql.nativeimpl.CallProcessor.nativeCall(env, client, paramSQLString,
-            recordTypes, DefaultStatementParameterProcessor.getInstance(),
-            MysqlResultParameterProcessor.getInstance());
+                recordTypes, MysqlStatementParameterProcessor.getInstance(),
+                MysqlResultParameterProcessor.getInstance());
     }
 }

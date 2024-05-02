@@ -31,16 +31,14 @@ import io.ballerina.compiler.syntax.tree.VariableDeclarationNode;
 import io.ballerina.projects.plugins.AnalysisTask;
 import io.ballerina.projects.plugins.SyntaxNodeAnalysisContext;
 import io.ballerina.stdlib.mysql.compiler.Constants;
-import io.ballerina.tools.diagnostics.Diagnostic;
-import io.ballerina.tools.diagnostics.DiagnosticSeverity;
+import io.ballerina.stdlib.mysql.compiler.Utils;
 
-import java.util.List;
 import java.util.Optional;
 
 import static io.ballerina.stdlib.mysql.compiler.Constants.BALLERINAX;
 import static io.ballerina.stdlib.mysql.compiler.Constants.MYSQL;
 import static io.ballerina.stdlib.mysql.compiler.Utils.validateFailOverConfig;
-import static io.ballerina.stdlib.mysql.compiler.Utils.validateOptions;
+import static io.ballerina.stdlib.mysql.compiler.Utils.validateOptionConfig;
 
 /**
  * Analyser for validation mysql:Options and mysql:FailoverConfig.
@@ -48,12 +46,10 @@ import static io.ballerina.stdlib.mysql.compiler.Utils.validateOptions;
 public class RecordAnalyzer implements AnalysisTask<SyntaxNodeAnalysisContext> {
     @Override
     public void perform(SyntaxNodeAnalysisContext ctx) {
-        List<Diagnostic> diagnostics = ctx.semanticModel().diagnostics();
-        for (Diagnostic diagnostic : diagnostics) {
-            if (diagnostic.diagnosticInfo().severity() == DiagnosticSeverity.ERROR) {
-                return;
-            }
+        if (Utils.hasCompilationErrors(ctx)) {
+            return;
         }
+
         Optional<Symbol> varSymOptional = ctx.semanticModel().symbol(ctx.node());
         if (varSymOptional.isPresent()) {
             TypeSymbol typeSymbol = ((VariableSymbol) varSymOptional.get()).typeDescriptor();
@@ -69,7 +65,7 @@ public class RecordAnalyzer implements AnalysisTask<SyntaxNodeAnalysisContext> {
                 if (recordNode.isEmpty()) {
                     return;
                 }
-                validateOptions(ctx, recordNode.get());
+                validateOptionConfig(ctx, recordNode.get());
             }
         }
     }

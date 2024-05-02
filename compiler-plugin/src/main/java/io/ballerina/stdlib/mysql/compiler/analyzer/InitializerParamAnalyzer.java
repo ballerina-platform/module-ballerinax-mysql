@@ -24,17 +24,19 @@ import io.ballerina.compiler.syntax.tree.ImplicitNewExpressionNode;
 import io.ballerina.compiler.syntax.tree.MappingConstructorExpressionNode;
 import io.ballerina.compiler.syntax.tree.MappingFieldNode;
 import io.ballerina.compiler.syntax.tree.NamedArgumentNode;
+import io.ballerina.compiler.syntax.tree.Node;
+import io.ballerina.compiler.syntax.tree.NodeList;
 import io.ballerina.compiler.syntax.tree.PositionalArgumentNode;
+import io.ballerina.compiler.syntax.tree.RecordFieldWithDefaultValueNode;
 import io.ballerina.compiler.syntax.tree.SeparatedNodeList;
 import io.ballerina.compiler.syntax.tree.SpecificFieldNode;
+import io.ballerina.compiler.syntax.tree.SpreadFieldNode;
 import io.ballerina.projects.plugins.AnalysisTask;
 import io.ballerina.projects.plugins.SyntaxNodeAnalysisContext;
 import io.ballerina.stdlib.mysql.compiler.Constants;
 import io.ballerina.stdlib.mysql.compiler.Utils;
-import io.ballerina.tools.diagnostics.Diagnostic;
 import io.ballerina.tools.diagnostics.DiagnosticFactory;
 import io.ballerina.tools.diagnostics.DiagnosticInfo;
-import io.ballerina.tools.diagnostics.DiagnosticSeverity;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,7 +48,6 @@ import static io.ballerina.stdlib.mysql.compiler.MySQLDiagnosticsCode.SQL_101;
 import static io.ballerina.stdlib.mysql.compiler.MySQLDiagnosticsCode.SQL_102;
 import static io.ballerina.stdlib.mysql.compiler.MySQLDiagnosticsCode.SQL_103;
 import static io.ballerina.stdlib.mysql.compiler.Utils.getTerminalNodeValue;
-import static io.ballerina.stdlib.mysql.compiler.Utils.validateOptions;
 
 /**
  * Validate fields of sql:Connection pool fields.
@@ -54,11 +55,8 @@ import static io.ballerina.stdlib.mysql.compiler.Utils.validateOptions;
 public class InitializerParamAnalyzer implements AnalysisTask<SyntaxNodeAnalysisContext> {
     @Override
     public void perform(SyntaxNodeAnalysisContext ctx) {
-        List<Diagnostic> diagnostics = ctx.semanticModel().diagnostics();
-        for (Diagnostic diagnostic : diagnostics) {
-            if (diagnostic.diagnosticInfo().severity() == DiagnosticSeverity.ERROR) {
-                return;
-            }
+        if (Utils.hasCompilationErrors(ctx)) {
+            return;
         }
 
         if (!(Utils.isMySQLClientObject(ctx, ((ExpressionNode) ctx.node())))) {
@@ -100,56 +98,66 @@ public class InitializerParamAnalyzer implements AnalysisTask<SyntaxNodeAnalysis
         }
 
         if (options instanceof MappingConstructorExpressionNode) {
-            validateOptions(ctx, (MappingConstructorExpressionNode) options);
+            Utils.validateOptionConfig(ctx, (MappingConstructorExpressionNode) options);
         }
         if (connectionPool instanceof MappingConstructorExpressionNode) {
-            validateConnectionPool(ctx, (MappingConstructorExpressionNode) connectionPool);
-        }
-    }
-
-    private void validateConnectionPool(SyntaxNodeAnalysisContext ctx, MappingConstructorExpressionNode pool) {
-        SeparatedNodeList<MappingFieldNode> fields = pool.fields();
-        for (MappingFieldNode field : fields) {
-            String name = ((SpecificFieldNode) field).fieldName().toString()
-                    .trim().replaceAll(UNNECESSARY_CHARS_REGEX, "");
-            ExpressionNode valueNode = ((SpecificFieldNode) field).valueExpr().get();
-            switch (name) {
-                case Constants.ConnectionPool.MAX_OPEN_CONNECTIONS:
-                    int maxOpenConnections = Integer.parseInt(getTerminalNodeValue(valueNode, "1"));
-                    if (maxOpenConnections < 1) {
-                        DiagnosticInfo diagnosticInfo = new DiagnosticInfo(SQL_101.getCode(), SQL_101.getMessage(),
-                                SQL_101.getSeverity());
-
-                        ctx.reportDiagnostic(
-                                DiagnosticFactory.createDiagnostic(diagnosticInfo, valueNode.location()));
-
+            SeparatedNodeList<MappingFieldNode> fields = ((MappingConstructorExpressionNode) connectionPool).fields();
+            for (MappingFieldNode field: fields) {
+                if (field instanceof SpecificFieldNode) {
+                    SpecificFieldNode specificFieldNode = ((SpecificFieldNode) field);
+                    validateConnectionPool(ctx, specificFieldNode.fieldName().toString().trim().
+                            replaceAll(UNNECESSARY_CHARS_REGEX, ""), specificFieldNode.valueExpr().get());
+                } else if (field instanceof SpreadFieldNode) {
+                    NodeList<Node> recordFields = Utils.getSpreadFieldType(ctx, (SpreadFieldNode) field);
+                    for (Node recordField : recordFields) {
+                        if (recordField instanceof RecordFieldWithDefaultValueNode) {
+                            RecordFieldWithDefaultValueNode fieldWithDefaultValueNode =
+                                    (RecordFieldWithDefaultValueNode) recordField;
+                            validateConnectionPool(ctx, fieldWithDefaultValueNode.fieldName().toString().
+                                    trim().replaceAll(UNNECESSARY_CHARS_REGEX, ""),
+                                    fieldWithDefaultValueNode.expression());
+                        }
                     }
-                    break;
-                case Constants.ConnectionPool.MIN_IDLE_CONNECTIONS:
-                    int minIdleConnection = Integer.parseInt(getTerminalNodeValue(valueNode, "0"));
-                    if (minIdleConnection < 0) {
-                        DiagnosticInfo diagnosticInfo = new DiagnosticInfo(SQL_102.getCode(), SQL_102.getMessage(),
-                                SQL_102.getSeverity());
-                        ctx.reportDiagnostic(
-                                DiagnosticFactory.createDiagnostic(diagnosticInfo, valueNode.location()));
-
-                    }
-                    break;
-                case Constants.ConnectionPool.MAX_CONNECTION_LIFE_TIME:
-                    float maxConnectionTime = Float.parseFloat(getTerminalNodeValue(valueNode, "30"));
-                    if (maxConnectionTime < 30) {
-                        DiagnosticInfo diagnosticInfo = new DiagnosticInfo(SQL_103.getCode(), SQL_103.getMessage(),
-                                SQL_103.getSeverity());
-                        ctx.reportDiagnostic(
-                                DiagnosticFactory.createDiagnostic(diagnosticInfo, valueNode.location()));
-
-                    }
-                    break;
-                default:
-                    // Can ignore all other fields
-                    continue;
+                }
             }
         }
     }
 
+    private void validateConnectionPool(SyntaxNodeAnalysisContext ctx, String name, ExpressionNode valueNode) {
+        switch (name) {
+            case Constants.ConnectionPool.MAX_OPEN_CONNECTIONS:
+                int maxOpenConnections = Integer.parseInt(getTerminalNodeValue(valueNode, "1"));
+                if (maxOpenConnections < 1) {
+                    DiagnosticInfo diagnosticInfo = new DiagnosticInfo(SQL_101.getCode(), SQL_101.getMessage(),
+                            SQL_101.getSeverity());
+
+                    ctx.reportDiagnostic(
+                            DiagnosticFactory.createDiagnostic(diagnosticInfo, valueNode.location()));
+
+                }
+                break;
+            case Constants.ConnectionPool.MIN_IDLE_CONNECTIONS:
+                int minIdleConnection = Integer.parseInt(getTerminalNodeValue(valueNode, "0"));
+                if (minIdleConnection < 0) {
+                    DiagnosticInfo diagnosticInfo = new DiagnosticInfo(SQL_102.getCode(), SQL_102.getMessage(),
+                            SQL_102.getSeverity());
+                    ctx.reportDiagnostic(
+                            DiagnosticFactory.createDiagnostic(diagnosticInfo, valueNode.location()));
+
+                }
+                break;
+            case Constants.ConnectionPool.MAX_CONNECTION_LIFE_TIME:
+                float maxConnectionTime = Float.parseFloat(getTerminalNodeValue(valueNode, "30"));
+                if (maxConnectionTime < 30) {
+                    DiagnosticInfo diagnosticInfo = new DiagnosticInfo(SQL_103.getCode(), SQL_103.getMessage(),
+                            SQL_103.getSeverity());
+                    ctx.reportDiagnostic(
+                            DiagnosticFactory.createDiagnostic(diagnosticInfo, valueNode.location()));
+
+                }
+                break;
+            default:
+                // Can ignore all other fields
+        }
+    }
 }

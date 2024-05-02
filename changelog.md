@@ -9,6 +9,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- [Fix SSL mode being set to `DISABLED` when ssl config is not provided in options](https://github.com/ballerina-platform/ballerina-library/issues/6234)
+
+## [1.10.0] - 2023-06-30
+
+### Added
+
+### Changed
+- [Support retrieval of enum types](https://github.com/ballerina-platform/ballerina-standard-library/issues/4588)
+
+## [1.8.0] - 2023-04-10
+
+### Changed
+- [Handle unsupported array type gracefully](https://github.com/ballerina-platform/ballerina-standard-library/issues/4201)
+
+## [1.7.0] - 2023-02-20
+
+### Changed
+- [Remove SQL_901 diagnostic hint](https://github.com/ballerina-platform/ballerina-standard-library/issues/3609)
+- [Enable non-Hikari logs](https://github.com/ballerina-platform/ballerina-standard-library/issues/3763)
+- [Improve API docs based on Best practices](https://github.com/ballerina-platform/ballerina-standard-library/issues/3857)
+
+## [1.6.2] - 2023-02-09
+
+### Changed
+- [Improve API docs based on Best practices](https://github.com/ballerina-platform/ballerina-standard-library/issues/3857)
+- [Fix compiler plugin failure when the diagnostic code is null](https://github.com/ballerina-platform/ballerina-standard-library/issues/4054)
+
+## [1.6.1] - 2022-12-91
+
+### Changed
+- [Updated API Docs on `mysql.driver` usages](https://github.com/ballerina-platform/ballerina-standard-library/issues/3710)
+
+## [1.6.0] - 2022-11-29
+
+### Changed
 - [Updated API Docs](https://github.com/ballerina-platform/ballerina-standard-library/issues/3463)
 
 ## [1.5.0] - 2022-09-08

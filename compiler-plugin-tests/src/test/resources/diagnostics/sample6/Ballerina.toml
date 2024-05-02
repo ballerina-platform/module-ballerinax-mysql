@@ -1,0 +1,4 @@
+[package]
+org = "mysql_test"
+name = "sample6"
+version = "0.1.0"

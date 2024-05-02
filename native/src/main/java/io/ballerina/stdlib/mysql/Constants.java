@@ -27,7 +27,7 @@ import io.ballerina.runtime.api.values.BString;
  */
 public final class Constants {
 
-    private Constants(){
+    private Constants() {
     }
 
     /**
@@ -137,8 +137,6 @@ public final class Constants {
         }
 
         public static final BString SSL_MODE = StringUtils.fromString("sslMode");
-        public static final BString SSL_MODE_DISABLED = StringUtils.fromString("DISABLED");
-
         public static final BString KEYSTORE_TYPE_PKCS12 = StringUtils.fromString("PKCS12");
         public static final BString CLIENT_KEYSTORE_URL = StringUtils.fromString("clientCertificateKeyStoreUrl");
         public static final BString CLIENT_KEYSTORE_PASSWORD = StringUtils.fromString(

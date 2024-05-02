@@ -16,14 +16,9 @@
 
 import ballerinax/mysql;
 
+mysql:Client dbClient
+mysql:Client dbClient = check new mysql:Client("url", (), (), (), 120, { connectTimeout: -1 }, { maxOpenConnections: -1 });
+
 public function main() returns error? {
-    mysql:Client dbClient = check new();
-    _ = check dbClient->query(``);
-    _ = check dbClient->queryRow(``);
-    check invokeQuery(dbClient);
-    check dbClient.close();
 }
 
-function invokeQuery(mysql:Client dbClient) returns error? {
-    _ = check dbClient->query(``);
-}

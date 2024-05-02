@@ -79,7 +79,6 @@ task updateTomlFiles {
         newConfig = newConfig.replace('@toml.version@', tomlVersion)
         newConfig = newConfig.replace('@sql.version@', stdlibDependentSqlVersion)
         newConfig = newConfig.replace('@sql.native.version@', project.stdlibSqlVersion)
-        newConfig = newConfig.replace('@mysql.driver.version@', project.mySQLDriverVersion)
         newConfig = newConfig.replace('@stdlib.sql.version@', stdlibDependentSqlVersion)
         ballerinaTomlFile.text = newConfig
 
@@ -119,16 +118,16 @@ publishing {
     }
 }
 
-def checkExecResult(execResult, failText, standardOutput) {
-    if (execResult) {
-        if (execResult.getExitValue() != 0) {
-            throw new GradleException('Non-zero exit value: ' + execResult.getExitValue())
+def checkExecResult(executionResult, failText, standardOutput) {
+    if (executionResult) {
+        if (executionResult.get().getExitValue() != 0) {
+            throw new GradleException('Non-zero exit value: ' + executionResult.get().getExitValue())
         }
         if (standardOutput.toString().contains(failText)) {
             throw new GradleException('"' + failText + '" string in output: ' + standardOutput.toString())
         }
     } else {
-        throw new GradleException('Returned a null execResult object')
+        throw new GradleException('Returned a null executionResult object')
     }
 }
 
@@ -138,7 +137,7 @@ task createTestDockerImage(type: Exec) {
         commandLine 'sh', '-c', "docker build -f $project.projectDir/tests/resources/Dockerfile -t ballerina-mysql" +
                 " -q $project.projectDir/tests/resources/"
         doLast {
-            checkExecResult(execResult, 'Error', standardOutput)
+            checkExecResult(executionResult, 'Error', standardOutput)
             sleep(10 * 1000)
         }
     }
@@ -164,7 +163,7 @@ task startTestDockerContainer(type: Exec) {
         def healthCheck = 1
         def counter = 0
         doLast {
-            checkExecResult(execResult, 'Error', standardOutput)
+            checkExecResult(executionResult, 'Error', standardOutput)
             while (healthCheck != 0 && counter < 12) {
                 sleep(5 * 1000)
                 healthCheck = checkTestDockerContainerStatus('ballerina-mysql')
@@ -172,6 +171,46 @@ task startTestDockerContainer(type: Exec) {
             }
             if (healthCheck != 0) {
                 throw new GradleException("Docker container 'ballerina-mysql' health test exceeded timeout!")
+            }
+        }
+    }
+}
+
+task startTestLimitedDockerContainer(type: Exec) {
+    if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
+        def standardOutput = new ByteArrayOutputStream()
+        commandLine 'sh', '-c', 'docker run --rm -d --name ballerina-mysql-limited -p 3303:3306 -t ballerina-mysql'
+        def healthCheck = 1
+        def counter = 0
+        doLast {
+            checkExecResult(executionResult, 'Error', standardOutput)
+            while (healthCheck != 0 && counter < 12) {
+                sleep(5 * 1000)
+                healthCheck = checkTestDockerContainerStatus('ballerina-mysql-limited')
+                counter = counter + 1
+            }
+            if (healthCheck != 0) {
+                throw new GradleException("Docker container 'ballerina-mysql-limited' health test exceeded timeout!")
+            }
+        }
+    }
+}
+
+task startTestDockerTrxContainer(type: Exec) {
+    if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
+        def standardOutput = new ByteArrayOutputStream()
+        commandLine 'sh', '-c', 'docker run --rm -d --name ballerina-mysql-trx -p 3304:3306 -t ballerina-mysql'
+        def healthCheck = 1
+        def counter = 0
+        doLast {
+            checkExecResult(executionResult, 'Error', standardOutput)
+            while (healthCheck != 0 && counter < 12) {
+                sleep(5 * 1000)
+                healthCheck = checkTestDockerContainerStatus('ballerina-mysql-trx')
+                counter = counter + 1
+            }
+            if (healthCheck != 0) {
+                throw new GradleException("Docker container 'ballerina-mysql-trx' health test exceeded timeout!")
             }
         }
     }
@@ -187,7 +226,7 @@ task startTestSslDockerContainer(type: Exec) {
         def healthCheck = 1
         def counter = 0
         doLast {
-            checkExecResult(execResult, 'Error', standardOutput)
+            checkExecResult(executionResult, 'Error', standardOutput)
             while (healthCheck != 0 && counter < 12) {
                 sleep(5 * 1000)
                 healthCheck = checkTestDockerContainerStatus('ballerina-mysql-ssl')
@@ -216,6 +255,38 @@ task stopTestDockerContainer() {
     }
 }
 
+task stopTestLimitedDockerContainer() {
+    doLast {
+        if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
+            try {
+                def stdOut = new ByteArrayOutputStream()
+                exec {
+                    commandLine 'sh', '-c', 'docker stop ballerina-mysql-limited'
+                    standardOutput = stdOut
+                }
+            } catch (all) {
+                println('Gradle process can safely ignore stopTestDockerContainer task')
+            }
+        }
+    }
+}
+
+task stopTestDockerTrxContainer() {
+    doLast {
+        if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
+            try {
+                def stdOut = new ByteArrayOutputStream()
+                exec {
+                    commandLine 'sh', '-c', 'docker stop ballerina-mysql-trx'
+                    standardOutput = stdOut
+                }
+            } catch (all) {
+                println('Gradle process can safely ignore stopTestDockerContainer task')
+            }
+        }
+    }
+}
+
 task stopTestSslDockerContainer() {
     doLast {
         if (!Os.isFamily(Os.FAMILY_WINDOWS)) {
@@ -232,7 +303,6 @@ task stopTestSslDockerContainer() {
     }
 }
 
-
 updateTomlFiles.dependsOn copyStdlibs
 startTestDockerContainer.dependsOn createTestDockerImage
 startTestSslDockerContainer.dependsOn createTestDockerImage
@@ -243,6 +313,10 @@ test.dependsOn ":${packageName}-native:build"
 build.dependsOn ":${packageName}-compiler-plugin:build"
 test.dependsOn ":${packageName}-compiler-plugin:build"
 build.finalizedBy stopTestDockerContainer
+build.finalizedBy stopTestLimitedDockerContainer
+build.finalizedBy stopTestDockerTrxContainer
 build.finalizedBy stopTestSslDockerContainer
 test.dependsOn startTestDockerContainer
+test.dependsOn startTestLimitedDockerContainer
+test.dependsOn startTestDockerTrxContainer
 test.dependsOn startTestSslDockerContainer

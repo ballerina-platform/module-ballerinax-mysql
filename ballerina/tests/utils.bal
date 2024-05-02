@@ -15,6 +15,7 @@
 // under the License.
 
 import ballerina/io;
+import ballerinax/mysql.driver as _;
 
 isolated function getUntaintedData(record {}? value, string fieldName) returns anydata {
     if value is record {} {

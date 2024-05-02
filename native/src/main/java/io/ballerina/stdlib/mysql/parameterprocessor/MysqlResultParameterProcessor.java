@@ -51,7 +51,7 @@ public class MysqlResultParameterProcessor extends DefaultResultParameterProcess
     private static final BObject iteratorObject = ValueCreator.createObjectValue(
             ModuleUtils.getModule(), "CustomResultIterator");
 
-    private MysqlResultParameterProcessor(){
+    private MysqlResultParameterProcessor() {
     }
 
     public static MysqlResultParameterProcessor getInstance() {
@@ -71,17 +71,17 @@ public class MysqlResultParameterProcessor extends DefaultResultParameterProcess
                     if (type.getName().equals(io.ballerina.stdlib.time.util.Constants.TIME_OF_DAY_RECORD)) {
                         LocalTime timeObj = sqlTime.toLocalTime();
                         BMap<BString, Object> timeMap = ValueCreator.createRecordValue(
-                            io.ballerina.stdlib.time.util.ModuleUtils.getModule(),
-                            io.ballerina.stdlib.time.util.Constants.TIME_OF_DAY_RECORD);
+                                io.ballerina.stdlib.time.util.ModuleUtils.getModule(),
+                                io.ballerina.stdlib.time.util.Constants.TIME_OF_DAY_RECORD);
                         timeMap.put(StringUtils.fromString(io.ballerina.stdlib.time.util.Constants
-                            .TIME_OF_DAY_RECORD_HOUR), timeObj.getHour());
+                                .TIME_OF_DAY_RECORD_HOUR), timeObj.getHour());
                         timeMap.put(StringUtils.fromString(io.ballerina.stdlib.time.util.Constants
-                            .TIME_OF_DAY_RECORD_MINUTE) , timeObj.getMinute());
+                                .TIME_OF_DAY_RECORD_MINUTE), timeObj.getMinute());
                         BigDecimal second = new BigDecimal(timeObj.getSecond());
                         second = second.add(new BigDecimal(timeObj.getNano())
-                            .divide(ANALOG_GIGA, MathContext.DECIMAL128));
+                                .divide(ANALOG_GIGA, MathContext.DECIMAL128));
                         timeMap.put(StringUtils.fromString(io.ballerina.stdlib.time.util.Constants
-                            .TIME_OF_DAY_RECORD_SECOND), ValueCreator.createDecimalValue(second));
+                                .TIME_OF_DAY_RECORD_SECOND), ValueCreator.createDecimalValue(second));
                         return timeMap;
                     } else {
                         throw new TypeMismatchError("SQL Time", type.getName(), "time:TimeOfDay");
@@ -111,10 +111,10 @@ public class MysqlResultParameterProcessor extends DefaultResultParameterProcess
                         civilMap.put(StringUtils.fromString(
                                 io.ballerina.stdlib.time.util.Constants.DATE_RECORD_YEAR), dateTimeObj.getYear());
                         civilMap.put(StringUtils.fromString(
-                                io.ballerina.stdlib.time.util.Constants.DATE_RECORD_MONTH),
+                                        io.ballerina.stdlib.time.util.Constants.DATE_RECORD_MONTH),
                                 dateTimeObj.getMonthValue());
                         civilMap.put(StringUtils.fromString(
-                                io.ballerina.stdlib.time.util.Constants.DATE_RECORD_DAY),
+                                        io.ballerina.stdlib.time.util.Constants.DATE_RECORD_DAY),
                                 dateTimeObj.getDayOfMonth());
                         civilMap.put(StringUtils.fromString(io.ballerina.stdlib.time.util.Constants
                                 .TIME_OF_DAY_RECORD_HOUR), dateTimeObj.getHour());

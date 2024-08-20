@@ -16,10 +16,10 @@ graalvmCompatible = true
 groupId = "io.ballerina.stdlib"
 artifactId = "mysql-native"
 version = "1.13.0"
-path = "../native/build/libs/mysql-native-1.13.0-SNAPSHOT.jar"
+path = "../native/build/libs/mysql-native-1.13.0.jar"
 
 [[platform.java17.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "sql-native"
 version = "1.14.0"
-path = "./lib/sql-native-1.14.0-20240814-162300-116ead6.jar"
+path = "./lib/sql-native-1.14.0.jar"

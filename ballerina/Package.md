@@ -35,7 +35,7 @@ Follow one of the following ways to add the JAR in the file:
 
 ### Client
 To access a database, you must first create a
-[`mysql:Client`](https://docs.central.ballerina.io/ballerinax/mysql/latest/clients/Client) object.
+[`mysql:Client`](https://docs.central.ballerina.io/ballerinax/mysql/latest#Client) object.
 The samples for creating a MySQL client can be found below.
 
 > **Tip**: The client should be used throughout the application lifetime.
@@ -58,7 +58,7 @@ mysql:Client|sql:Error dbClient = new ("localhost", "rootUser", "rootPass",
 ```
 
 The sample below shows a `mysql:Client` using named parameters to pass the attributes since some parameters are skipped in the constructor.
-Further, the [`mysql:Options`](https://docs.central.ballerina.io/ballerinax/mysql/latest/records/Options)
+Further, the [`mysql:Options`](https://docs.central.ballerina.io/ballerinax/mysql/latest#Options)
 property is passed to configure SSL and connection timeout properties in the MySQL client.
 
 ```ballerina
@@ -73,7 +73,7 @@ mysql:Client|sql:Error dbClient = new (user = "rootUser", password = "rootPass",
 ```
 
 Similarly in the sample below, the `mysql:Client` uses named parameters, and it provides an unshared connection pool of type
-[`sql:ConnectionPool`](https://docs.central.ballerina.io/ballerina/sql/latest/records/ConnectionPool)
+[`sql:ConnectionPool`](https://docs.central.ballerina.io/ballerina/sql/latest#ConnectionPool)
 to be used within the client.
 For more details about connection pooling, see the [`sql` Package](https://docs.central.ballerina.io/ballerina/sql/latest).
 
@@ -109,7 +109,7 @@ mysql:Options mysqlOptions = {
 #### Handle connection pools
 
 All database packages share the same connection pooling concept and there are three possible scenarios for
-connection pool handling. For its properties and possible values, see [`sql:ConnectionPool`](https://docs.central.ballerina.io/ballerina/sql/latest/records/ConnectionPool).
+connection pool handling. For its properties and possible values, see [`sql:ConnectionPool`](https://docs.central.ballerina.io/ballerina/sql/latest#ConnectionPool).
 
 >**Note**: Connection pooling is used to optimize opening and closing connections to the database. However, the pool comes with an overhead. It is best to configure the connection pool properties as per the application need to get the best performance.
 
@@ -152,10 +152,10 @@ connection pool handling. For its properties and possible values, see [`sql:Conn
                                connectionPool = connPool);
     ```
 
-For more details about each property, see the [`mysql:Client`](https://docs.central.ballerina.io/ballerinax/mysql/latest/clients/Client) constructor.
+For more details about each property, see the [`mysql:Client`](https://docs.central.ballerina.io/ballerinax/mysql/latest#Client) constructor.
 
-The [`mysql:Client`](https://docs.central.ballerina.io/ballerinax/mysql/latest/clients/Client) references
-the [`sql:Client`](https://docs.central.ballerina.io/ballerina/sql/latest/clients/Client) and all the operations
+The [`mysql:Client`](https://docs.central.ballerina.io/ballerinax/mysql/latest#Client) references
+the [`sql:Client`](https://docs.central.ballerina.io/ballerina/sql/latest#Client) and all the operations
 defined by the `sql:Client` will be supported by the `mysql:Client` as well.
 
 #### Close the client

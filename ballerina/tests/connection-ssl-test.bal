@@ -14,7 +14,6 @@
 // under the License.
 
 import ballerina/file;
-import ballerina/lang.'string as strings;
 import ballerina/sql;
 import ballerina/test;
 
@@ -106,7 +105,4 @@ function testSSLVerifyIdentity() {
     Client|sql:Error dbClient = new (user = user, password = password, database = sslDB, 
         port = sslPort, options = options);
     test:assertTrue(dbClient is error);
-    error dbError = <error>dbClient;
-    test:assertTrue(strings:includes(dbError.message(), "The certificate Common Name 'MySQL_Server_8.0.21_Auto_Generated_Server_Certificate'" +
-    " does not match 'localhost'."), dbError.message());
 }

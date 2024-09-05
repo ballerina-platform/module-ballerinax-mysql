@@ -14,7 +14,6 @@
 // under the License.
 
 import ballerina/file;
-import ballerina/lang.'string as strings;
 import ballerina/sql;
 import ballerina/test;
 import ballerina/io;

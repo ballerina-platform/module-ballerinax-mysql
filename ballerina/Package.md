@@ -441,7 +441,7 @@ sql:ExecutionResult[] result = check dbClient->batchExecute(batch);
 
 This sample demonstrates how to execute a stored procedure using the MySQL client in Ballerina. Before calling the procedure, ensure it is defined.
 
-Define the GetCount procedure as follows:
+Define the `GetCount` procedure as follows:
 
 ```ballerina
 // Create the stored procedure.
@@ -479,7 +479,7 @@ stream<record {}, error?>? resultStream = result.queryResult;
 if resultStream !is () {
     _ = check from var student in resultStream
         do {
-            io:println(`Student: ${student}`);
+            io:println(string `Student: ${student}`);
         };
 }
 ```
@@ -501,7 +501,7 @@ if resultStream!is () {
     stream<Student, error?> studentStream = <stream<Student, error?>>resultStream;
     _ = check from Student student in studentStream
         do {
-            io:println(`Student: ${student}`);
+            io:println(string `Student: ${student}`);
         };
 }
 ```
@@ -509,8 +509,8 @@ if resultStream!is () {
 If the procedure returns more than one result set, then those can be accessed by using,
 
 ```ballerina
+// This will return whether next result set is available and update queryResult with the next result set.
 boolean isAvailable = getNextQueryResult();
-This will return whether next result set is available and update queryResult with the next result set.
 ```
 
 >**Note**: Once the results are processed, the `close` method on the `sql:ProcedureCallResult` must be called.

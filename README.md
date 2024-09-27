@@ -447,23 +447,78 @@ sql:ExecutionResult[] result = check dbClient->batchExecute(batch);
 
 #### Execute stored procedures
 
-This sample demonstrates how to execute a stored procedure with a single `INSERT` statement that is executed via the
-`call` remote method of the client.
+This sample demonstrates how to execute a stored procedure using the MySQL client in Ballerina. Before calling the procedure, ensure it is defined.
+
+Define the `GetCount` procedure as follows:
 
 ```ballerina
-int uid = 10;
-sql:IntegerOutParameter insertId = new;
+// Create the stored procedure.
+_ = check mysqlClient->execute(`
+    CREATE PROCEDURE STUDENT.GetCount(
+        INOUT pID INT, 
+        OUT totalCount INT
+    ) 
+    BEGIN 
+        SELECT age INTO pID FROM Student WHERE id = pID;
+        SELECT COUNT(*) INTO totalCount FROM Student;
+        SELECT * FROM STUDENT; 
+    END
+`);
+```
 
-sql:ProcedureCallResult result = 
-                         check dbClient->call(`call InsertPerson(${uid}, ${insertId})`);
-stream<record{}, sql:Error?>? resultStr = result.queryResult;
-if resultStr is stream<record{}, sql:Error?> {
-    check from record{} value in resultStr
+Call the procedure as follows:
+
+```ballerina
+// Initializes the `INOUT` and `OUT` parameters for the procedure call.
+sql:InOutParameter id = new (1);
+sql:IntegerOutParameter totalCount = new;
+
+// The stored procedure is invoked.
+sql:ProcedureCallResult result = check mysqlClient->call(`{CALL GetCount(${id}, ${totalCount})}`);
+
+// Closes the procedure call result to release the resources.
+check result.close();
+```
+
+The result set returned from the stored procedure can be accessed using `queryResult` variable in `sql:ProcedureCallResult`. This can be processed as below:
+
+```ballerina
+stream<record {}, error?>? resultStream = result.queryResult;
+if resultStream !is () {
+    _ = check from var student in resultStream
         do {
-          // Can perform operations using the record 'value'.
+            io:println(string `Student: ${student}`);
         };
 }
-check result.close();
+```
+
+Further, the result set can be mapped directly to a Ballerina record as follows:
+
+```ballerina
+// The `Student` record to represent the database table.
+type Student record {
+    int id;
+    int age;
+    string name;
+};
+
+sql:ProcedureCallResult result = check mysqlClient->call(`{CALL GetCount(${id}, ${totalCount})}`, [Student]);
+
+stream<record {}, error?>? resultStream = result.queryResult;
+if resultStream!is () {
+    stream<Student, error?> studentStream = <stream<Student, error?>>resultStream;
+    _ = check from Student student in studentStream
+        do {
+            io:println(string `Student: ${student}`);
+        };
+}
+```
+
+If the procedure returns more than one result set, then those can be accessed by using,
+
+```ballerina
+// This will return whether next result set is available and update queryResult with the next result set.
+boolean isAvailable = getNextQueryResult();
 ```
 
 >**Note**: Once the results are processed, the `close` method on the `sql:ProcedureCallResult` must be called.

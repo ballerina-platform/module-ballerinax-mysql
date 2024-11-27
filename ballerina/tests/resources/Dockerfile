@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM mysql:8.0.21
+FROM mysql:8.0.40
 
 # Connection test case
 COPY sql-scripts/connection/connections-test-data.sql /docker-entrypoint-initdb.d/

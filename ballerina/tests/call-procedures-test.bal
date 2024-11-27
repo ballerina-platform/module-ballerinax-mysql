@@ -206,7 +206,6 @@ function testCallWithStringTypesOutParams() returns error? {
 
     sql:ProcedureCallResult ret = check dbClient->call(
         `{call SelectStringDataWithOutParams(${paraID}, ${paraVarchar}, ${paraCharmax}, ${paraChar}, ${paraCharactermax}, ${paraCharacter}, ${paraNvarcharmax})}`);
-    check ret.close();
     check dbClient.close();
 
     test:assertEquals(paraVarchar.get(string), "test0", "2nd out parameter of procedure did not match.");
@@ -215,6 +214,8 @@ function testCallWithStringTypesOutParams() returns error? {
     test:assertEquals(paraCharactermax.get(string), "test2", "5th out parameter of procedure did not match.");
     test:assertEquals(paraCharacter.get(string), "b", "6th out parameter of procedure did not match.");
     test:assertEquals(paraNvarcharmax.get(string), "test3", "7th out parameter of procedure did not match.");
+
+    check ret.close();
 }
 
 @test:Config {

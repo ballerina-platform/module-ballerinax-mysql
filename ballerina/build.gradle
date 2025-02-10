@@ -17,8 +17,19 @@
 
 import org.apache.tools.ant.taskdefs.condition.Os
 
-plugins {
-    id 'io.ballerina.plugin'
+buildscript {
+    repositories {
+        maven {
+            url = 'https://maven.pkg.github.com/ballerina-platform/plugin-gradle'
+            credentials {
+                username System.getenv("packageUser")
+                password System.getenv("packagePAT")
+            }
+        }
+    }
+    dependencies {
+        classpath "io.ballerina:plugin-gradle:${project.ballerinaGradlePluginVersion}"
+    }
 }
 
 description = 'Ballerina - MySQL Ballerina Generator'
@@ -45,6 +56,8 @@ def stripBallerinaExtensionVersion(String extVersion) {
         return extVersion.replace("${project.ext.snapshotVersion}", '')
     }
 }
+
+apply plugin: 'io.ballerina.plugin'
 
 ballerina {
     packageOrganization = packageOrg

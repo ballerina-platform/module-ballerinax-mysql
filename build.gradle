@@ -69,10 +69,13 @@ subprojects {
     configurations {
         externalJars
         ballerinaStdLibs
+        jbalTools
     }
 
     dependencies {
-
+        jbalTools ("org.ballerinalang:jballerina-tools:${ballerinaLangVersion}") {
+            transitive = false
+        }
         ballerinaStdLibs "io.ballerina.stdlib:sql-ballerina:${stdlibSqlVersion}"
         ballerinaStdLibs "io.ballerina.stdlib:io-ballerina:${stdlibIoVersion}"
         ballerinaStdLibs "io.ballerina.stdlib:constraint-ballerina:${stdlibConstraintVersion}"

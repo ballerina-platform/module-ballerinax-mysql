@@ -54,3 +54,5 @@ gradle-app.setting
 #Ignore examples auto generated files
 examples/**/Dependencies.toml
 examples/**/Config.toml
+
+compiler-plugin-test/**/target

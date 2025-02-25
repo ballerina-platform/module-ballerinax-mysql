@@ -21,8 +21,10 @@ package io.ballerina.stdlib.mysql.compiler;
 import io.ballerina.compiler.syntax.tree.SyntaxKind;
 import io.ballerina.projects.plugins.CodeAnalysisContext;
 import io.ballerina.projects.plugins.CodeAnalyzer;
+import io.ballerina.scan.Reporter;
 import io.ballerina.stdlib.mysql.compiler.analyzer.InitializerParamAnalyzer;
 import io.ballerina.stdlib.mysql.compiler.analyzer.RecordAnalyzer;
+import io.ballerina.stdlib.mysql.compiler.analyzer.SecurePasswordAnalyzer;
 
 import java.util.List;
 
@@ -30,6 +32,11 @@ import java.util.List;
  * MySQL Code Analyzer.
  */
 public class MySQLCodeAnalyzer extends CodeAnalyzer {
+    private final Reporter reporter;
+
+    public MySQLCodeAnalyzer(Reporter reporter) {
+        this.reporter = reporter;
+    }
 
     @Override
     public void init(CodeAnalysisContext ctx) {
@@ -37,5 +44,6 @@ public class MySQLCodeAnalyzer extends CodeAnalyzer {
                 List.of(SyntaxKind.IMPLICIT_NEW_EXPRESSION, SyntaxKind.EXPLICIT_NEW_EXPRESSION));
         ctx.addSyntaxNodeAnalysisTask(new RecordAnalyzer(),
                 List.of(SyntaxKind.LOCAL_VAR_DECL, SyntaxKind.MODULE_VAR_DECL));
+        ctx.addSyntaxNodeAnalysisTask(new SecurePasswordAnalyzer(reporter), SyntaxKind.FUNCTION_CALL);
     }
 }

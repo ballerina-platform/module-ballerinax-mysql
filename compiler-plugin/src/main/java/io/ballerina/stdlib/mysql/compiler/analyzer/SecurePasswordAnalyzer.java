@@ -26,11 +26,9 @@ import io.ballerina.compiler.syntax.tree.FunctionCallExpressionNode;
 import io.ballerina.compiler.syntax.tree.NamedArgumentNode;
 import io.ballerina.compiler.syntax.tree.SeparatedNodeList;
 import io.ballerina.compiler.syntax.tree.SimpleNameReferenceNode;
-
 import io.ballerina.projects.Document;
 import io.ballerina.projects.plugins.AnalysisTask;
 import io.ballerina.projects.plugins.SyntaxNodeAnalysisContext;
-
 import io.ballerina.scan.Reporter;
 import io.ballerina.tools.diagnostics.Location;
 
@@ -61,17 +59,14 @@ public class SecurePasswordAnalyzer implements AnalysisTask<SyntaxNodeAnalysisCo
                         } else {
                             hasSecurePassword = true;
                         }
-                    }
-                    // Check if the expression is a variable reference
-                    else if (expression instanceof SimpleNameReferenceNode) {
+                    } else if (expression instanceof SimpleNameReferenceNode) {
                         String passwordValue = ((SimpleNameReferenceNode) expression).name().toString();
                         if (passwordValue.isEmpty()) {
                             reportPasswordVulnerability(context, functionCall);
                         } else {
                             hasSecurePassword = true;
                         }
-                    }
-                    else {
+                    } else {
                         reportPasswordVulnerability(context, functionCall);
                     }
                 }

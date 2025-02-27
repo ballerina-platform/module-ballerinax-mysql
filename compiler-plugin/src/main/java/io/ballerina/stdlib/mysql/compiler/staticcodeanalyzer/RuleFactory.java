@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package io.ballerina.stdlib.mysql.compiler.analyzer;
+package io.ballerina.stdlib.mysql.compiler.staticcodeanalyzer;
 
 import io.ballerina.scan.Rule;
 import io.ballerina.scan.RuleKind;

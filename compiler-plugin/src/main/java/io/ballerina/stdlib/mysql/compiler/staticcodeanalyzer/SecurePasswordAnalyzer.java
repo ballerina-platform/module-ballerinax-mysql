@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.ballerina.stdlib.mysql.compiler.analyzer;
+package io.ballerina.stdlib.mysql.compiler.staticcodeanalyzer;
 
 import io.ballerina.compiler.syntax.tree.BasicLiteralNode;
 import io.ballerina.compiler.syntax.tree.ExpressionNode;

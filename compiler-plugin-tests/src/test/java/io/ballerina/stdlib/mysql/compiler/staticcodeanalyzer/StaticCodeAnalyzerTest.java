@@ -18,7 +18,6 @@
 
 package io.ballerina.stdlib.mysql.compiler.staticcodeanalyzer;
 
-import io.ballerina.stdlib.mysql.compiler.analyzer.MySQLRule;
 import org.testng.Assert;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;

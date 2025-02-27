@@ -21,6 +21,7 @@ package io.ballerina.stdlib.mysql.compiler;
 import io.ballerina.projects.plugins.CompilerPlugin;
 import io.ballerina.projects.plugins.CompilerPluginContext;
 import io.ballerina.scan.ScannerContext;
+import io.ballerina.stdlib.mysql.compiler.staticcodeanalyzer.MySQLStaticCodeAnalyzer;
 
 import static io.ballerina.stdlib.mysql.compiler.Constants.SCANNER_CONTEXT;
 
@@ -30,9 +31,10 @@ import static io.ballerina.stdlib.mysql.compiler.Constants.SCANNER_CONTEXT;
 public class MySQLCompilerPlugin extends CompilerPlugin {
     @Override
     public void init(CompilerPluginContext compilerPluginContext) {
+        compilerPluginContext.addCodeAnalyzer(new MySQLCodeAnalyzer());
         Object object = compilerPluginContext.userData().get(SCANNER_CONTEXT);
         if (object instanceof ScannerContext scannerContext) {
-            compilerPluginContext.addCodeAnalyzer(new MySQLCodeAnalyzer(scannerContext.getReporter()));
+            compilerPluginContext.addCodeAnalyzer(new MySQLStaticCodeAnalyzer(scannerContext.getReporter()));
         }
     }
 }

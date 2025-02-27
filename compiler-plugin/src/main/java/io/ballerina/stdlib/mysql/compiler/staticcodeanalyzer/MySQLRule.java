@@ -16,12 +16,12 @@
  * under the License.
  */
 
-package io.ballerina.stdlib.mysql.compiler.analyzer;
+package io.ballerina.stdlib.mysql.compiler.staticcodeanalyzer;
 
 import io.ballerina.scan.Rule;
 
 import static io.ballerina.scan.RuleKind.VULNERABILITY;
-import static io.ballerina.stdlib.mysql.compiler.analyzer.RuleFactory.createRule;
+import static io.ballerina.stdlib.mysql.compiler.staticcodeanalyzer.RuleFactory.createRule;
 
 /**
  * Represents static code rules specific to the Ballerina MySQL package.

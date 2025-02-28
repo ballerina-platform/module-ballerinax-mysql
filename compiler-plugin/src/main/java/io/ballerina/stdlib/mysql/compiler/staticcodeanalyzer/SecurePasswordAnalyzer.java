@@ -32,6 +32,9 @@ import io.ballerina.projects.plugins.SyntaxNodeAnalysisContext;
 import io.ballerina.scan.Reporter;
 import io.ballerina.tools.diagnostics.Location;
 
+/**
+ * Analyzer to detect insecure password vulnerabilities.
+ */
 public class SecurePasswordAnalyzer implements AnalysisTask<SyntaxNodeAnalysisContext> {
     private final Reporter reporter;
 

@@ -1,0 +1,7 @@
+[
+  {
+    "id":  1,
+    "kind": "VULNERABILITY",
+    "description": "A secure password should be used when connecting to a database"
+  }
+]

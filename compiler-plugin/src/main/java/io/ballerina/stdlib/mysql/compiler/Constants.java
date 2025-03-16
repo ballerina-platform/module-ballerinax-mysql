@@ -25,6 +25,7 @@ public class Constants {
     public static final String MYSQL = "mysql";
     public static final String CONNECTION_POOL_PARAM_NAME = "connectionPool";
     public static final String OPTIONS_PARAM_NAME = "options";
+    public static final String SCANNER_CONTEXT = "ScannerContext";
 
     private Constants() {
     }

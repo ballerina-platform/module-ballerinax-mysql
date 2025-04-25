@@ -21,6 +21,9 @@ package io.ballerina.stdlib.mysql.compiler.staticcodeanalyzer;
 import io.ballerina.scan.Rule;
 import io.ballerina.scan.RuleKind;
 
+/**
+ * {@code RuleImpl} is the implementation of the {@link Rule} interface.
+ */
 public class RuleImpl implements Rule {
     private final int id;
     private final String description;

@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2025, WSO2 LLC. (http://www.wso2.org) All Rights Reserved.
  *
- * WSO2 Inc. licenses this file to you under the Apache License,
+ * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,25 +16,25 @@
  * under the License.
  */
 
-package io.ballerina.stdlib.mysql.compiler;
+package io.ballerina.stdlib.mysql.compiler.staticcodeanalyzer;
 
 import io.ballerina.compiler.syntax.tree.SyntaxKind;
 import io.ballerina.projects.plugins.CodeAnalysisContext;
 import io.ballerina.projects.plugins.CodeAnalyzer;
-import io.ballerina.stdlib.mysql.compiler.analyzer.InitializerParamAnalyzer;
-import io.ballerina.stdlib.mysql.compiler.analyzer.RecordAnalyzer;
-
-import java.util.List;
+import io.ballerina.scan.Reporter;
 
 /**
  * MySQL Code Analyzer.
  */
-public class MySQLCodeAnalyzer extends CodeAnalyzer {
+public class MySQLStaticCodeAnalyzer extends CodeAnalyzer {
+    private final Reporter reporter;
+
+    public MySQLStaticCodeAnalyzer(Reporter reporter) {
+        this.reporter = reporter;
+    }
+
     @Override
     public void init(CodeAnalysisContext ctx) {
-        ctx.addSyntaxNodeAnalysisTask(new InitializerParamAnalyzer(),
-                List.of(SyntaxKind.IMPLICIT_NEW_EXPRESSION, SyntaxKind.EXPLICIT_NEW_EXPRESSION));
-        ctx.addSyntaxNodeAnalysisTask(new RecordAnalyzer(),
-                List.of(SyntaxKind.LOCAL_VAR_DECL, SyntaxKind.MODULE_VAR_DECL));
+        ctx.addSyntaxNodeAnalysisTask(new SecurePasswordAnalyzer(reporter), SyntaxKind.FUNCTION_CALL);
     }
 }

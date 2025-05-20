@@ -1,0 +1,68 @@
+services:
+    mysql:
+        image: mysql:8.0.40
+        container_name: ballerina-mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: Test123#
+        ports:
+          - "3305:3306"
+        volumes:
+            - ./sql-scripts:/docker-entrypoint-initdb.d
+            - ./keystore/server/:/etc/ssl/
+            - ./my.cnf:/etc/my.cnf
+        healthcheck:
+          test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pTest123#"]
+          interval: 10s
+          timeout: 5s
+          retries: 5
+
+    mysql-limited:
+        image: mysql:8.0.40
+        container_name: ballerina-mysql-limited
+        environment:
+            MYSQL_ROOT_PASSWORD: Test123#
+        ports:
+          - "3303:3306"
+        volumes:
+            - ./sql-scripts:/docker-entrypoint-initdb.d
+            - ./keystore/server/:/etc/ssl/
+            - ./my.cnf:/etc/my.cnf
+        healthcheck:
+          test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pTest123#"]
+          interval: 10s
+          timeout: 5s
+          retries: 5
+
+    mysql-ssl:
+        image: mysql:8.0.40
+        container_name: ballerina-mysql-ssl
+        environment:
+            MYSQL_ROOT_PASSWORD: Test123#
+        ports:
+          - "3307:3306"
+        volumes:
+            - ./sql-scripts:/docker-entrypoint-initdb.d
+            - ./keystore/server:/etc/ssl
+            - ./mysql-ssl.cnf:/etc/my.cnf
+        healthcheck:
+          test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pTest123#"]
+          interval: 10s
+          timeout: 5s
+          retries: 5
+
+    mysql-trx:
+        image: mysql:8.0.40
+        container_name: ballerina-mysql-trx
+        environment:
+            MYSQL_ROOT_PASSWORD: Test123#
+        ports:
+          - "3304:3306"
+        volumes:
+            - ./sql-scripts:/docker-entrypoint-initdb.d
+            - ./keystore/server/:/etc/ssl/
+            - ./my.cnf:/etc/my.cnf
+        healthcheck:
+          test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pTest123#"]
+          interval: 10s
+          timeout: 5s
+          retries: 5

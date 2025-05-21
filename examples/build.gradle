@@ -23,7 +23,7 @@ apply plugin: 'java'
 description = 'Ballerina - MySQL Examples'
 
 def ballerinaDist = "${project.rootDir}/target/ballerina-runtime"
-def examples = ["employees-db/setup", "employees-db/service"]
+def examples = ["employees-db/setup", "employees-db/service", "fraud-detection"]
 
 clean {
     examples.forEach { example ->

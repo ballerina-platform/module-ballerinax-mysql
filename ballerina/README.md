@@ -33,6 +33,33 @@ Follow one of the following ways to add the JAR in the file:
     version = "8.0.20"
     ```
 
+### Setup guide
+
+#### Change Data Capture
+
+1. **Verify Binary Logging**:
+   - Run the following command to ensure binary logging is enabled:
+     ```sql
+     SHOW VARIABLES LIKE 'log_bin';
+     ```
+
+2. **Enable Binary Logging**:
+   - Add the following lines to the MySQL configuration file (`my.cnf` or `my.ini`):
+     ```ini
+     [mysqld]
+     log-bin=mysql-bin
+     binlog-format=ROW
+     server-id=1
+     ```
+   - Restart the MySQL server to apply the changes:
+     ```bash
+     sudo service mysql restart
+     ```
+     Or, if you are using Homebrew on macOS:
+     ```bash
+     brew services restart mysql
+     ```
+
 ### Client
 To access a database, you must first create a
 [`mysql:Client`](https://docs.central.ballerina.io/ballerinax/mysql/latest#Client) object.
@@ -516,3 +543,42 @@ boolean isAvailable = getNextQueryResult();
 >**Note**: Once the results are processed, the `close` method on the `sql:ProcedureCallResult` must be called.
 
 >**Note**: The default thread pool size used in Ballerina is: `the number of processors available * 2`. You can configure the thread pool size by using the `BALLERINA_MAX_POOL_SIZE` environment variable.
+
+### Change Data Capture Listener
+
+To listen for change data capture (CDC) events from a MySQL database, you must create a [`mysql:CdcListener`](https://docs.central.ballerina.io/ballerinax/mysql/latest#CdcListener) object. The listener allows your Ballerina application to react to changes (such as inserts, updates, and deletes) in real time.
+
+#### Create a listener
+
+You can create a CDC listener by specifying the required configurations such as host, port, username, password, and database name. Additional options can be provided using the [`cdc:Options`](https://docs.central.ballerina.io/ballerinax/mysql/latest#CDCOptions) record.
+
+```ballerina
+listener mysql:CdcListener cdcListener = new (database = {
+    username: <username>,
+    password: <password>
+});
+```
+
+#### Implement a service to handle CDC events
+
+You can attach a service to the listener to handle CDC events. The service can define remote methods for different event types such as `onRead`, `onCreate`, `onUpdate`, and `onDelete`.
+
+```ballerina
+service on cdcListener {
+    remote function onRead(record{} after) returns cdc:Error? {
+        io:println("Insert event: ", after);
+    }
+
+    remote function onCreate(record{} after) returns cdc:Error? {
+        io:println("Insert event: ", after);
+    }
+
+    remote function onUpdate(record{} before, record{} after) returns cdc:Error? {
+        io:println("Update event - Before: ", before, " After: ", after);
+    }
+
+    remote function onDelete(record{} before) returns error? {
+        io:println("Delete event: ", before);
+    }
+}
+```

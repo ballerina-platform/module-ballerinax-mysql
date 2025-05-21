@@ -15,7 +15,9 @@
 // under the License.
 
 import ballerina/jballerina.java;
+import ballerina/random;
 import ballerina/sql;
+import ballerinax/cdc;
 
 # The iterator for the stream returned in `query` function to be used to override the default behaviour of `sql:ResultIterator`.
 public distinct class CustomResultIterator {
@@ -31,3 +33,33 @@ public distinct class CustomResultIterator {
         paramTypes: ["io.ballerina.runtime.api.values.BObject", "io.ballerina.runtime.api.values.BObject"]
     } external;
 }
+
+# Represents the configuration for a MySQL CDC connector.
+#
+# + database - The MySQL database connection configuration
+public type MySqlListenerConfiguration record {|
+    MySqlDatabaseConnection database;
+    *cdc:ListenerConfiguration;
+|};
+
+# Represents the configuration for a MySQL database connection.
+#
+# + connectorClass - The class name of the MySQL connector implementation to use
+# + hostname - The hostname of the MySQL server
+# + port - The port number of the MySQL server
+# + databaseServerId - The unique identifier for the MySQL server
+# + includedDatabases - A list of regular expressions matching fully-qualified database identifiers to capture changes from (should not be used alongside databaseExclude)
+# + excludedDatabases - A list of regular expressions matching fully-qualified database identifiers to exclude from change capture (should not be used alongside databaseInclude)
+# + tasksMax - The maximum number of tasks to create for this connector. Because the MySQL connector always uses a single task, changing the default value has no effect
+# + secure - The connector establishes an encrypted connection if the server supports secure connections
+public type MySqlDatabaseConnection record {|
+    *cdc:DatabaseConnection;
+    string connectorClass = "io.debezium.connector.mysql.MySqlConnector";
+    string hostname = "localhost";
+    int port = 3306;
+    string databaseServerId = (checkpanic random:createIntInRange(0, 100000)).toString();
+    string|string[] includedDatabases?;
+    string|string[] excludedDatabases?;
+    int tasksMax = 1;
+    cdc:SecureDatabaseConnection secure = {};
+|};

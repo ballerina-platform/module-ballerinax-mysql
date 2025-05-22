@@ -45,9 +45,9 @@ task testExamples {
                 exec {
                     workingDir "${project.projectDir}/${example}"
                     if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                        commandLine 'cmd', '/c', "${ballerinaDist}/bin/bal.bat test --offline ${graalvmFlag} && exit %%ERRORLEVEL%%"
+                        commandLine 'cmd', '/c', "${ballerinaDist}/bin/bal.bat test ${graalvmFlag} && exit %%ERRORLEVEL%%"
                     } else {
-                        commandLine 'sh', '-c', "${ballerinaDist}/bin/bal test --offline ${graalvmFlag}"
+                        commandLine 'sh', '-c', "${ballerinaDist}/bin/bal test ${graalvmFlag}"
                     }
                 }
             } catch (Exception e) {
@@ -70,9 +70,9 @@ task buildExamples {
                 exec {
                     workingDir project.projectDir
                     if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                        commandLine 'cmd', '/c', "${ballerinaDist}/bin/bal.bat pack --offline ${example} && exit %%ERRORLEVEL%%"
+                        commandLine 'cmd', '/c', "${ballerinaDist}/bin/bal.bat pack ${example} && exit %%ERRORLEVEL%%"
                     } else {
-                        commandLine 'sh', '-c', "${ballerinaDist}/bin/bal pack --offline ${example}"
+                        commandLine 'sh', '-c', "${ballerinaDist}/bin/bal pack ${example}"
                     }
                 }
             } catch (Exception e) {

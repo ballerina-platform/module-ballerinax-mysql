@@ -66,3 +66,19 @@ services:
           interval: 10s
           timeout: 5s
           retries: 5
+
+    mysql-cdc:
+        image: mysql:8.0
+        container_name: mysql-cdc
+        ports:
+          - "3308:3306"
+        environment:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: store_db
+        volumes:
+          - ./sql-scripts/mysql-cdc-setup.sql:/docker-entrypoint-initdb.d/cdc-setup.sql
+        healthcheck:
+          test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+          interval: 10s
+          timeout: 5s
+          retries: 5

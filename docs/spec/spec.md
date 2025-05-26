@@ -160,7 +160,7 @@ To listen for change data capture (CDC) events from a MySQL database, you must c
 
 ## 5.1. Create a listener
 
-You can create a CDC listener by specifying the required configurations such as host, port, username, password, and database name. Additional options can be provided using the [`cdc:Options`](https://docs.central.ballerina.io/ballerinax/mysql/latest#CDCOptions) record.
+You can create a CDC listener by specifying the required configurations such as host, port, username, password, and database name. Additional options can be provided using the [`cdc:Options`](https://docs.central.ballerina.io/ballerinax/cdc/latest#Options) record.
 
 ```ballerina
 listener mysql:CdcListener cdcListener = new (database = {

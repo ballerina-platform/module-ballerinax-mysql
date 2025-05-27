@@ -15,7 +15,7 @@
 // under the License.
 import ballerinax/cdc;
 
-# Represents a Ballerina CDC MySQL Listener.
+# Represents the Ballerina MySQL CDC Listener.
 public isolated class CdcListener {
     *cdc:Listener;
 

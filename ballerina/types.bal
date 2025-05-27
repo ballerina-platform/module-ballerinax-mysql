@@ -34,7 +34,7 @@ public distinct class CustomResultIterator {
     } external;
 }
 
-# Represents the configuration for a MySQL CDC connector.
+# Represents the configuration for the MySQL CDC listener.
 #
 # + database - The MySQL database connection configuration
 public type MySqlListenerConfiguration record {|
@@ -42,7 +42,7 @@ public type MySqlListenerConfiguration record {|
     *cdc:ListenerConfiguration;
 |};
 
-# Represents the configuration for a MySQL database connection.
+# Represents the configuration for the MySQL CDC database connection.
 #
 # + connectorClass - The class name of the MySQL connector implementation to use
 # + hostname - The hostname of the MySQL server

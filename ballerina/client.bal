@@ -26,11 +26,11 @@ public isolated client class Client {
     #
     # + host - MySQL server hostname
     # + user - Database username
-    # + password - Database password
-    # + database - Database name to connect to
+    # + password - Database password (optional)
+    # + database - Database name to connect to (optional)
     # + port - MySQL server port
-    # + options - Advanced connection options
-    # + connectionPool - Connection pool for connection reuse. If not defined, the global connection pool (shared by all clients) will be used
+    # + options - Advanced connection options (optional)
+    # + connectionPool - Connection pool for connection reuse. If not provided, the global connection pool (shared by all clients) will be used
     # + return - `sql:Error` if the client creation fails
     public isolated function init(string host = "localhost", string? user = "root", string? password = (), string? database = (),
         int port = 3306, Options? options = (), sql:ConnectionPool? connectionPool = ()) returns sql:Error? {
@@ -49,7 +49,7 @@ public isolated client class Client {
     # Executes a SQL query and returns multiple results as a stream.
     #
     # + sqlQuery - SQL query with optional parameters (e.g., `SELECT * FROM users WHERE id=${userId}`)
-    # + rowType - Record type to map results to
+    # + rowType - Record type to map query results to
     # + return - Stream of records matching the query
     remote isolated function query(sql:ParameterizedQuery sqlQuery, typedesc<record {}> rowType = <>)
     returns stream<rowType, sql:Error?> = @java:Method {
@@ -58,10 +58,10 @@ public isolated client class Client {
     } external;
 
     # Executes a SQL query expecting a single result row.
-    # If the query does not return any results, `sql:NoRowsError` is returned.
+    # If the query returns no results, `sql:NoRowsError` is returned.
     #
-    # + sqlQuery - The SQL query such as `` `SELECT * from Album WHERE name=${albumName}` ``
-    # + returnType - The `typedesc` of the record to which the result needs to be returned.
+    # + sqlQuery - The SQL query (e.g., `` `SELECT * FROM Album WHERE name=${albumName}` ``)
+    # + returnType - The `typedesc` of the record to which the result should be mapped.
     #                It can be a basic type if the query result contains only one column
     # + return - Result in the `returnType` type or an `sql:Error`
     remote isolated function queryRow(sql:ParameterizedQuery sqlQuery, typedesc<anydata> returnType = <>)
@@ -70,10 +70,10 @@ public isolated client class Client {
         name: "nativeQueryRow"
     } external;
 
-    # Executes a given SQL query and returns execution metadata (not the results from the query).
+    # Executes a SQL query and returns execution metadata (not the actual query results).
     #
     # + sqlQuery - SQL query with parameters (e.g., `` `DELETE FROM Album WHERE artist=${artistName}` ``)
-    # + return - Execution metadata as an `sql:ExecutionResult`, or else an `sql:Error`
+    # + return - Execution metadata as an `sql:ExecutionResult`, or an `sql:Error` if execution fails
     remote isolated function execute(sql:ParameterizedQuery sqlQuery)
      returns sql:ExecutionResult|sql:Error = @java:Method {
          'class: "io.ballerina.stdlib.mysql.nativeimpl.ExecuteProcessor",
@@ -83,7 +83,7 @@ public isolated client class Client {
     # Executes multiple SQL commands in a single batch operation.
     #
     # + sqlQueries - Array of SQL queries with parameters
-    # + return - Array of execution results or else an `sql:Error`
+    # + return - Array of execution results or an `sql:Error` if the operation fails
     remote isolated function batchExecute(sql:ParameterizedQuery[] sqlQueries) returns sql:ExecutionResult[]|sql:Error {
         if sqlQueries.length() == 0 {
             return error sql:ApplicationError(" Parameter 'sqlQueries' cannot be empty array");
@@ -94,19 +94,19 @@ public isolated client class Client {
     # Calls a stored procedure with the given SQL query.
     # Once the results are processed, invoke the `close` method on the `sql:ProcedureCallResult`.
     #
-    # + sqlQuery - SQL query to call the procedure (e.g., `CALL get_user(${id})`)
-    # + rowTypes - `typedesc` array of the records to which the results need to be returned
-    # + return - Summary of the execution and results as `sql:ProcedureCallResult`, or else an `sql:Error`
+    # + sqlQuery - SQL query to call the procedure (e.g., `` `CALL get_user(${id})` ``)
+    # + rowTypes - `typedesc` array of the records to which the results should be mapped
+    # + return - Summary of the execution and results as `sql:ProcedureCallResult`, or an `sql:Error` if the call fails
     remote isolated function call(sql:ParameterizedCallQuery sqlQuery, typedesc<record {}>[] rowTypes = [])
     returns sql:ProcedureCallResult|sql:Error = @java:Method {
         'class: "io.ballerina.stdlib.mysql.nativeimpl.CallProcessor",
         name: "nativeCall"
     } external;
 
-    # Closes the MySQL client and shuts down the connection pool. The client must be closed only at the end of the
-    # application lifetime (or closed for graceful stops in a service).
+    # Closes the MySQL client and shuts down the connection pool.
+    # The client should be closed only at the end of the application lifetime, or when performing graceful stops in a service.
     #
-    # + return - `sql:Error` if closing fails
+    # + return - `sql:Error` if closing the client fails
     public isolated function close() returns sql:Error? = @java:Method {
         'class: "io.ballerina.stdlib.mysql.nativeimpl.ClientProcessor",
         name: "close"
@@ -135,12 +135,12 @@ type ClientConfiguration record {|
 # Advanced MySQL connection options.
 #
 # + ssl - SSL/TLS security settings
-# + failoverConfig - Server failover configurations
+# + failoverConfig - Server failover configuration
 # + useXADatasource - Enable XA transactions
 # + connectTimeout - Connection timeout in seconds
-# + socketTimeout - Socket read/write timeout in seconds; 0 means no timeout (default: 0)
-# + serverTimezone - Server timezone configuration for temporal value handling
-# + noAccessToProcedureBodies - Allow procedure calls with limited metadata access
+# + socketTimeout - Socket read/write timeout in seconds (0 means no timeout)
+# + serverTimezone - Server timezone configuration for handling temporal values
+# + noAccessToProcedureBodies - Allow procedure calls when metadata access is limited
 public type Options record {|
     SecureSocket ssl?;
     FailoverConfig failoverConfig?;
@@ -153,10 +153,10 @@ public type Options record {|
 
 # Configuration to be used for server failover.
 #
-# + failoverServers - Array of `mysql:FailoverServer` for the secondary servers
-# + timeBeforeRetry - Time to wait before attempting to reconnect to primary server
-# + queriesBeforeRetry - Number of queries before attempting to reconnect to primary server
-# + failoverReadOnly - Open connection to secondary host with READ ONLY mode.
+# + failoverServers - Array of `mysql:FailoverServer` configurations for secondary servers
+# + timeBeforeRetry - Time to wait before attempting to reconnect to the primary server
+# + queriesBeforeRetry - Number of queries to execute before attempting to reconnect to the primary server
+# + failoverReadOnly - Open connection to secondary host in READ ONLY mode
 public type FailoverConfig record {|
     FailoverServer[] failoverServers;
     int timeBeforeRetry?;
@@ -164,7 +164,7 @@ public type FailoverConfig record {|
     boolean failoverReadOnly = true;
 |};
 
-# Configuration for failover servers
+# Configuration for failover servers.
 #
 # + host - Secondary server hostname
 # + port - Secondary server port

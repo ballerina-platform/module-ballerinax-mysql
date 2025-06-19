@@ -172,3 +172,55 @@ public type FailoverServer record {|
     string host;
     int port;
 |};
+
+# Establish an encrypted connection if the server supports encrypted connections. Falls back to an unencrypted
+# connection if an encrypted connection cannot be established.
+public const SSL_PREFERRED = "PREFERRED";
+
+# Establish an encrypted connection if the server supports encrypted connections. The connection attempt fails if
+# an encrypted connection cannot be established.
+public const SSL_REQUIRED = "REQUIRED";
+
+# Establish an encrypted connection if the server supports encrypted connections. The connection attempt fails if
+# an encrypted connection cannot be established. Additionally, verifies the server Certificate Authority (CA)
+# certificate against the configured CA certificates. The connection attempt fails if no valid matching CA
+# certificates are found.
+public const SSL_VERIFY_CA = "VERIFY_CA";
+
+# Establish an encrypted connection if the server supports encrypted connections and verifies the server
+# Certificate Authority (CA) certificate against the configured CA certificates. The connection attempt fails if an
+# encrypted connection cannot be established or no valid matching CA certificates are found. Also, performs hostname
+# identity verification by checking the hostname the client uses for connecting to the server against the identity
+# in the certificate that the server sends to the client.
+public const SSL_VERIFY_IDENTITY = "VERIFY_IDENTITY";
+
+# Establish an unencrypted connection to the server. If the server supports encrypted connections, the connection
+# attempt fails.
+public const SSL_DISABLED = "DISABLED";
+
+# `SSLMode` as a union of available SSL modes.
+public type SSLMode SSL_PREFERRED|SSL_REQUIRED|SSL_VERIFY_CA|SSL_VERIFY_IDENTITY|SSL_DISABLED;
+
+# SSL Configuration to be used when connecting to the MySQL server.
+#
+# + mode - `mysql:SSLMode` to be used during the connection
+# + key - Keystore configuration of the client certificates
+# + cert - Keystore configuration of the trust certificates
+# + allowPublicKeyRetrieval - Boolean value to allow special handshake round-trip to get an RSA public key directly
+#                             from server
+public type SecureSocket record {|
+    SSLMode mode = SSL_PREFERRED;
+    crypto:KeyStore key?;
+    crypto:TrustStore cert?;
+    boolean allowPublicKeyRetrieval = false;
+|};
+
+isolated function createClient(Client mysqlClient, ClientConfiguration clientConf,
+    sql:ConnectionPool globalConnPool) returns sql:Error? = @java:Method {
+    'class: "io.ballerina.stdlib.mysql.nativeimpl.ClientProcessor"
+} external;
+
+isolated function nativeBatchExecute(Client sqlClient, sql:ParameterizedQuery[] sqlQueries)
+returns sql:ExecutionResult[]|sql:Error = @java:Method {
+    'class: "io.ballerina.stdlib.mysql.nativeimpl.ExecuteProcessor"
+} external;

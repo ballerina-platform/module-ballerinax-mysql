@@ -50,14 +50,14 @@ public isolated client class Client {
     #
     # + sqlQuery - SQL query with optional parameters (e.g., `SELECT * FROM users WHERE id=${userId}`)
     # + rowType - Record type to map query results to
-    # + return - Stream of records matching the query
+    # + return - Stream of records containing the query results. Please ensure that the stream is fully consumed, or close the stream.
     remote isolated function query(sql:ParameterizedQuery sqlQuery, typedesc<record {}> rowType = <>)
     returns stream<rowType, sql:Error?> = @java:Method {
         'class: "io.ballerina.stdlib.mysql.nativeimpl.QueryProcessor",
         name: "nativeQuery"
     } external;
 
-    # Executes a SQL query expecting a single result row.
+    # Executes a SQL query that is expected to return a single row or value as the result.
     # If the query returns no results, `sql:NoRowsError` is returned.
     #
     # + sqlQuery - The SQL query (e.g., `` `SELECT * FROM Album WHERE name=${albumName}` ``)

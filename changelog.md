@@ -4,10 +4,17 @@ This file contains all the notable changes done to the Ballerina SQL package thr
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [unreleased]
+
+### Changed
+- [Fix Library/Connector API doc issues in BI editor](https://github.com/ballerina-platform/ballerina-library/issues/7736)
+
+## [1.16.0] - 2025-05-20
 
 ### Added
 - [Add static code rules](https://github.com/ballerina-platform/ballerina-library/issues/7283)
+
+## [1.12.0] - 2024-05-03
 
 ### Changed
 - [Fix SSL mode being set to `DISABLED` when ssl config is not provided in options](https://github.com/ballerina-platform/ballerina-library/issues/6234)

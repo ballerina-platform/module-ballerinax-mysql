@@ -15,19 +15,18 @@
 // under the License.
 
 import ballerinax/mysql;
-import ballerina/io;
 
-configurable string user = ?;
 configurable string host = ?;
+configurable string user = ?;
 configurable int port = ?;
 configurable string database = ?;
 
-public function main() {
-    mysql:Client|error dbClient = new (host = host,
-        user = user,
-        password = "",
-        port = port,
-        database = database
+public isolated function posArg() {
+    mysql:Client|error dbClient = new (
+        host,
+        user,
+        "",
+        database,
+        port
     );
-    io:println("Result 1: ", dbClient);
 }

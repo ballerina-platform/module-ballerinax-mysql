@@ -27,8 +27,8 @@ import static io.ballerina.stdlib.mysql.compiler.staticcodeanalyzer.RuleFactory.
  * Represents static code rules specific to the Ballerina MySQL package.
  */
 public enum MySQLRule {
-    USE_SECURE_PASSWORD(createRule(1, "A secure password should be used when connecting " +
-            "to a database", VULNERABILITY));
+    USE_SECURE_PASSWORD(createRule(1, "A secure password should be used when connecting to a database",
+            VULNERABILITY));
 
     private final Rule rule;
 
@@ -38,10 +38,6 @@ public enum MySQLRule {
 
     public int getId() {
         return this.rule.numericId();
-    }
-
-    public Rule getRule() {
-        return this.rule;
     }
 
     @Override

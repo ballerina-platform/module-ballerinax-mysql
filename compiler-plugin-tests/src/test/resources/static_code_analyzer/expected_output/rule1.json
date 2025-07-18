@@ -1,20 +1,42 @@
-[ {
-  "location" : {
-    "filePath" : "main.bal",
-    "startLine" : 9,
-    "endLine" : 9,
-    "startColumn" : 28,
-    "endColumn" : 44,
-    "startOffset" : 762,
-    "length" : 16
+[
+  {
+    "location": {
+      "filePath": "named_arg.bal",
+      "startLine": 24,
+      "endLine": 30,
+      "startColumn": 34,
+      "endColumn": 5,
+      "startOffset": 887,
+      "length": 131
+    },
+    "rule": {
+      "id": "ballerinax/mysql:1",
+      "numericId": 1,
+      "description": "A secure password should be used when connecting to a database",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/named_arg.bal",
+    "filePath": "/home/nureka/Documents/GitHub/module-ballerinax-mysql/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/named_arg.bal"
   },
-  "rule" : {
-    "id" : "ballerina/mysql:1",
-    "numericId" : 1,
-    "description" : "A secure password should be used when connecting to a database",
-    "ruleKind" : "VULNERABILITY"
-  },
-  "source" : "BUILT_IN",
-  "fileName" : "rule1/main.bal",
-  "filePath" : "/Users/sachink/Desktop/module-ballerinax-mysql/compiler-plugin-test/src/test/resources/static_code_analyzer/ballerina_packages/rule1/main.bal"
-} ]
+  {
+    "location": {
+      "filePath": "pos_arg.bal",
+      "startLine": 24,
+      "endLine": 30,
+      "startColumn": 34,
+      "endColumn": 5,
+      "startOffset": 897,
+      "length": 100
+    },
+    "rule": {
+      "id": "ballerinax/mysql:1",
+      "numericId": 1,
+      "description": "A secure password should be used when connecting to a database",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/pos_arg.bal",
+    "filePath": "/home/nureka/Documents/GitHub/module-ballerinax-mysql/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pos_arg.bal"
+  }
+]

@@ -82,7 +82,7 @@ public class StaticCodeAnalyzerTest {
             Assertions.assertRule(
                     rules,
                     "ballerinax/mysql:1",
-                    "A secure password should be used when connecting to a database",
+                    USE_SECURE_PASSWORD.getDescription(),
                     VULNERABILITY);
 
             // validate the issues

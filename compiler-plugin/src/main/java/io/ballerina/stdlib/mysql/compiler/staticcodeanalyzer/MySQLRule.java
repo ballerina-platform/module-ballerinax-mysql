@@ -40,6 +40,10 @@ public enum MySQLRule {
         return this.rule.numericId();
     }
 
+    public String getDescription() {
+        return this.rule.description();
+    }
+
     @Override
     public String toString() {
         return "{\"id\":" + this.getId() + ", \"kind\":\"" + this.rule.kind() + "\"," +

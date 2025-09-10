@@ -18,6 +18,9 @@
 
 package io.ballerina.stdlib.mysql.compiler.staticcodeanalyzer;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import io.ballerina.projects.Project;
 import io.ballerina.projects.ProjectEnvironmentBuilder;
 import io.ballerina.projects.directory.BuildProject;
@@ -144,16 +147,15 @@ public class StaticCodeAnalyzerTest {
     }
 
     private static String normalizeString(String json) {
-        String normalizedJson = json.replaceAll("\\s*\"\\s*", "\"")
-                .replaceAll("\\s*:\\s*", ":")
-                .replaceAll("\\s*,\\s*", ",")
-                .replaceAll("\\s*\\{\\s*", "{")
-                .replaceAll("\\s*}\\s*", "}")
-                .replaceAll("\\s*\\[\\s*", "[")
-                .replaceAll("\\s*]\\s*", "]")
-                .replaceAll("\n", "")
-                .replaceAll(":\".*" + MODULE_BALLERINAX_MYSQL, ":\"" + MODULE_BALLERINAX_MYSQL);
-        return isWindows() ? normalizedJson.replaceAll("/", "\\\\\\\\") : normalizedJson;
+        try {
+            ObjectMapper mapper = new ObjectMapper().configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
+            JsonNode node = mapper.readTree(json);
+            String normalizedJson = mapper.writeValueAsString(node)
+                    .replaceAll(":\".*" + MODULE_BALLERINAX_MYSQL, ":\"" + MODULE_BALLERINAX_MYSQL);
+            return isWindows() ? normalizedJson.replace("/", "\\\\") : normalizedJson;
+        } catch (Exception ignore) {
+            return json;
+        }
     }
 
     private static boolean isWindows() {

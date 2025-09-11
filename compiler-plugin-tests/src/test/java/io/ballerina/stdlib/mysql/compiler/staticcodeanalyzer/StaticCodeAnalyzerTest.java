@@ -117,6 +117,7 @@ public class StaticCodeAnalyzerTest {
                         24, 30, Source.BUILT_IN);
                 break;
             default:
+                Assert.fail("Unhandled rule in validateIssues: " + rule);
                 break;
         }
     }

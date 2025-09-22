@@ -17,7 +17,7 @@
     },
     "source": "BUILT_IN",
     "fileName": "rule1/named_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerinax-mysql/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/named_arg.bal"
+    "filePath": "module-ballerinax-mysql/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/named_arg.bal"
   },
   {
     "location": {
@@ -37,6 +37,6 @@
     },
     "source": "BUILT_IN",
     "fileName": "rule1/pos_arg.bal",
-    "filePath": "/home/nureka/Documents/GitHub/module-ballerinax-mysql/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pos_arg.bal"
+    "filePath": "module-ballerinax-mysql/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/pos_arg.bal"
   }
 ]

@@ -1,6 +1,26 @@
 [
   {
     "location": {
+      "filePath": "custom_prefix.bal",
+      "startLine": 24,
+      "endLine": 30,
+      "startColumn": 30,
+      "endColumn": 5,
+      "startOffset": 864,
+      "length": 125
+    },
+    "rule": {
+      "id": "ballerinax/mysql:1",
+      "numericId": 1,
+      "description": "A secure password should be used when connecting to a database",
+      "ruleKind": "VULNERABILITY"
+    },
+    "source": "BUILT_IN",
+    "fileName": "rule1/custom_prefix.bal",
+    "filePath": "module-ballerinax-mysql/compiler-plugin-tests/src/test/resources/static_code_analyzer/ballerina_packages/rule1/custom_prefix.bal"
+  },
+  {
+    "location": {
       "filePath": "named_arg.bal",
       "startLine": 24,
       "endLine": 30,

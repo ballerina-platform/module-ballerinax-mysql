@@ -1,4 +1,4 @@
-// Copyright (c) 2025 WSO2 LLC. (http://www.wso2.org)
+// Copyright (c) 2026, WSO2 LLC. (http://www.wso2.org)
 //
 // WSO2 LLC. licenses this file to you under the Apache License,
 // Version 2.0 (the "License"); you may not use this file except
@@ -21,12 +21,36 @@ configurable string user = ?;
 configurable int port = ?;
 configurable string database = ?;
 
-public isolated function posArg() {
+// Case 1: Standard Positional (Empty String)
+public isolated function posArgEmpty() {
     mysql:Client|error dbClient = new (
         host,
         user,
         "",
         database,
         port
+    );
+}
+
+// Case 2: Standard Positional (Weak Password "admin")
+// This verifies the index 2 detection and the isWeakPassword logic
+public isolated function posArgWeak() {
+    mysql:Client|error dbClient = new (host, "root", "admin", "test_db");
+}
+
+// Case 3: Positional with 'check' keyword
+// This tests logic when the syntax tree is wrapped in a CheckExpressionNode
+public isolated function posArgWithCheck() returns error? {
+    mysql:Client dbClient = check new (host, user, "password123", database);
+}
+
+// Case 4: Positional with a Strong Password (Should NOT be flagged)
+// This proves logic doesn't flag strong passwords at the 3rd index
+public isolated function posArgStrong() {
+    mysql:Client|error dbClient = new (
+        host,
+        user,
+        "Complex@Password!2026",
+        database
     );
 }

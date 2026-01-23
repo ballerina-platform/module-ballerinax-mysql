@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025, WSO2 LLC. (http://www.wso2.org)
+ * Copyright (c) 2026, WSO2 LLC. (http://www.wso2.org)
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License");
@@ -19,39 +19,24 @@
 
 package io.ballerina.stdlib.mysql.compiler.staticcodeanalyzer;
 
+import io.ballerina.compiler.syntax.tree.BasicLiteralNode;
+import io.ballerina.compiler.syntax.tree.ExplicitNewExpressionNode;
+import io.ballerina.compiler.syntax.tree.ExpressionNode;
+import io.ballerina.compiler.syntax.tree.FunctionArgumentNode;
+import io.ballerina.compiler.syntax.tree.FunctionCallExpressionNode;
 import io.ballerina.compiler.syntax.tree.ImplicitNewExpressionNode;
-import io.ballerina.compiler.syntax.tree.ImportOrgNameNode;
-import io.ballerina.compiler.syntax.tree.ImportPrefixNode;
-import io.ballerina.compiler.syntax.tree.ModulePartNode;
 import io.ballerina.compiler.syntax.tree.NamedArgumentNode;
 import io.ballerina.compiler.syntax.tree.Node;
-import io.ballerina.compiler.syntax.tree.ParenthesizedArgList;
 import io.ballerina.compiler.syntax.tree.PositionalArgumentNode;
-import io.ballerina.compiler.syntax.tree.QualifiedNameReferenceNode;
-import io.ballerina.compiler.syntax.tree.UnionTypeDescriptorNode;
-import io.ballerina.compiler.syntax.tree.VariableDeclarationNode;
+import io.ballerina.compiler.syntax.tree.SeparatedNodeList;
 import io.ballerina.projects.Document;
-import io.ballerina.projects.DocumentId;
-import io.ballerina.projects.Module;
 import io.ballerina.projects.plugins.AnalysisTask;
 import io.ballerina.projects.plugins.SyntaxNodeAnalysisContext;
 import io.ballerina.scan.Reporter;
+import io.ballerina.stdlib.mysql.compiler.Utils;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import static io.ballerina.stdlib.mysql.compiler.staticcodeanalyzer.MySQLRule.USE_SECURE_PASSWORD;
-
-/**
- * Analyzer to detect insecure password vulnerabilities.
- */
 public class SecurePasswordAnalyzer implements AnalysisTask<SyntaxNodeAnalysisContext> {
     private final Reporter reporter;
-    private static final String BALLERINAX = "ballerinax";
-    private static final String MYSQL = "mysql";
-    private static final String CLIENT = "Client";
-    private static final String PASSWORD = "password";
-    private final Set<String> mysqlPrefixes = new HashSet<>();
 
     public SecurePasswordAnalyzer(Reporter reporter) {
         this.reporter = reporter;
@@ -59,126 +44,104 @@ public class SecurePasswordAnalyzer implements AnalysisTask<SyntaxNodeAnalysisCo
 
     @Override
     public void perform(SyntaxNodeAnalysisContext context) {
-        analyzeImports(context);
-        ImplicitNewExpressionNode implicitNewExpression = (ImplicitNewExpressionNode) context.node();
-
-        if (!isMySQLClient(implicitNewExpression)) {
-            return;
-        }
-
-        if (implicitNewExpression.parenthesizedArgList().isEmpty()) {
-            return;
-        }
-
-        ParenthesizedArgList parenthesizedArgList = implicitNewExpression.parenthesizedArgList().get();
-
-        if (hasEmptyPasswordParameter(parenthesizedArgList)) {
-            report(context, USE_SECURE_PASSWORD.getId());
-        }
-    }
-
-    /**
-     * Checks if the ImplicitNewExpressionNode is for the MySQL Client.
-     *
-     * @param implicitNewExpression the ImplicitNewExpressionNode to check
-     * @return true if it is a MySQL Client, false otherwise
-     */
-    private boolean isMySQLClient(ImplicitNewExpressionNode implicitNewExpression) {
-        return implicitNewExpression.parent() instanceof VariableDeclarationNode variableDeclaration
-                && variableDeclaration.typedBindingPattern().typeDescriptor()
-                instanceof UnionTypeDescriptorNode unionTypeDescriptor
-                && unionTypeDescriptor.leftTypeDesc() instanceof QualifiedNameReferenceNode qualifiedNameReference
-                && mysqlPrefixes.contains(qualifiedNameReference.modulePrefix().text().trim())
-                && qualifiedNameReference.identifier().text().trim().equals(CLIENT);
-    }
-
-    /**
-     * Checks if the ParenthesizedArgList contains an empty password parameter.
-     *
-     * @param parenthesizedArgList the ParenthesizedArgList to check
-     * @return true if it contains an empty password parameter, false otherwise
-     */
-    private boolean hasEmptyPasswordParameter(ParenthesizedArgList parenthesizedArgList) {
-        int index = 0;
-        for (Node argument : parenthesizedArgList.arguments()) {
-            if (argument instanceof NamedArgumentNode namedArgument) {
-                if (isEmptyNamedPasswordArgument(namedArgument)) {
-                    return true;
-                }
-            } else if (argument instanceof PositionalArgumentNode positionalArgument) {
-                if (index == 2 && isEmptyPositionalPasswordArgument(positionalArgument)) {
-                    return true;
-                }
-                index++;
+        try {
+            Node node = context.node();
+            if (!Utils.isMySQLClientObject(context, (ExpressionNode) node)) {
+                return;
             }
+
+            SeparatedNodeList<FunctionArgumentNode> arguments = getArguments(node);
+
+            if (arguments == null || arguments.isEmpty()) {
+                return;
+            }
+
+            int argIndex = 0;
+            for (FunctionArgumentNode argument : arguments) {
+                ExpressionNode expression = null;
+
+                if (argument instanceof NamedArgumentNode namedArgument) {
+                    // Check Named Argument
+                    String argName = namedArgument.argumentName().name().text();
+                    if ("password".equals(argName)) {
+                        expression = namedArgument.expression();
+                    }
+                } else if (argument instanceof PositionalArgumentNode positionalArgument) {
+                    // Check Positional Argument: 3rd argument
+                    if (argIndex == 2) {
+                        expression = positionalArgument.expression();
+                    }
+                }
+
+                if (expression != null) {
+                    if (isWeakPassword(expression)) {
+                        reportPasswordVulnerability(context, node);
+                    }
+                    // Stop scanning other arguments
+                    return;
+                }
+                argIndex++;
+            }
+        } catch (RuntimeException e) {
+            // Prevent crashing the Scanner
+        }
+    }
+
+    private SeparatedNodeList<FunctionArgumentNode> getArguments(Node node) {
+        if (node instanceof ImplicitNewExpressionNode implicitNew) {
+            if (implicitNew.parenthesizedArgList().isPresent()) {
+                return implicitNew.parenthesizedArgList().get().arguments();
+            }
+        } else if (node instanceof ExplicitNewExpressionNode explicitNew) {
+            return explicitNew.parenthesizedArgList().arguments();
+        } else if (node instanceof FunctionCallExpressionNode functionCall) {
+            return functionCall.arguments();
+        }
+        return null;
+    }
+
+    /**
+     * Checks if the password is weak.
+     * Rules: Not Empty, Length >= 8, Contains Uppercase, Lowercase, Digit, Special Char
+     */
+    private boolean isWeakPassword(ExpressionNode expression) {
+        if (expression instanceof BasicLiteralNode basicLiteralNode) {
+            String text = basicLiteralNode.literalToken().text();
+
+            if (text.length() >= 2 && text.startsWith("\"") && text.endsWith("\"")) {
+                text = text.substring(1, text.length() - 1);
+            }
+
+            if (text.isEmpty()) {
+                return true;
+            }
+            if (text.length() < 8) {
+                return true;
+            }
+
+            boolean hasUpper = false;
+            boolean hasLower = false;
+            boolean hasDigit = false;
+            boolean hasSpecial = false;
+
+            for (char c : text.toCharArray()) {
+                if (Character.isUpperCase(c)) {
+                    hasUpper = true;
+                } else if (Character.isLowerCase(c)) {
+                    hasLower = true;
+                } else if (Character.isDigit(c)) {
+                    hasDigit = true;
+                } else {
+                    hasSpecial = true;
+                }
+            }
+            return !(hasUpper && hasLower && hasDigit && hasSpecial);
         }
         return false;
     }
 
-    /**
-     * Checks if the NamedArgumentNode is an empty password argument.
-     *
-     * @param namedArgument the NamedArgumentNode to check
-     * @return true if it is an empty password argument, false otherwise
-     */
-    private boolean isEmptyNamedPasswordArgument(NamedArgumentNode namedArgument) {
-        return namedArgument.argumentName().toString().trim().equals(PASSWORD)
-                && namedArgument.expression().toString().trim().equals("\"\"");
-    }
-
-    /**
-     * Checks if the PositionalArgumentNode is an empty password argument.
-     *
-     * @param positionalArgument the PositionalArgumentNode to check
-     * @return true if it is an empty password argument, false otherwise
-     */
-    private boolean isEmptyPositionalPasswordArgument(PositionalArgumentNode positionalArgument) {
-        return positionalArgument.expression().toString().trim().equals("\"\"");
-    }
-
-    /**
-     * Reports an issue for the given context and rule ID.
-     *
-     * @param context the syntax node analysis context
-     * @param ruleId  the ID of the rule to report
-     */
-    private void report(SyntaxNodeAnalysisContext context, int ruleId) {
-        reporter.reportIssue(
-                getDocument(context.currentPackage().module(context.moduleId()), context.documentId()),
-                context.node().location(),
-                ruleId
-        );
-    }
-
-    /**
-     * Retrieves the Document corresponding to the given module and document ID.
-     *
-     * @param module     the module
-     * @param documentId the document ID
-     * @return the Document for the given module and document ID
-     */
-    private static Document getDocument(Module module, DocumentId documentId) {
-        return module.document(documentId);
-    }
-
-    /**
-     * Analyzes imports to identify all prefixes used for the email module.
-     *
-     * @param context the syntax node analysis context
-     */
-    private void analyzeImports(SyntaxNodeAnalysisContext context) {
-        Document document = getDocument(context.currentPackage().module(context.moduleId()), context.documentId());
-        if (document.syntaxTree().rootNode() instanceof ModulePartNode modulePart) {
-            modulePart.imports().forEach(importDeclaration -> {
-                ImportOrgNameNode importOrgName = importDeclaration.orgName().orElse(null);
-                if (importOrgName != null && BALLERINAX.equals(importOrgName.orgName().text())
-                        && importDeclaration.moduleName().stream()
-                        .anyMatch(moduleName -> MYSQL.equals(moduleName.text()))) {
-                    ImportPrefixNode importPrefix = importDeclaration.prefix().orElse(null);
-                    String prefix = importPrefix != null ? importPrefix.prefix().text() : MYSQL;
-                    mysqlPrefixes.add(prefix);
-                }
-            });
-        }
+    private void reportPasswordVulnerability(SyntaxNodeAnalysisContext context, Node node) {
+        Document document = context.currentPackage().module(context.moduleId()).document(context.documentId());
+        this.reporter.reportIssue(document, node.location(), MySQLRule.USE_SECURE_PASSWORD.getId());
     }
 }

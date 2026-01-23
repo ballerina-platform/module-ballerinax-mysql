@@ -110,11 +110,25 @@ public class StaticCodeAnalyzerTest {
     private void validateIssues(MySQLRule rule, List<Issue> issues) {
         switch (rule) {
             case USE_SECURE_PASSWORD:
-                Assert.assertEquals(issues.size(), 2);
-                Assertions.assertIssue(issues, 0, "ballerinax/mysql:1", "named_arg.bal",
-                        24, 30, Source.BUILT_IN);
-                Assertions.assertIssue(issues, 1, "ballerinax/mysql:1", "pos_arg.bal",
-                        24, 30, Source.BUILT_IN);
+                // We expect 11 issues based on the rule1 package
+                Assert.assertEquals(issues.size(), 11);
+
+                // custom_prefix.bal (5 issues)
+                Assertions.assertIssue(issues, 0, "ballerinax/mysql:1", "custom_prefix.bal", 25, 30, Source.BUILT_IN);
+                Assertions.assertIssue(issues, 1, "ballerinax/mysql:1", "custom_prefix.bal", 36, 36, Source.BUILT_IN);
+                Assertions.assertIssue(issues, 2, "ballerinax/mysql:1", "custom_prefix.bal", 42, 42, Source.BUILT_IN);
+                Assertions.assertIssue(issues, 3, "ballerinax/mysql:1", "custom_prefix.bal", 47, 47, Source.BUILT_IN);
+                Assertions.assertIssue(issues, 4, "ballerinax/mysql:1", "custom_prefix.bal", 48, 48, Source.BUILT_IN);
+
+                // named_arg.bal (3 issues)
+                Assertions.assertIssue(issues, 5, "ballerinax/mysql:1", "named_arg.bal", 25, 31, Source.BUILT_IN);
+                Assertions.assertIssue(issues, 6, "ballerinax/mysql:1", "named_arg.bal", 37, 42, Source.BUILT_IN);
+                Assertions.assertIssue(issues, 7, "ballerinax/mysql:1", "named_arg.bal", 48, 52, Source.BUILT_IN);
+
+                // pos_arg.bal (3 issues)
+                Assertions.assertIssue(issues, 8, "ballerinax/mysql:1", "pos_arg.bal", 25, 31, Source.BUILT_IN);
+                Assertions.assertIssue(issues, 9, "ballerinax/mysql:1", "pos_arg.bal", 37, 37, Source.BUILT_IN);
+                Assertions.assertIssue(issues, 10, "ballerinax/mysql:1", "pos_arg.bal", 43, 43, Source.BUILT_IN);
                 break;
             default:
                 Assert.fail("Unhandled rule in validateIssues: " + rule);

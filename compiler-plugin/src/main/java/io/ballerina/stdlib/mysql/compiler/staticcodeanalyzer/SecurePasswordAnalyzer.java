@@ -35,6 +35,9 @@ import io.ballerina.projects.plugins.SyntaxNodeAnalysisContext;
 import io.ballerina.scan.Reporter;
 import io.ballerina.stdlib.mysql.compiler.Utils;
 
+/**
+ * Analyzer to detect insecure password vulnerabilities in MySQL client initializations.
+ */
 public class SecurePasswordAnalyzer implements AnalysisTask<SyntaxNodeAnalysisContext> {
     private final Reporter reporter;
 
@@ -83,7 +86,8 @@ public class SecurePasswordAnalyzer implements AnalysisTask<SyntaxNodeAnalysisCo
                 argIndex++;
             }
         } catch (RuntimeException e) {
-            // Prevent crashing the Scanner
+            // Catch and swallow RuntimeExceptions to prevent the compiler plugin
+            // from crashing during compilation. Static analysis should fail silently.
         }
     }
 
@@ -137,6 +141,8 @@ public class SecurePasswordAnalyzer implements AnalysisTask<SyntaxNodeAnalysisCo
             }
             return !(hasUpper && hasLower && hasDigit && hasSpecial);
         }
+        // Here only validate BasicLiteralNode (string literals).
+        // Non-literal expressions are skipped to avoid false positives.
         return false;
     }
 

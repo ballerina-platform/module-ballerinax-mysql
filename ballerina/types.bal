@@ -34,12 +34,14 @@ public distinct class CustomResultIterator {
     } external;
 }
 
-# Represents the configuration for the MySQL CDC listener.
+# MySQL CDC listener configuration including database connection, storage, and CDC options.
 #
-# + database - The MySQL database connection configuration
+# + database - MySQL database connection and capture settings
+# + options - MySQL-specific CDC options including snapshot, heartbeat, signals, and data type handling
 public type MySqlListenerConfiguration record {|
     MySqlDatabaseConnection database;
     *cdc:ListenerConfiguration;
+    MySqlOptions options = {};
 |};
 
 # Represents the configuration for the MySQL CDC database connection.
@@ -62,4 +64,30 @@ public type MySqlDatabaseConnection record {|
     string|string[] excludedDatabases?;
     int tasksMax = 1;
     cdc:SecureDatabaseConnection secure = {};
+|};
+
+# MySQL-specific CDC options for configuring snapshot behavior and data type handling.
+#
+# + extendedSnapshot - Extended snapshot configuration with MySQL-specific lock timeout and query settings
+# + dataTypeConfig - Data type handling configuration including schema change tracking
+public type MySqlOptions record {|
+    *cdc:Options;
+    ExtendedSnapshotConfiguration extendedSnapshot?;
+    DataTypeConfiguration dataTypeConfig?;
+|};
+
+# Represents the extended snapshot configuration for the MySQL CDC listener.
+# 
+# + lockTimeout - Lock acquisition timeout in seconds
+public type ExtendedSnapshotConfiguration record {|
+    *cdc:RelationalExtendedSnapshotConfiguration;
+    decimal lockTimeout = 10;
+|};
+
+# Represents data type handling configuration.
+#
+# + includeSchemaChanges - Whether to include schema change events
+public type DataTypeConfiguration record {|
+    *cdc:DataTypeConfiguration;
+    boolean includeSchemaChanges = true;
 |};

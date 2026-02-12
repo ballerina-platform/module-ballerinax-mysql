@@ -14,9 +14,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerinax/cdc;
+
 const string MYSQL_DATABASE_SERVER_ID = "database.server.id";
 const string MYSQL_DATABASE_INCLUDE_LIST = "database.include.list";
 const string MYSQL_DATABASE_EXCLUDE_LIST = "database.exclude.list";
+const string SNAPSHOT_LOCK_TIMEOUT_MS = "snapshot.lock.timeout.ms";
+const string INCLUDE_SCHEMA_CHANGES = "include.schema.changes";
 
 // Populates MySQL-specific configurations
 isolated function populateMySqlConfigurations(MySqlDatabaseConnection connection, map<string> configMap) {
@@ -31,4 +35,34 @@ isolated function populateMySqlConfigurations(MySqlDatabaseConnection connection
     if excludedDatabases !is () {
         configMap[MYSQL_DATABASE_EXCLUDE_LIST] = excludedDatabases is string ? excludedDatabases : string:'join(",", ...excludedDatabases);
     }
+}
+
+// Populates MySQL-specific options
+isolated function populateMySqlOptions(MySqlOptions options, map<string> configMap) {
+    // Populate common options from cdc module
+    cdc:populateOptions(options, configMap);
+
+    // Populate MySQL-specific extended snapshot configuration
+    ExtendedSnapshotConfiguration? extendedSnapshot = options.extendedSnapshot;
+    if extendedSnapshot is ExtendedSnapshotConfiguration {
+        cdc:populateRelationalExtendedSnapshotConfiguration(extendedSnapshot, configMap);
+        populateMySqlExtendedSnapshotConfiguration(extendedSnapshot, configMap);
+    }
+
+    // Populate MySQL-specific data type configuration
+    DataTypeConfiguration? dataTypeConfig = options.dataTypeConfig;
+    if dataTypeConfig is DataTypeConfiguration {
+        cdc:populateDataTypeConfiguration(dataTypeConfig, configMap);
+        configMap[INCLUDE_SCHEMA_CHANGES] = dataTypeConfig.includeSchemaChanges.toString();
+    }
+}
+
+// Populates MySQL-specific extended snapshot properties
+isolated function populateMySqlExtendedSnapshotConfiguration(ExtendedSnapshotConfiguration config, map<string> configMap) {
+    configMap[SNAPSHOT_LOCK_TIMEOUT_MS] = getMillisecondValueOf(config.lockTimeout);
+}
+
+isolated function getMillisecondValueOf(decimal value) returns string {
+    string milliSecondVal = (value * 1000).toBalString();
+    return milliSecondVal.substring(0, milliSecondVal.indexOf(".") ?: milliSecondVal.length());
 }

@@ -32,7 +32,6 @@ public isolated class CdcListener {
                                            engineName: config.engineName,
                                            offsetStorage: config.offsetStorage,
                                            internalSchemaStorage: config.internalSchemaStorage,
-                                           options: config.options
                                        }, debeziumConfigs);
         cdc:populateDatabaseConfigurations({
                                                connectorClass: config.database.connectorClass,
@@ -49,6 +48,7 @@ public isolated class CdcListener {
                                                excludedColumns: config.database.excludedColumns
                                            }, debeziumConfigs);
         populateMySqlConfigurations(config.database, debeziumConfigs);
+        populateMySqlOptions(config.options, debeziumConfigs);
         map<anydata> listenerConfigs = {
             ...debeziumConfigs
         };

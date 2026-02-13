@@ -102,7 +102,7 @@ isolated function populateDataTypeConfiguration(DataTypeConfiguration config, ma
 // Populates MySQL-specific options
 isolated function populateMySqlOptions(MySqlOptions options, map<string> configMap) {
     // Populate common options from cdc module
-    cdc:populateOptions(options, configMap);
+    cdc:populateOptions(options, configMap, typeof options);
 
     // Populate MySQL-specific extended snapshot configuration
     ExtendedSnapshotConfiguration? extendedSnapshot = options.extendedSnapshot;

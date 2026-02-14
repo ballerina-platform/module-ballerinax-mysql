@@ -23,9 +23,3 @@ groupId = "io.ballerina.stdlib"
 artifactId = "sql-native"
 version = "1.16.0"
 path = "./lib/sql-native-1.16.0.jar"
-
-[[dependency]]
-org="ballerinax"
-name="cdc"
-version="1.2.0"
-repository="local"

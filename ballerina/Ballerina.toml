@@ -21,5 +21,5 @@ path = "../native/build/libs/mysql-native-1.16.2-SNAPSHOT.jar"
 [[platform.java21.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "sql-native"
-version = "1.16.0"
-path = "./lib/sql-native-1.16.0.jar"
+version = "1.17.1"
+path = "./lib/sql-native-1.17.1.jar"

@@ -101,8 +101,13 @@ subprojects {
         ballerinaStdLibs "io.ballerina.stdlib:mysql.driver-ballerina:${stdlibMysqlDriverVersion}"
     
         ballerinaStdLibs "io.ballerina.stdlib:random-ballerina:${stdlibRandomVersion}"
+        ballerinaStdLibs "io.ballerina.lib:avro-ballerina:${stdlibAvroVersion}"
         ballerinaStdLibs "io.ballerina.lib:cdc-ballerina:${stdlibCdcVersion}"
         ballerinaStdLibs "io.ballerina.lib:mysql.cdc.driver-ballerina:${stdlibMySQLCdcDriverVersion}"
+
+        ballerinaStdLibs "io.ballerina.stdlib:kafka-ballerina:${stdlibKafkaVersion}"
+        ballerinaStdLibs "io.ballerina.lib:confluent.cavroserdes-ballerina:${stdlibConfluentAvroSerDesVersion}"
+        ballerinaStdLibs "io.ballerina.lib:confluent.cregistry-ballerina:${stdlibConfluentSchemaRegistryVersion}"
     }
 }
 

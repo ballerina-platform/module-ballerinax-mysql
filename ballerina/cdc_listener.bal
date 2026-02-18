@@ -19,7 +19,7 @@ import ballerinax/cdc;
 public isolated class CdcListener {
     *cdc:Listener;
 
-    private final map<string> & readonly config;
+    private final map<anydata> & readonly config;
     private boolean isStarted = false;
     private boolean hasAttachedService = false;
 
@@ -27,13 +27,13 @@ public isolated class CdcListener {
     #
     # + config - The configuration for the MySQL connector
     public isolated function init(*MySqlListenerConfiguration config) {
-        map<string> configMap = {};
+        map<string> debeziumConfigs = {};
         cdc:populateDebeziumProperties({
                                            engineName: config.engineName,
                                            offsetStorage: config.offsetStorage,
                                            internalSchemaStorage: config.internalSchemaStorage,
                                            options: config.options
-                                       }, configMap);
+                                       }, debeziumConfigs);
         cdc:populateDatabaseConfigurations({
                                                connectorClass: config.database.connectorClass,
                                                hostname: config.database.hostname,
@@ -47,9 +47,13 @@ public isolated class CdcListener {
                                                excludedTables: config.database.excludedTables,
                                                includedColumns: config.database.includedColumns,
                                                excludedColumns: config.database.excludedColumns
-                                           }, configMap);
-        populateMySqlConfigurations(config.database, configMap);
-        self.config = configMap.cloneReadOnly();
+                                           }, debeziumConfigs);
+        populateMySqlConfigurations(config.database, debeziumConfigs);
+        map<anydata> listenerConfigs = {
+            ...debeziumConfigs
+        };
+        listenerConfigs["livenessInterval"] = config.livenessInterval;
+        self.config = listenerConfigs.cloneReadOnly();
     }
 
     # Attaches a CDC service to the MySQL listener.

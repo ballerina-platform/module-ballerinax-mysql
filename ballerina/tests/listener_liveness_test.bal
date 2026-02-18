@@ -26,7 +26,7 @@ function testLivenessBeforeListenerStart() returns error? {
         database: {
             username: cdcUsername,
             password: cdcPassword,
-            port
+            port: cdcPort
         },
         options: {
             snapshotMode: cdc:NO_DATA

@@ -16,6 +16,37 @@
 
 import ballerinax/cdc;
 
+isolated function populateDebeziumProperties(MySqlListenerConfiguration config, map<string> debeziumConfigs) {
+    cdc:populateDebeziumProperties({
+                                       engineName: config.engineName,
+                                       offsetStorage: config.offsetStorage,
+                                       internalSchemaStorage: config.internalSchemaStorage
+                                   }, debeziumConfigs);
+    populateDatabaseConfigurations(config.database, debeziumConfigs);
+    populateOptions(config.options, debeziumConfigs);
+}
+
+
+// Populates MySQL-specific configurations
+isolated function populateDatabaseConfigurations(MySqlDatabaseConnection database, map<string> debeziumConfigs) {
+    cdc:populateDatabaseConfigurations({
+        connectorClass: database.connectorClass,
+        hostname: database.hostname,
+        port: database.port,
+        username: database.username,
+        password: database.password,
+        connectTimeout: database.connectTimeout,
+        tasksMax: database.tasksMax,
+        secure: database.secure,
+        includedTables: database.includedTables,
+        excludedTables: database.excludedTables,
+        includedColumns: database.includedColumns,
+        excludedColumns: database.excludedColumns
+        }, debeziumConfigs);
+
+    populateConfigurations(database, debeziumConfigs);
+}
+
 const string MYSQL_DATABASE_SERVER_ID = "database.server.id";
 const string MYSQL_DATABASE_INCLUDE_LIST = "database.include.list";
 const string MYSQL_DATABASE_EXCLUDE_LIST = "database.exclude.list";
@@ -62,7 +93,7 @@ isolated function populateBinlogConfiguration(BinlogConfiguration config, map<st
 }
 
 // Populates MySQL-specific configurations
-isolated function populateMySqlConfigurations(MySqlDatabaseConnection connection, map<string> configMap) {
+isolated function populateConfigurations(MySqlDatabaseConnection connection, map<string> configMap) {
     configMap[MYSQL_DATABASE_SERVER_ID] = connection.databaseServerId.toString();
 
     string|string[]? includedDatabases = connection.includedDatabases;
@@ -100,7 +131,7 @@ isolated function populateDataTypeConfiguration(DataTypeConfiguration config, ma
 }
 
 // Populates MySQL-specific options
-isolated function populateMySqlOptions(MySqlOptions options, map<string> configMap) {
+isolated function populateOptions(MySqlOptions options, map<string> configMap) {
     // Populate common options from cdc module
     cdc:populateOptions(options, configMap, typeof options);
 
@@ -108,7 +139,7 @@ isolated function populateMySqlOptions(MySqlOptions options, map<string> configM
     ExtendedSnapshotConfiguration? extendedSnapshot = options.extendedSnapshot;
     if extendedSnapshot is ExtendedSnapshotConfiguration {
         cdc:populateRelationalExtendedSnapshotConfiguration(extendedSnapshot, configMap);
-        populateMySqlExtendedSnapshotConfiguration(extendedSnapshot, configMap);
+        populateExtendedSnapshotConfiguration(extendedSnapshot, configMap);
     }
 
     // Populate MySQL-specific data type configuration
@@ -119,7 +150,7 @@ isolated function populateMySqlOptions(MySqlOptions options, map<string> configM
 }
 
 // Populates MySQL-specific extended snapshot properties
-isolated function populateMySqlExtendedSnapshotConfiguration(ExtendedSnapshotConfiguration config, map<string> configMap) {
+isolated function populateExtendedSnapshotConfiguration(ExtendedSnapshotConfiguration config, map<string> configMap) {
     configMap[SNAPSHOT_LOCK_TIMEOUT_MS] = getMillisecondValueOf(config.lockTimeout);
 
     cdc:SnapshotLockingMode? lockingMode = config.lockingMode;

@@ -98,7 +98,6 @@ public type MySqlListenerConfiguration record {|
 # + includedDatabases - A list of regular expressions matching fully-qualified database identifiers to capture changes from (should not be used alongside databaseExclude)
 # + excludedDatabases - A list of regular expressions matching fully-qualified database identifiers to exclude from change capture (should not be used alongside databaseInclude)
 # + tasksMax - The maximum number of tasks to create for this connector. Because the MySQL connector always uses a single task, changing the default value has no effect
-# + secure - The connector establishes an encrypted connection if the server supports secure connections
 # + replicationConfig - MySQL GTID-based replication configuration
 # + binlogConfig - MySQL binlog configuration
 public type MySqlDatabaseConnection record {|
@@ -110,7 +109,6 @@ public type MySqlDatabaseConnection record {|
     string|string[] includedDatabases?;
     string|string[] excludedDatabases?;
     int tasksMax = 1;
-    cdc:SecureDatabaseConnection secure = {};
     ReplicationConfiguration replicationConfig?;
     BinlogConfiguration binlogConfig?;
 |};

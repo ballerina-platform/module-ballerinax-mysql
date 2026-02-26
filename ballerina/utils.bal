@@ -29,6 +29,7 @@ isolated function populateDebeziumProperties(MySqlListenerConfiguration config, 
 
 // Populates MySQL-specific configurations
 isolated function populateDatabaseConfigurations(MySqlDatabaseConnection database, map<string> debeziumConfigs) {
+    // Populate generic CDC connection fields
     cdc:populateDatabaseConfigurations({
         connectorClass: database.connectorClass,
         hostname: database.hostname,
@@ -37,13 +38,13 @@ isolated function populateDatabaseConfigurations(MySqlDatabaseConnection databas
         password: database.password,
         connectTimeout: database.connectTimeout,
         tasksMax: database.tasksMax,
-        secure: database.secure,
-        includedTables: database.includedTables,
-        excludedTables: database.excludedTables,
-        includedColumns: database.includedColumns,
-        excludedColumns: database.excludedColumns
+        secure: database.secure
         }, debeziumConfigs);
 
+    // Populate MySQL-specific relational filtering
+    populateTableAndColumnFiltering(database, debeziumConfigs);
+
+    // Populate MySQL-specific configurations
     populateConfigurations(database, debeziumConfigs);
 }
 
@@ -52,6 +53,20 @@ const string MYSQL_DATABASE_INCLUDE_LIST = "database.include.list";
 const string MYSQL_DATABASE_EXCLUDE_LIST = "database.exclude.list";
 const string SNAPSHOT_LOCK_TIMEOUT_MS = "snapshot.lock.timeout.ms";
 const string INCLUDE_SCHEMA_CHANGES = "include.schema.changes";
+
+// Populates MySQL-specific relational filtering (table/column inclusion/exclusion and message key columns)
+isolated function populateTableAndColumnFiltering(MySqlDatabaseConnection connection, map<string> configMap) {
+    // Call CDC utility functions with direct parameters
+    cdc:populateTableAndColumnConfigurations(
+        connection.includedTables,
+        connection.excludedTables,
+        connection.includedColumns,
+        connection.excludedColumns,
+        configMap
+    );
+
+    cdc:populateMessageKeyColumnsConfiguration(connection.messageKeyColumns, configMap);
+}
 
 // GTID Replication properties
 const string GTID_SOURCE_INCLUDES = "gtid.source.includes";

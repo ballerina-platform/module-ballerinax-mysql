@@ -97,6 +97,11 @@ public type MySqlListenerConfiguration record {|
 # + databaseServerId - The unique identifier for the MySQL server
 # + includedDatabases - A list of regular expressions matching fully-qualified database identifiers to capture changes from (should not be used alongside databaseExclude)
 # + excludedDatabases - A list of regular expressions matching fully-qualified database identifiers to exclude from change capture (should not be used alongside databaseInclude)
+# + includedTables - Regex patterns for tables to capture (mutually exclusive with `excludedTables`)
+# + excludedTables - Regex patterns for tables to exclude (mutually exclusive with `includedTables`)
+# + includedColumns - Regex patterns for columns to capture (mutually exclusive with `excludedColumns`)
+# + excludedColumns - Regex patterns for columns to exclude (mutually exclusive with `includedColumns`)
+# + messageKeyColumns - Composite message key columns for change events
 # + tasksMax - The maximum number of tasks to create for this connector. Because the MySQL connector always uses a single task, changing the default value has no effect
 # + replicationConfig - MySQL GTID-based replication configuration
 # + binlogConfig - MySQL binlog configuration
@@ -108,6 +113,11 @@ public type MySqlDatabaseConnection record {|
     string databaseServerId = (checkpanic random:createIntInRange(0, 100000)).toString();
     string|string[] includedDatabases?;
     string|string[] excludedDatabases?;
+    string|string[] includedTables?;
+    string|string[] excludedTables?;
+    string|string[] includedColumns?;
+    string|string[] excludedColumns?;
+    string messageKeyColumns?;
     int tasksMax = 1;
     ReplicationConfiguration replicationConfig?;
     BinlogConfiguration binlogConfig?;

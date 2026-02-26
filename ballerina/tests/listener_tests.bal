@@ -307,33 +307,41 @@ function testMySqlBinlogConfiguration() {
         msg = "Binlog buffer size does not match.");
 }
 
-// TODO: Uncomment when RelationalCommonConfig is added to CDC module
-// @test:Config {groups: ["mysql-relational"]}
-// function testMySqlRelationalCommonConfiguration() {
-//     map<string> expectedProperties = {
-//         "schema.include.list": "schema1,schema2",
-//         "message.key.columns": "db.table1:id;db.table2:key"
-//     };
+@test:Config {groups: ["mysql-relational"]}
+function testMySqlRelationalFilteringConfiguration() {
+    map<string> expectedProperties = {
+        "database.include.list": "db1,db2",
+        "table.include.list": "db1.customers,db1.orders",
+        "column.exclude.list": "db1.*.password,db1.*.ssn",
+        "message.key.columns": "db1.customers:id;db1.orders:order_id"
+    };
 
-//     MySqlDatabaseConnection connection = {
-//         username: "testuser",
-//         password: "testpass",
-//         relationalCommonConfig: {
-//             schemaIncludeList: ["schema1", "schema2"],
-//             messageKeyColumns: "db.table1:id;db.table2:key"
-//         }
-//     };
+    MySqlDatabaseConnection connection = {
+        username: "testuser",
+        password: "testpass",
+        databaseServerId: "12345",
+        includedDatabases: ["db1", "db2"],
+        includedTables: ["db1.customers", "db1.orders"],
+        excludedColumns: ["db1.*.password", "db1.*.ssn"],
+        messageKeyColumns: "db1.customers:id;db1.orders:order_id"
+    };
 
-//     map<string> actualProperties = {};
-//     populateConfigurations(connection, actualProperties);
+    map<string> actualProperties = {};
+    populateDatabaseConfigurations(connection, actualProperties);
 
-//     test:assertEquals(actualProperties["schema.include.list"],
-//         expectedProperties["schema.include.list"],
-//         msg = "Schema include list does not match.");
-//     test:assertEquals(actualProperties["message.key.columns"],
-//         expectedProperties["message.key.columns"],
-//         msg = "Message key columns does not match.");
-// }
+    test:assertEquals(actualProperties["database.include.list"],
+        expectedProperties["database.include.list"],
+        msg = "Database include list does not match.");
+    test:assertEquals(actualProperties["table.include.list"],
+        expectedProperties["table.include.list"],
+        msg = "Table include list does not match.");
+    test:assertEquals(actualProperties["column.exclude.list"],
+        expectedProperties["column.exclude.list"],
+        msg = "Column exclude list does not match.");
+    test:assertEquals(actualProperties["message.key.columns"],
+        expectedProperties["message.key.columns"],
+        msg = "Message key columns does not match.");
+}
 
 @test:Config {groups: ["mysql-datatype"]}
 function testMySqlDataTypeConfiguration() {
@@ -417,28 +425,3 @@ function testMySqlOptionsWithHeartbeat() {
         msg = "Heartbeat action query does not match.");
 }
 
-// TODO: Uncomment when additionalProperties is added to Options type
-// @test:Config {groups: ["mysql-options"]}
-// function testMySqlOptionsWithAdditionalProperties() {
-//     map<string> expectedProperties = {
-//         "custom.mysql.property": "value1",
-//         "another.property": "value2"
-//     };
-
-//     MySqlOptions options = {
-//         additionalProperties: {
-//             "custom.mysql.property": "value1",
-//             "another.property": "value2"
-//         }
-//     };
-
-//     map<string> actualProperties = {};
-//     populateOptions(options, actualProperties);
-
-//     test:assertEquals(actualProperties["custom.mysql.property"],
-//         expectedProperties["custom.mysql.property"],
-//         msg = "Custom MySQL property does not match.");
-//     test:assertEquals(actualProperties["another.property"],
-//         expectedProperties["another.property"],
-//         msg = "Another property does not match.");
-// }

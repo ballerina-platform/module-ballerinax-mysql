@@ -22,8 +22,6 @@ const string MYSQL_DATABASE_INCLUDE_LIST = "database.include.list";
 const string MYSQL_DATABASE_EXCLUDE_LIST = "database.exclude.list";
 const string SNAPSHOT_LOCK_TIMEOUT_MS = "snapshot.lock.timeout.ms";
 const string INCLUDE_SCHEMA_CHANGES = "include.schema.changes";
-const string DATABASE_SSL_TRUSTSTORE = "database.ssl.truststore";
-const string DATABASE_SSL_TRUSTSTORE_PASSWORD = "database.ssl.truststore.password";
 
 // GTID Replication properties
 const string GTID_SOURCE_INCLUDES = "gtid.source.includes";
@@ -84,19 +82,6 @@ isolated function populateTableAndColumnFiltering(MySqlDatabaseConnection connec
     cdc:populateMessageKeyColumnsConfiguration(connection.messageKeyColumns, configMap);
 }
 
-// Populates SQL Server connection configuration
-isolated function populateSslConfiguration(SslConfiguration config, map<string> configMap) {
-    string? truststore = config.truststore;
-    if truststore !is () {
-        configMap[DATABASE_SSL_TRUSTSTORE] = truststore;
-    }
-
-    string? truststorePassword = config.truststorePassword;
-    if truststorePassword !is () {
-        configMap[DATABASE_SSL_TRUSTSTORE_PASSWORD] = truststorePassword;
-    }
-}
-
 // Populates MySQL GTID replication configuration
 isolated function populateReplicationConfiguration(ReplicationConfiguration config, map<string> configMap) {
     string|string[]? gtidSourceIncludes = config.gtidSourceIncludes;
@@ -127,12 +112,6 @@ isolated function populateConfigurations(MySqlDatabaseConnection connection, map
     string|string[]? excludedDatabases = connection.excludedDatabases;
     if excludedDatabases !is () {
         configMap[MYSQL_DATABASE_EXCLUDE_LIST] = excludedDatabases is string ? excludedDatabases : string:'join(",", ...excludedDatabases);
-    }
-
-    // Populate SQL Server connection configuration
-    SslConfiguration? sslConfig = connection.sslConfig;
-    if sslConfig is SslConfiguration {
-        populateSslConfiguration(sslConfig, configMap);
     }
 
     // Populate MySQL replication configuration

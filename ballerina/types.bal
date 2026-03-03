@@ -59,6 +59,15 @@ public type BinlogConfiguration record {|
     int bufferSize = 8192;
 |};
 
+# SQL Server connection and SSL configuration.
+#
+# + truststore - Path to SSL truststore file
+# + truststorePassword - Password for SSL truststore
+public type SslConfiguration record {|
+    string truststore?;
+    string truststorePassword?;
+|};
+
 # MySQL CDC listener configuration including database connection, storage, and CDC options.
 #
 # + database - MySQL database connection and capture settings
@@ -83,6 +92,7 @@ public type MySqlListenerConfiguration record {|
 # + excludedColumns - Regex patterns for columns to exclude (mutually exclusive with `includedColumns`)
 # + messageKeyColumns - Composite message key columns for change events
 # + tasksMax - The maximum number of tasks to create for this connector. Because the MySQL connector always uses a single task, changing the default value has no effect
+# + sslConfig - SQL Server SSL configuration
 # + replicationConfig - MySQL GTID-based replication configuration
 # + binlogConfig - MySQL binlog configuration
 public type MySqlDatabaseConnection record {|
@@ -99,6 +109,7 @@ public type MySqlDatabaseConnection record {|
     string|string[] excludedColumns?;
     cdc:MessageKeyColumns[] messageKeyColumns?;
     int tasksMax = 1;
+    SslConfiguration sslConfig = {};
     ReplicationConfiguration replicationConfig?;
     BinlogConfiguration binlogConfig?;
 |};

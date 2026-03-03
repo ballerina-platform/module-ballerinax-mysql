@@ -4,6 +4,15 @@ This file contains all the notable changes done to the Ballerina SQL package thr
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- New CDC options: `heartbeatConfig`, `signalConfig`, `transactionMetadataConfig`, `columnTransformConfig`, `topicConfig`, `connectionRetryConfig`, `performanceConfig` (via `cdc` module `1.3.0`)
+- Support for additional offset and schema history storage backends (Memory, JDBC, Redis, S3, Azure Blob, RocketMQ)
+
+### Changed
+- Updated `cdc` module dependency to `1.3.0`
+
 ## [1.16.1] - 2025-06-23
 
 ### Changed

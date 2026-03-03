@@ -19,15 +19,6 @@ import ballerina/random;
 import ballerina/sql;
 import ballerinax/cdc;
 
-# Represents GTID channel position modes.
-#
-# + EARLIEST - Start from the earliest available GTID position
-# + LATEST - Start from the latest GTID position
-public enum GtidNewChannelPosition {
-    EARLIEST = "earliest",
-    LATEST = "latest"
-}
-
 # Represents BIGINT UNSIGNED handling modes.
 #
 # + LONG - Represent BIGINT UNSIGNED as long (may lose precision for values > Long.MAX_VALUE)
@@ -35,15 +26,6 @@ public enum GtidNewChannelPosition {
 public enum BigIntUnsignedHandlingMode {
     LONG = "long",
     PRECISE = "precise"
-}
-
-# Represents snapshot new tables modes.
-#
-# + OFF - Do not snapshot newly added tables
-# + PARALLEL - Snapshot newly added tables in parallel with ongoing streaming
-public enum SnapshotNewTables {
-    OFF = "off",
-    PARALLEL = "parallel"
 }
 
 # The iterator for the stream returned in `query` function to be used to override the default behaviour of `sql:ResultIterator`.
@@ -65,11 +47,9 @@ public distinct class CustomResultIterator {
 #
 # + gtidSourceIncludes - Comma-separated list of GTID source UUIDs to include
 # + gtidSourceExcludes - Comma-separated list of GTID source UUIDs to exclude
-# + gtidNewChannelPosition - Position for new GTID channels (earliest or latest)
 public type ReplicationConfiguration record {|
     string|string[] gtidSourceIncludes?;
     string|string[] gtidSourceExcludes?;
-    GtidNewChannelPosition gtidNewChannelPosition?;
 |};
 
 # MySQL binlog configuration.
@@ -117,33 +97,19 @@ public type MySqlDatabaseConnection record {|
     string|string[] excludedTables?;
     string|string[] includedColumns?;
     string|string[] excludedColumns?;
-    string messageKeyColumns?;
+    cdc:MessageKeyColumns[] messageKeyColumns?;
     int tasksMax = 1;
     ReplicationConfiguration replicationConfig?;
     BinlogConfiguration binlogConfig?;
-|};
-
-# MySQL-specific CDC options for configuring snapshot behavior and data type handling.
-#
-# + extendedSnapshot - Extended snapshot configuration with MySQL-specific lock timeout and query settings
-# + dataTypeConfig - Data type handling configuration including schema change tracking
-public type MySqlOptions record {|
-    *cdc:Options;
-    ExtendedSnapshotConfiguration extendedSnapshot?;
-    DataTypeConfiguration dataTypeConfig?;
 |};
 
 # MySQL-specific extended snapshot configuration.
 # Extends generic relational snapshot configuration with MySQL-specific options.
 #
 # + lockTimeout - Lock acquisition timeout in seconds
-# + lockingMode - MySQL-specific locking mode during snapshots
-# + newTables - How to snapshot newly added tables (off or parallel)
 public type ExtendedSnapshotConfiguration record {|
     *cdc:RelationalExtendedSnapshotConfiguration;
     decimal lockTimeout = 10;
-    cdc:SnapshotLockingMode lockingMode?;
-    SnapshotNewTables newTables = OFF;
 |};
 
 # MySQL-specific data type handling configuration.
@@ -157,4 +123,14 @@ public type DataTypeConfiguration record {|
     BigIntUnsignedHandlingMode bigIntUnsignedHandlingMode = LONG;
     boolean enableTimeAdjuster = true;
     boolean includeSchemaChanges = true;
+|};
+
+# MySQL-specific CDC options for configuring snapshot behavior and data type handling.
+#
+# + extendedSnapshot - Extended snapshot configuration with MySQL-specific lock timeout and query settings
+# + dataTypeConfig - Data type handling configuration including schema change tracking
+public type MySqlOptions record {|
+    *cdc:Options;
+    ExtendedSnapshotConfiguration extendedSnapshot?;
+    DataTypeConfiguration dataTypeConfig?;
 |};

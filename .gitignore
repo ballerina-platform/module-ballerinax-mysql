@@ -56,3 +56,4 @@ examples/**/Dependencies.toml
 examples/**/Config.toml
 
 compiler-plugin-test/**/target
+compiler-plugin/**/rules.json

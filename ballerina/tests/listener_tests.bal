@@ -260,8 +260,7 @@ function testCdcListenerEvents() returns error? {
 function testMySqlReplicationConfiguration() {
     map<string> expectedProperties = {
         "gtid.source.includes": "server-1,server-2",
-        "gtid.source.excludes": "server-3",
-        "gtid.new.channel.position": "earliest"
+        "gtid.source.excludes": "server-3"
     };
 
     MySqlDatabaseConnection connection = {
@@ -269,8 +268,7 @@ function testMySqlReplicationConfiguration() {
         password: "testpass",
         replicationConfig: {
             gtidSourceIncludes: ["server-1", "server-2"],
-            gtidSourceExcludes: "server-3",
-            gtidNewChannelPosition: EARLIEST
+            gtidSourceExcludes: "server-3"
         }
     };
 
@@ -323,7 +321,10 @@ function testMySqlRelationalFilteringConfiguration() {
         includedDatabases: ["db1", "db2"],
         includedTables: ["db1.customers", "db1.orders"],
         excludedColumns: ["db1.*.password", "db1.*.ssn"],
-        messageKeyColumns: "db1.customers:id;db1.orders:order_id"
+        messageKeyColumns: [
+                {tableName: "db1.customers", columns: ["id"]},
+                {tableName: "db1.orders", columns: ["order_id"]}
+        ]
     };
 
     map<string> actualProperties = {};
@@ -374,15 +375,13 @@ function testMySqlDataTypeConfiguration() {
 function testMySqlExtendedSnapshotConfiguration() {
     map<string> expectedProperties = {
         "snapshot.lock.timeout.ms": "15000",
-        "snapshot.locking.mode": "minimal",
-        "snapshot.new.tables": "parallel"
+        "snapshot.locking.mode": "minimal"
     };
 
     MySqlOptions options = {
         extendedSnapshot: {
             lockTimeout: 15,
-            lockingMode: cdc:MINIMAL,
-            newTables: PARALLEL
+            lockingMode: cdc:MINIMAL
         }
     };
 
@@ -408,7 +407,7 @@ function testMySqlOptionsWithHeartbeat() {
     };
 
     MySqlOptions options = {
-        heartbeat: {
+        heartbeatConfig: {
             interval: 10,
             actionQuery: "SELECT 1"
         }

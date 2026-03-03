@@ -16,6 +16,27 @@
 
 import ballerinax/cdc;
 
+// MySQL connector-specific configuration keys
+const string MYSQL_DATABASE_SERVER_ID = "database.server.id";
+const string MYSQL_DATABASE_INCLUDE_LIST = "database.include.list";
+const string MYSQL_DATABASE_EXCLUDE_LIST = "database.exclude.list";
+const string SNAPSHOT_LOCK_TIMEOUT_MS = "snapshot.lock.timeout.ms";
+const string INCLUDE_SCHEMA_CHANGES = "include.schema.changes";
+
+// GTID Replication properties
+const string GTID_SOURCE_INCLUDES = "gtid.source.includes";
+const string GTID_SOURCE_EXCLUDES = "gtid.source.excludes";
+
+// Binlog properties
+const string BINLOG_BUFFER_SIZE = "binlog.buffer.size";
+
+// Data type properties
+const string BIGINT_UNSIGNED_HANDLING_MODE = "bigint.unsigned.handling.mode";
+const string ENABLE_TIME_ADJUSTER = "enable.time.adjuster";
+
+// Snapshot properties
+const string SNAPSHOT_LOCKING_MODE = "snapshot.locking.mode";
+
 isolated function populateDebeziumProperties(MySqlListenerConfiguration config, map<string> debeziumConfigs) {
     cdc:populateDebeziumProperties({
                                        engineName: config.engineName,
@@ -25,7 +46,6 @@ isolated function populateDebeziumProperties(MySqlListenerConfiguration config, 
     populateDatabaseConfigurations(config.database, debeziumConfigs);
     populateOptions(config.options, debeziumConfigs);
 }
-
 
 // Populates MySQL-specific configurations
 isolated function populateDatabaseConfigurations(MySqlDatabaseConnection database, map<string> debeziumConfigs) {
@@ -48,12 +68,6 @@ isolated function populateDatabaseConfigurations(MySqlDatabaseConnection databas
     populateConfigurations(database, debeziumConfigs);
 }
 
-const string MYSQL_DATABASE_SERVER_ID = "database.server.id";
-const string MYSQL_DATABASE_INCLUDE_LIST = "database.include.list";
-const string MYSQL_DATABASE_EXCLUDE_LIST = "database.exclude.list";
-const string SNAPSHOT_LOCK_TIMEOUT_MS = "snapshot.lock.timeout.ms";
-const string INCLUDE_SCHEMA_CHANGES = "include.schema.changes";
-
 // Populates MySQL-specific relational filtering (table/column inclusion/exclusion and message key columns)
 isolated function populateTableAndColumnFiltering(MySqlDatabaseConnection connection, map<string> configMap) {
     // Call CDC utility functions with direct parameters
@@ -68,22 +82,6 @@ isolated function populateTableAndColumnFiltering(MySqlDatabaseConnection connec
     cdc:populateMessageKeyColumnsConfiguration(connection.messageKeyColumns, configMap);
 }
 
-// GTID Replication properties
-const string GTID_SOURCE_INCLUDES = "gtid.source.includes";
-const string GTID_SOURCE_EXCLUDES = "gtid.source.excludes";
-const string GTID_NEW_CHANNEL_POSITION = "gtid.new.channel.position";
-
-// Binlog properties
-const string BINLOG_BUFFER_SIZE = "binlog.buffer.size";
-
-// Data type properties
-const string BIGINT_UNSIGNED_HANDLING_MODE = "bigint.unsigned.handling.mode";
-const string ENABLE_TIME_ADJUSTER = "enable.time.adjuster";
-
-// Snapshot properties
-const string SNAPSHOT_LOCKING_MODE = "snapshot.locking.mode";
-const string SNAPSHOT_NEW_TABLES = "snapshot.new.tables";
-
 // Populates MySQL GTID replication configuration
 isolated function populateReplicationConfiguration(ReplicationConfiguration config, map<string> configMap) {
     string|string[]? gtidSourceIncludes = config.gtidSourceIncludes;
@@ -94,11 +92,6 @@ isolated function populateReplicationConfiguration(ReplicationConfiguration conf
     string|string[]? gtidSourceExcludes = config.gtidSourceExcludes;
     if gtidSourceExcludes !is () {
         configMap[GTID_SOURCE_EXCLUDES] = gtidSourceExcludes is string ? gtidSourceExcludes : string:'join(",", ...gtidSourceExcludes);
-    }
-
-    GtidNewChannelPosition? gtidNewChannelPosition = config.gtidNewChannelPosition;
-    if gtidNewChannelPosition !is () {
-        configMap[GTID_NEW_CHANNEL_POSITION] = gtidNewChannelPosition;
     }
 }
 
@@ -167,13 +160,6 @@ isolated function populateOptions(MySqlOptions options, map<string> configMap) {
 // Populates MySQL-specific extended snapshot properties
 isolated function populateExtendedSnapshotConfiguration(ExtendedSnapshotConfiguration config, map<string> configMap) {
     configMap[SNAPSHOT_LOCK_TIMEOUT_MS] = getMillisecondValueOf(config.lockTimeout);
-
-    cdc:SnapshotLockingMode? lockingMode = config.lockingMode;
-    if lockingMode !is () {
-        configMap[SNAPSHOT_LOCKING_MODE] = lockingMode;
-    }
-
-    configMap[SNAPSHOT_NEW_TABLES] = config.newTables;
 }
 
 isolated function getMillisecondValueOf(decimal value) returns string {

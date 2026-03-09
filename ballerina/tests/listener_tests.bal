@@ -414,6 +414,7 @@ function testMySqlOptionsWithHeartbeat() {
     };
 
     map<string> actualProperties = {};
+    cdc:populateOptions(options, actualProperties);
     populateOptions(options, actualProperties);
 
     test:assertEquals(actualProperties["heartbeat.interval.ms"],
@@ -423,4 +424,3 @@ function testMySqlOptionsWithHeartbeat() {
         expectedProperties["heartbeat.action.query"],
         msg = "Heartbeat action query does not match.");
 }
-

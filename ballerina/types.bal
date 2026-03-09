@@ -64,8 +64,8 @@ public type BinlogConfiguration record {|
 # + database - MySQL database connection and capture settings
 # + options - MySQL-specific CDC options including snapshot, heartbeat, signals, and data type handling
 public type MySqlListenerConfiguration record {|
-    MySqlDatabaseConnection database;
     *cdc:ListenerConfiguration;
+    MySqlDatabaseConnection database;
     MySqlOptions options = {};
 |};
 
@@ -129,8 +129,10 @@ public type DataTypeConfiguration record {|
 #
 # + extendedSnapshot - Extended snapshot configuration with MySQL-specific lock timeout and query settings
 # + dataTypeConfig - Data type handling configuration including schema change tracking
+# + heartbeatConfig - Heartbeat configuration for keeping the MySQL replication connection active
 public type MySqlOptions record {|
     *cdc:Options;
     ExtendedSnapshotConfiguration extendedSnapshot?;
     DataTypeConfiguration dataTypeConfig?;
+    cdc:RelationalHeartbeatConfiguration heartbeatConfig?;
 |};

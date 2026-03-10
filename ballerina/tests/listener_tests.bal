@@ -278,9 +278,9 @@ function testMySqlReplicationConfiguration() {
     test:assertEquals(actualProperties["gtid.source.includes"],
         expectedProperties["gtid.source.includes"],
         msg = "GTID source includes does not match.");
-    test:assertEquals(actualProperties["gtid.new.channel.position"],
-        expectedProperties["gtid.new.channel.position"],
-        msg = "GTID new channel position does not match.");
+    test:assertEquals(actualProperties["gtid.source.excludes"],
+        expectedProperties["gtid.source.excludes"],
+        msg = "GTID source excludes does not match.");
 }
 
 @test:Config {groups: ["mysql-binlog"]}
@@ -369,6 +369,9 @@ function testMySqlDataTypeConfiguration() {
     test:assertEquals(actualProperties["enable.time.adjuster"],
         expectedProperties["enable.time.adjuster"],
         msg = "Enable time adjuster does not match.");
+    test:assertEquals(actualProperties["include.schema.changes"],
+        expectedProperties["include.schema.changes"],
+        msg = "Include schema changes does not match.");
 }
 
 @test:Config {groups: ["mysql-snapshot"]}

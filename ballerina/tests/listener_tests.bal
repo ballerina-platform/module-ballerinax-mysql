@@ -253,3 +253,175 @@ function testCdcListenerEvents() returns error? {
 
     check testListener.gracefulStop();
 }
+
+// ========== DATABASE-SPECIFIC CONFIGURATION TESTS ==========
+
+@test:Config {groups: ["mysql-replication"]}
+function testMySqlReplicationConfiguration() {
+    map<string> expectedProperties = {
+        "gtid.source.includes": "server-1,server-2",
+        "gtid.source.excludes": "server-3",
+        "gtid.new.channel.position": "earliest"
+    };
+
+    MySqlDatabaseConnection connection = {
+        username: "testuser",
+        password: "testpass",
+        replicationConfig: {
+            gtidSourceIncludes: ["server-1", "server-2"],
+            gtidSourceExcludes: "server-3",
+            gtidNewChannelPosition: EARLIEST
+        }
+    };
+
+    map<string> actualProperties = {};
+    populateConfigurations(connection, actualProperties);
+
+    test:assertEquals(actualProperties["gtid.source.includes"],
+        expectedProperties["gtid.source.includes"],
+        msg = "GTID source includes does not match.");
+    test:assertEquals(actualProperties["gtid.new.channel.position"],
+        expectedProperties["gtid.new.channel.position"],
+        msg = "GTID new channel position does not match.");
+}
+
+@test:Config {groups: ["mysql-binlog"]}
+function testMySqlBinlogConfiguration() {
+    map<string> expectedProperties = {
+        "binlog.buffer.size": "16384"
+    };
+
+    MySqlDatabaseConnection connection = {
+        username: "testuser",
+        password: "testpass",
+        binlogConfig: {
+            bufferSize: 16384
+        }
+    };
+
+    map<string> actualProperties = {};
+    populateConfigurations(connection, actualProperties);
+
+    test:assertEquals(actualProperties["binlog.buffer.size"],
+        expectedProperties["binlog.buffer.size"],
+        msg = "Binlog buffer size does not match.");
+}
+
+@test:Config {groups: ["mysql-relational"]}
+function testMySqlRelationalFilteringConfiguration() {
+    map<string> expectedProperties = {
+        "database.include.list": "db1,db2",
+        "table.include.list": "db1.customers,db1.orders",
+        "column.exclude.list": "db1.*.password,db1.*.ssn",
+        "message.key.columns": "db1.customers:id;db1.orders:order_id"
+    };
+
+    MySqlDatabaseConnection connection = {
+        username: "testuser",
+        password: "testpass",
+        databaseServerId: "12345",
+        includedDatabases: ["db1", "db2"],
+        includedTables: ["db1.customers", "db1.orders"],
+        excludedColumns: ["db1.*.password", "db1.*.ssn"],
+        messageKeyColumns: "db1.customers:id;db1.orders:order_id"
+    };
+
+    map<string> actualProperties = {};
+    populateDatabaseConfigurations(connection, actualProperties);
+
+    test:assertEquals(actualProperties["database.include.list"],
+        expectedProperties["database.include.list"],
+        msg = "Database include list does not match.");
+    test:assertEquals(actualProperties["table.include.list"],
+        expectedProperties["table.include.list"],
+        msg = "Table include list does not match.");
+    test:assertEquals(actualProperties["column.exclude.list"],
+        expectedProperties["column.exclude.list"],
+        msg = "Column exclude list does not match.");
+    test:assertEquals(actualProperties["message.key.columns"],
+        expectedProperties["message.key.columns"],
+        msg = "Message key columns does not match.");
+}
+
+@test:Config {groups: ["mysql-datatype"]}
+function testMySqlDataTypeConfiguration() {
+    map<string> expectedProperties = {
+        "bigint.unsigned.handling.mode": "precise",
+        "enable.time.adjuster": "false",
+        "include.schema.changes": "false"
+    };
+
+    MySqlOptions options = {
+        dataTypeConfig: {
+            bigIntUnsignedHandlingMode: PRECISE,
+            enableTimeAdjuster: false,
+            includeSchemaChanges: false
+        }
+    };
+
+    map<string> actualProperties = {};
+    populateOptions(options, actualProperties);
+
+    test:assertEquals(actualProperties["bigint.unsigned.handling.mode"],
+        expectedProperties["bigint.unsigned.handling.mode"],
+        msg = "Bigint unsigned handling mode does not match.");
+    test:assertEquals(actualProperties["enable.time.adjuster"],
+        expectedProperties["enable.time.adjuster"],
+        msg = "Enable time adjuster does not match.");
+}
+
+@test:Config {groups: ["mysql-snapshot"]}
+function testMySqlExtendedSnapshotConfiguration() {
+    map<string> expectedProperties = {
+        "snapshot.lock.timeout.ms": "15000",
+        "snapshot.locking.mode": "minimal",
+        "snapshot.new.tables": "parallel"
+    };
+
+    MySqlOptions options = {
+        extendedSnapshot: {
+            lockTimeout: 15,
+            lockingMode: cdc:MINIMAL,
+            newTables: PARALLEL
+        }
+    };
+
+    map<string> actualProperties = {};
+    populateOptions(options, actualProperties);
+
+    test:assertEquals(actualProperties["snapshot.lock.timeout.ms"],
+        expectedProperties["snapshot.lock.timeout.ms"],
+        msg = "Snapshot lock timeout does not match.");
+    test:assertEquals(actualProperties["snapshot.locking.mode"],
+        expectedProperties["snapshot.locking.mode"],
+        msg = "Snapshot locking mode does not match.");
+    test:assertEquals(actualProperties["snapshot.new.tables"],
+        expectedProperties["snapshot.new.tables"],
+        msg = "Snapshot new tables does not match.");
+}
+
+@test:Config {groups: ["mysql-options"]}
+function testMySqlOptionsWithHeartbeat() {
+    map<string> expectedProperties = {
+        "heartbeat.interval.ms": "10000",
+        "heartbeat.action.query": "SELECT 1"
+    };
+
+    MySqlOptions options = {
+        heartbeat: {
+            interval: 10,
+            actionQuery: "SELECT 1"
+        }
+    };
+
+    map<string> actualProperties = {};
+    populateOptions(options, actualProperties);
+
+    test:assertEquals(actualProperties["heartbeat.interval.ms"],
+        expectedProperties["heartbeat.interval.ms"],
+        msg = "Heartbeat interval does not match.");
+    test:assertEquals(actualProperties["heartbeat.action.query"],
+        expectedProperties["heartbeat.action.query"],
+        msg = "Heartbeat action query does not match.");
+}
+

@@ -49,7 +49,7 @@ public isolated class CdcListener {
     #
     # + return - An error if the listener cannot be started, or `()` if successful
     public isolated function 'start() returns cdc:Error? {
-        check cdc:externStartWithSeparateConfigs(self, self.debeziumConfigs, self.listenerConfigs);
+        check cdc:externStartWithExtendedConfigs(self, self.debeziumConfigs, self.listenerConfigs);
     }
 
     # Detaches a CDC service from the MySQL listener.

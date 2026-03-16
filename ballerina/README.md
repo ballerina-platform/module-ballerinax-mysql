@@ -1,6 +1,14 @@
 ## Overview
 
-This module provides the functionality required to access and manipulate data stored in a MySQL database.
+This module provides the functionality required to access and manipulate data stored in a MySQL database. It enables seamless integration with MySQL, supporting various data types and advanced database features.
+
+### Key Features
+
+- Reliable and high-performance database connectivity
+- Support for common SQL operations (Query, Execute, Batch)
+- Efficient connection pooling and resource management
+- Support for Change Data Capture (CDC) and SSL
+- GraalVM compatible for native image builds
 
 ### Prerequisite
 Add the MySQL driver as a dependency to the Ballerina project.

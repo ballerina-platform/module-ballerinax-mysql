@@ -16,7 +16,7 @@ graalvmCompatible = true
 groupId = "io.ballerina.stdlib"
 artifactId = "mysql-native"
 version = "1.16.3"
-path = "../native/build/libs/mysql-native-1.16.3-SNAPSHOT.jar"
+path = "../native/build/libs/mysql-native-1.16.3.jar"
 
 [[platform.java21.dependency]]
 groupId = "io.ballerina.stdlib"

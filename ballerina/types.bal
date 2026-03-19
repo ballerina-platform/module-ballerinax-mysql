@@ -19,6 +19,15 @@ import ballerina/random;
 import ballerina/sql;
 import ballerinax/cdc;
 
+# Represents BIGINT UNSIGNED handling modes.
+#
+# + LONG - Represent BIGINT UNSIGNED as long (may lose precision for values > Long.MAX_VALUE)
+# + PRECISE - Represent BIGINT UNSIGNED precisely using java.math.BigDecimal
+public enum BigIntUnsignedHandlingMode {
+    LONG = "long",
+    PRECISE = "precise"
+}
+
 # The iterator for the stream returned in `query` function to be used to override the default behaviour of `sql:ResultIterator`.
 public distinct class CustomResultIterator {
     *sql:CustomResultIterator;
@@ -34,12 +43,30 @@ public distinct class CustomResultIterator {
     } external;
 }
 
-# Represents the configuration for the MySQL CDC listener.
+# MySQL GTID-based replication configuration.
 #
-# + database - The MySQL database connection configuration
+# + gtidSourceIncludes - Comma-separated list of GTID source UUIDs to include
+# + gtidSourceExcludes - Comma-separated list of GTID source UUIDs to exclude
+public type ReplicationConfiguration record {|
+    string|string[] gtidSourceIncludes?;
+    string|string[] gtidSourceExcludes?;
+|};
+
+# MySQL binlog configuration.
+#
+# + bufferSize - Size of binlog buffer in bytes
+public type BinlogConfiguration record {|
+    int bufferSize = 8192;
+|};
+
+# MySQL CDC listener configuration including database connection, storage, and CDC options.
+#
+# + database - MySQL database connection and capture settings
+# + options - MySQL-specific CDC options including snapshot, heartbeat, signals, and data type handling
 public type MySqlListenerConfiguration record {|
-    MySqlDatabaseConnection database;
     *cdc:ListenerConfiguration;
+    MySqlDatabaseConnection database;
+    MySqlOptions options = {};
 |};
 
 # Represents the configuration for the MySQL CDC database connection.
@@ -50,8 +77,14 @@ public type MySqlListenerConfiguration record {|
 # + databaseServerId - The unique identifier for the MySQL server
 # + includedDatabases - A list of regular expressions matching fully-qualified database identifiers to capture changes from (should not be used alongside databaseExclude)
 # + excludedDatabases - A list of regular expressions matching fully-qualified database identifiers to exclude from change capture (should not be used alongside databaseInclude)
+# + includedTables - Regex patterns for tables to capture (mutually exclusive with `excludedTables`)
+# + excludedTables - Regex patterns for tables to exclude (mutually exclusive with `includedTables`)
+# + includedColumns - Regex patterns for columns to capture (mutually exclusive with `excludedColumns`)
+# + excludedColumns - Regex patterns for columns to exclude (mutually exclusive with `includedColumns`)
+# + messageKeyColumns - Composite message key columns for change events
 # + tasksMax - The maximum number of tasks to create for this connector. Because the MySQL connector always uses a single task, changing the default value has no effect
-# + secure - The connector establishes an encrypted connection if the server supports secure connections
+# + replicationConfig - MySQL GTID-based replication configuration
+# + binlogConfig - MySQL binlog configuration
 public type MySqlDatabaseConnection record {|
     *cdc:DatabaseConnection;
     string connectorClass = "io.debezium.connector.mysql.MySqlConnector";
@@ -60,6 +93,46 @@ public type MySqlDatabaseConnection record {|
     string databaseServerId = (checkpanic random:createIntInRange(0, 100000)).toString();
     string|string[] includedDatabases?;
     string|string[] excludedDatabases?;
+    string|string[] includedTables?;
+    string|string[] excludedTables?;
+    string|string[] includedColumns?;
+    string|string[] excludedColumns?;
+    cdc:MessageKeyColumns[] messageKeyColumns?;
     int tasksMax = 1;
-    cdc:SecureDatabaseConnection secure = {};
+    ReplicationConfiguration replicationConfig?;
+    BinlogConfiguration binlogConfig?;
+|};
+
+# MySQL-specific extended snapshot configuration.
+# Extends generic relational snapshot configuration with MySQL-specific options.
+#
+# + lockTimeout - Lock acquisition timeout in seconds
+public type ExtendedSnapshotConfiguration record {|
+    *cdc:RelationalExtendedSnapshotConfiguration;
+    decimal lockTimeout = 10;
+|};
+
+# MySQL-specific data type handling configuration.
+# Extends generic data type configuration with MySQL-specific type handling.
+#
+# + bigIntUnsignedHandlingMode - How to handle BIGINT UNSIGNED values (long or precise)
+# + enableTimeAdjuster - Enable time adjuster for MySQL temporal types
+# + includeSchemaChanges - Whether to include schema change events (MySQL supports this)
+public type DataTypeConfiguration record {|
+    *cdc:DataTypeConfiguration;
+    BigIntUnsignedHandlingMode bigIntUnsignedHandlingMode = LONG;
+    boolean enableTimeAdjuster = true;
+    boolean includeSchemaChanges = true;
+|};
+
+# MySQL-specific CDC options for configuring snapshot behavior and data type handling.
+#
+# + extendedSnapshot - Extended snapshot configuration with MySQL-specific lock timeout and query settings
+# + dataTypeConfig - Data type handling configuration including schema change tracking
+# + heartbeatConfig - Heartbeat configuration for keeping the MySQL replication connection active
+public type MySqlOptions record {|
+    *cdc:Options;
+    ExtendedSnapshotConfiguration extendedSnapshot?;
+    DataTypeConfiguration dataTypeConfig?;
+    cdc:RelationalHeartbeatConfiguration heartbeatConfig?;
 |};

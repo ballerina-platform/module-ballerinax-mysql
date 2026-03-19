@@ -14,12 +14,84 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerinax/cdc;
+
+// MySQL connector-specific configuration keys
 const string MYSQL_DATABASE_SERVER_ID = "database.server.id";
 const string MYSQL_DATABASE_INCLUDE_LIST = "database.include.list";
 const string MYSQL_DATABASE_EXCLUDE_LIST = "database.exclude.list";
+const string SNAPSHOT_LOCK_TIMEOUT_MS = "snapshot.lock.timeout.ms";
+const string INCLUDE_SCHEMA_CHANGES = "include.schema.changes";
+
+// GTID Replication properties
+const string GTID_SOURCE_INCLUDES = "gtid.source.includes";
+const string GTID_SOURCE_EXCLUDES = "gtid.source.excludes";
+
+// Binlog properties
+const string BINLOG_BUFFER_SIZE = "binlog.buffer.size";
+
+// Data type properties
+const string BIGINT_UNSIGNED_HANDLING_MODE = "bigint.unsigned.handling.mode";
+const string ENABLE_TIME_ADJUSTER = "enable.time.adjuster";
+
+// Snapshot properties
+const string SNAPSHOT_LOCKING_MODE = "snapshot.locking.mode";
+
+isolated function populateDebeziumProperties(MySqlListenerConfiguration config, map<string> debeziumConfigs) {
+    cdc:populateDebeziumProperties({
+                                       engineName: config.engineName,
+                                       offsetStorage: config.offsetStorage,
+                                       internalSchemaStorage: config.internalSchemaStorage,
+                                       database: config.database,
+                                       options: config.options
+                                   }, debeziumConfigs);
+    populateDatabaseConfigurations(config.database, debeziumConfigs);
+    populateOptions(config.options, debeziumConfigs);
+}
 
 // Populates MySQL-specific configurations
-isolated function populateMySqlConfigurations(MySqlDatabaseConnection connection, map<string> configMap) {
+isolated function populateDatabaseConfigurations(MySqlDatabaseConnection database, map<string> debeziumConfigs) {
+    // Populate MySQL-specific relational filtering
+    populateTableAndColumnFiltering(database, debeziumConfigs);
+
+    // Populate MySQL-specific configurations
+    populateConfigurations(database, debeziumConfigs);
+}
+
+// Populates MySQL-specific relational filtering (table/column inclusion/exclusion and message key columns)
+isolated function populateTableAndColumnFiltering(MySqlDatabaseConnection connection, map<string> configMap) {
+    // Call CDC utility functions with direct parameters
+    cdc:populateTableAndColumnConfigurations(
+        connection.includedTables,
+        connection.excludedTables,
+        connection.includedColumns,
+        connection.excludedColumns,
+        configMap
+    );
+
+    cdc:populateMessageKeyColumnsConfiguration(connection.messageKeyColumns, configMap);
+}
+
+// Populates MySQL GTID replication configuration
+isolated function populateReplicationConfiguration(ReplicationConfiguration config, map<string> configMap) {
+    string|string[]? gtidSourceIncludes = config.gtidSourceIncludes;
+    if gtidSourceIncludes !is () {
+        configMap[GTID_SOURCE_INCLUDES] = gtidSourceIncludes is string ? gtidSourceIncludes : string:'join(",", ...gtidSourceIncludes);
+    }
+
+    string|string[]? gtidSourceExcludes = config.gtidSourceExcludes;
+    if gtidSourceExcludes !is () {
+        configMap[GTID_SOURCE_EXCLUDES] = gtidSourceExcludes is string ? gtidSourceExcludes : string:'join(",", ...gtidSourceExcludes);
+    }
+}
+
+// Populates MySQL binlog configuration
+isolated function populateBinlogConfiguration(BinlogConfiguration config, map<string> configMap) {
+    configMap[BINLOG_BUFFER_SIZE] = config.bufferSize.toString();
+}
+
+// Populates MySQL-specific configurations
+isolated function populateConfigurations(MySqlDatabaseConnection connection, map<string> configMap) {
     configMap[MYSQL_DATABASE_SERVER_ID] = connection.databaseServerId.toString();
 
     string|string[]? includedDatabases = connection.includedDatabases;
@@ -31,4 +103,62 @@ isolated function populateMySqlConfigurations(MySqlDatabaseConnection connection
     if excludedDatabases !is () {
         configMap[MYSQL_DATABASE_EXCLUDE_LIST] = excludedDatabases is string ? excludedDatabases : string:'join(",", ...excludedDatabases);
     }
+
+    // Populate MySQL replication configuration
+    ReplicationConfiguration? replicationConfig = connection.replicationConfig;
+    if replicationConfig is ReplicationConfiguration {
+        populateReplicationConfiguration(replicationConfig, configMap);
+    }
+
+    // Populate MySQL binlog configuration
+    BinlogConfiguration? binlogConfig = connection.binlogConfig;
+    if binlogConfig is BinlogConfiguration {
+        populateBinlogConfiguration(binlogConfig, configMap);
+    }
+}
+
+// Populates MySQL-specific data type configuration
+isolated function populateDataTypeConfiguration(DataTypeConfiguration config, map<string> configMap) {
+    // Populate generic data type options
+    cdc:populateDataTypeConfiguration(config, configMap);
+
+    // Populate MySQL-specific data type options
+    configMap[BIGINT_UNSIGNED_HANDLING_MODE] = config.bigIntUnsignedHandlingMode;
+    configMap[ENABLE_TIME_ADJUSTER] = config.enableTimeAdjuster.toString();
+    configMap[INCLUDE_SCHEMA_CHANGES] = config.includeSchemaChanges.toString();
+}
+
+// Populates MySQL-specific options
+isolated function populateOptions(MySqlOptions options, map<string> configMap) {
+    // Populate MySQL-specific extended snapshot configuration
+    ExtendedSnapshotConfiguration? extendedSnapshot = options.extendedSnapshot;
+    if extendedSnapshot is ExtendedSnapshotConfiguration {
+        cdc:populateRelationalExtendedSnapshotConfiguration(extendedSnapshot, configMap);
+        populateExtendedSnapshotConfiguration(extendedSnapshot, configMap);
+    }
+
+    // Populate MySQL-specific data type configuration
+    DataTypeConfiguration? dataTypeConfig = options.dataTypeConfig;
+    if dataTypeConfig is DataTypeConfiguration {
+        populateDataTypeConfiguration(dataTypeConfig, configMap);
+    }
+
+    // Populate relational heartbeat configuration
+    cdc:RelationalHeartbeatConfiguration? heartbeatConfig = options.heartbeatConfig;
+    if heartbeatConfig is cdc:RelationalHeartbeatConfiguration {
+        cdc:populateRelationalHeartbeatConfiguration(heartbeatConfig, configMap);
+    }
+
+    // Populate additional DB-specific options not present in base Options
+    cdc:populateAdditionalConfigurations(options, configMap, typeof options);
+}
+
+// Populates MySQL-specific extended snapshot properties
+isolated function populateExtendedSnapshotConfiguration(ExtendedSnapshotConfiguration config, map<string> configMap) {
+    configMap[SNAPSHOT_LOCK_TIMEOUT_MS] = getMillisecondValueOf(config.lockTimeout);
+}
+
+isolated function getMillisecondValueOf(decimal value) returns string {
+    string milliSecondVal = (value * 1000).toBalString();
+    return milliSecondVal.substring(0, milliSecondVal.indexOf(".") ?: milliSecondVal.length());
 }

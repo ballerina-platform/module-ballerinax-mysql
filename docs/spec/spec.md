@@ -205,7 +205,7 @@ The MySQL module sets the following metric tags on every connection pool it crea
 
 | Tag | Source | Always present | Description |
 |---|---|---|---|
-| `db_host` | `host` parameter | Yes | Hostname of the MySQL server (defaults to `"localhost"`) |
-| `db_port` | `port` parameter | Yes | Port number of the MySQL server (defaults to `3306`) |
+| `db_host` | `host` parameter | Yes | Hostname of the server (defaults to `"localhost"`) |
+| `db_port` | `port` parameter | Yes | Port number of the server (defaults to `3306`) |
 | `db_name` | `database` parameter | No | Database name; omitted when `database` is `nil` or empty |
 

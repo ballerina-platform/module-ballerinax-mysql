@@ -30,6 +30,8 @@ The conforming implementation of the specification is released to Ballerina Cent
 - [5. Change Data Capture Listener](#5-change-data-capture-listener)
   - [5.1. Create a listener](#51-create-a-listener)
   - [5.2. Implement a service to handle CDC events](#52-implement-a-service-to-handle-cdc-events)
+- [6. Observability](#6-observability)
+  - [6.1. Metric tags](#61-metric-tags)
 
 # 1. Overview
 
@@ -192,3 +194,18 @@ service on cdcListener {
     }
 }
 ```
+
+# 6. Observability
+
+The MySQL module supports observability through connection pool metrics, reported via the `ballerina/observe` module. The metric names and lifecycle are defined by the `ballerina/sql` module. For more information on connection pool metrics, see the [SQL specification](https://github.com/ballerina-platform/module-ballerina-sql/blob/master/docs/spec/spec.md).
+
+## 6.1. Metric tags
+
+The MySQL module sets the following metric tags on every connection pool it creates. These tags are attached to all pool health and connection event metrics, enabling filtering and identification.
+
+| Tag | Source | Always present | Description |
+|---|---|---|---|
+| `db_host` | `host` parameter | Yes | Hostname of the server (defaults to `"localhost"`) |
+| `db_port` | `port` parameter | Yes | Port number of the server (defaults to `3306`) |
+| `db_name` | `database` parameter | No | Database name; omitted when `database` is `nil` or empty |
+

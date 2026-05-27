@@ -1,24 +1,24 @@
 [package]
 org = "ballerinax"
 name = "mysql"
-version = "1.18.0"
+version = "1.18.1"
 authors = ["Ballerina"]
 keywords = ["Client", "Network", "SQL", "RDBMS", "MySQL", "Vendor/Oracle", "Area/Database", "Type/Connector", "Type/Trigger"]
 repository = "https://github.com/ballerina-platform/module-ballerinax-mysql"
 icon = "icon.png"
 license = ["Apache-2.0"]
-distribution = "2201.13.0"
+distribution = "2201.14.0-20260527-050400-74f7e6bf"
 
-[platform.java21]
+[platform.java25]
 graalvmCompatible = true
 
-[[platform.java21.dependency]]
+[[platform.java25.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "mysql-native"
-version = "1.18.0"
-path = "../native/build/libs/mysql-native-1.18.0.jar"
+version = "1.18.1"
+path = "../native/build/libs/mysql-native-1.18.1-SNAPSHOT.jar"
 
-[[platform.java21.dependency]]
+[[platform.java25.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "sql-native"
 version = "1.19.0"

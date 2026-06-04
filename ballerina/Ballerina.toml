@@ -9,6 +9,21 @@ icon = "icon.png"
 license = ["Apache-2.0"]
 distribution = "2201.12.0"
 
+# Local testing: until cdc 1.3.2 + mysql.cdc.driver 1.0.3 (Debezium 3.5.1) are published to
+# Ballerina Central, consume them from the local repository (`bal push --repository=local`).
+# Remove once released.
+[[dependency]]
+org = "ballerinax"
+name = "cdc"
+version = "1.3.2"
+repository = "local"
+
+[[dependency]]
+org = "ballerinax"
+name = "mysql.cdc.driver"
+version = "1.0.3"
+repository = "local"
+
 [platform.java21]
 graalvmCompatible = true
 

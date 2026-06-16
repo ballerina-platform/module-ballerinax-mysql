@@ -26,10 +26,13 @@ import io.ballerina.runtime.api.values.BString;
 import io.ballerina.stdlib.mysql.Constants;
 import io.ballerina.stdlib.mysql.Utils;
 import io.ballerina.stdlib.sql.datasource.SQLDatasource;
+import io.ballerina.stdlib.sql.observability.ObservabilityUtils;
 import io.ballerina.stdlib.sql.utils.ErrorGenerator;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -123,13 +126,22 @@ public class ClientProcessor {
 
         BMap connectionPool = clientConfig.getMapValue(Constants.ClientConfiguration.CONNECTION_POOL_OPTIONS);
 
+        String host = clientConfig.getStringValue(Constants.ClientConfiguration.HOST).getValue();
+        Map<String, String> metricsTags = new HashMap<>();
+        metricsTags.put(ObservabilityUtils.TAG_DB_HOST, host);
+        metricsTags.put(ObservabilityUtils.TAG_DB_PORT, String.valueOf(portValue.intValue()));
+        if (database != null && !database.isEmpty()) {
+            metricsTags.put(ObservabilityUtils.TAG_DB_NAME, database);
+        }
+
         SQLDatasource.SQLDatasourceParams sqlDatasourceParams = new SQLDatasource.SQLDatasourceParams()
                 .setUrl(url.toString()).setUser(user)
                 .setPassword(password)
                 .setDatasourceName(datasourceName)
                 .setOptions(properties)
                 .setConnectionPool(connectionPool, globalPool)
-                .setPoolProperties(poolProperties);
+                .setPoolProperties(poolProperties)
+                .setMetricsTags(metricsTags);
 
         return io.ballerina.stdlib.sql.nativeimpl.ClientProcessor.createClient(client, sqlDatasourceParams, true, true);
     }

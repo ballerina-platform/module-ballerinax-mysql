@@ -24,4 +24,14 @@
         <Class name="io.ballerina.stdlib.mysql.parameterprocessor.MysqlStatementParameterProcessor"/>
         <Bug pattern="MS_EXPOSE_REP" />
     </Match>
+    <!-- Pre-existing issues surfaced by SpotBugs 4.9.x (bundled in plugin >= 6.2.0) -->
+    <Match>
+        <BugCode name="THROWS"/>
+    </Match>
+    <Match>
+        <BugCode name="AT"/>
+    </Match>
+    <Match>
+        <BugCode name="USELESS_STRING"/>
+    </Match>
 </FindBugsFilter>

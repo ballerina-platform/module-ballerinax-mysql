@@ -248,8 +248,8 @@ function testCdcListenerEvents() returns error? {
         `INSERT INTO vendors (id, name, contact_info) 
         VALUES (201, 'Vendor A', 'contact@vendora.com')`);
     runtime:sleep(3);
-    test:assertEquals(onErrorCount, 3, msg = "Error count mismatch.");
-    // 1,2 for onRead method not present, 3 for payload binding failure
+    test:assertEquals(onErrorCount, 1, msg = "Error count mismatch.");
+    // for payload binding failure
 
     check testListener.gracefulStop();
 }

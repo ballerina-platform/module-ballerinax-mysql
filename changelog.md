@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Upgrade CDC dependencies to the Debezium 3.5.1-compatible release line.
+
 ## [1.18.0] - 2026-04-03
 
 ### Added

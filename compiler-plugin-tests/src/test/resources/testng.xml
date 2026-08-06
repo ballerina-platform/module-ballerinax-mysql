@@ -24,6 +24,7 @@
     <test name="SQL Compiler Plugin Tests" parallel="false">
         <classes>
             <class name="io.ballerina.stdlib.mysql.compiler.CompilerPluginTest"/>
+            <class name="io.ballerina.stdlib.mysql.compiler.staticcodeanalyzer.StaticCodeAnalyzerTest"/>
         </classes>
     </test>
 </suite>

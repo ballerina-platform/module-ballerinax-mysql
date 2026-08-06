@@ -23,6 +23,8 @@ import io.ballerina.projects.plugins.CodeAnalysisContext;
 import io.ballerina.projects.plugins.CodeAnalyzer;
 import io.ballerina.scan.Reporter;
 
+import java.util.Arrays;
+
 /**
  * MySQL Code Analyzer.
  */
@@ -35,6 +37,13 @@ public class MySQLStaticCodeAnalyzer extends CodeAnalyzer {
 
     @Override
     public void init(CodeAnalysisContext ctx) {
-        ctx.addSyntaxNodeAnalysisTask(new SecurePasswordAnalyzer(reporter), SyntaxKind.FUNCTION_CALL);
+        ctx.addSyntaxNodeAnalysisTask(
+                new SecurePasswordAnalyzer(reporter),
+                Arrays.asList(
+                        SyntaxKind.FUNCTION_CALL,
+                        SyntaxKind.IMPLICIT_NEW_EXPRESSION,
+                        SyntaxKind.EXPLICIT_NEW_EXPRESSION
+                )
+        );
     }
 }

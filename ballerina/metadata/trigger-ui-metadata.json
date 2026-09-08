@@ -1,0 +1,1729 @@
+{
+  "version": "v1.0",
+  "metadata": {
+    "kind": "event"
+  },
+  "trigger": {
+    "displayName": "MySQL CDC Integration",
+    "description": "Create a service to capture data changes from a MySQL database using CDC",
+    "type": "mysql"
+  },
+  "readOnlyMetadata": [
+    {
+      "key": "tableName",
+      "displayName": "Table Name",
+      "path": "ServiceConfig.tables",
+      "extractor": "SERVICE_ANNOTATION"
+    }
+  ],
+  "initForm": {
+    "fields": [
+      {
+        "target": {
+          "kind": "serviceAnnotationField",
+          "serviceType": "$service",
+          "annotation": "$serviceConfig",
+          "path": "tables"
+        },
+        "metadata": {
+          "label": "Table",
+          "description": "The fully-qualified table name to capture events from. Format: `<database>.<table>`"
+        },
+        "state": {
+          "optional": true
+        },
+        "key": "table",
+        "placeholder": "",
+        "default": "",
+        "widget": {
+          "alternatives": [
+            {
+              "widgetKind": "TEXT",
+              "ballerinaType": "string",
+              "validations": [
+                {
+                  "rule": "vscode.validate.regex",
+                  "message": "Table must be in the format: <database>.<table>. Use square brackets for names with dots (e.g., db.[schema.name].table)",
+                  "severity": "ERROR",
+                  "args": {
+                    "pattern": "^$|^\\\"\\\"$|^string `(|([^.\\[\\]]+|\\[[^\\]]+\\])\\.([^.\\[\\]]+|\\[[^\\]]+\\]))`$|^\\\"([^.\\[\\]]+|\\[[^\\]]+\\])\\.([^.\\[\\]]+|\\[[^\\]]+\\])\\\"$"
+                  }
+                }
+              ]
+            },
+            {
+              "widgetKind": "EXPRESSION",
+              "ballerinaType": "string"
+            }
+          ],
+          "selectedIndex": 0
+        }
+      }
+    ]
+  },
+  "listeners": [
+    {
+      "target": "$listener",
+      "form": {
+        "section": {
+          "label": "Configure MySQL CDC Listener",
+          "description": "Select an existing MySQL CDC listener or create a new one"
+        },
+        "createNew": {
+          "label": "Create new",
+          "description": "Create a new MySQL CDC listener"
+        },
+        "listenerConfig": {
+          "label": "Listener Configurations",
+          "description": "Configure the MySQL CDC listener"
+        },
+        "useExisting": {
+          "label": "Use existing",
+          "description": "Select an existing MySQL CDC listener"
+        },
+        "useExistingEditable": false,
+        "existingListener": {
+          "label": "Listener(s)",
+          "description": "Select one or more existing listeners to attach to."
+        },
+        "existingListenerWidget": "MULTI_SELECT_LISTENER"
+      },
+      "formFields": {
+        "listenerVarName": {
+          "key": "listenerVarName",
+          "default": "mysqlCdcListener",
+          "metadata": {
+            "label": "Listener Name",
+            "description": "Provide a name for the listener being created"
+          }
+        },
+        "hostname": {
+          "key": "hostname",
+          "placeholder": "localhost",
+          "default": "\"localhost\"",
+          "metadata": {
+            "label": "Host",
+            "description": "The hostname of the MySQL Server"
+          },
+          "state": {
+            "optional": true
+          },
+          "source": {
+            "argument": {
+              "kind": "LISTENER_PARAM_INCLUDED_DEFAULTABLE_FIELD"
+            },
+            "path": "database.hostname"
+          }
+        },
+        "port": {
+          "key": "port",
+          "placeholder": "3306",
+          "default": "3306",
+          "metadata": {
+            "label": "Port",
+            "description": "The port number of the MySQL Server"
+          },
+          "state": {
+            "optional": true
+          },
+          "source": {
+            "argument": {
+              "kind": "LISTENER_PARAM_INCLUDED_DEFAULTABLE_FIELD"
+            },
+            "path": "database.port"
+          }
+        },
+        "username": {
+          "key": "username",
+          "metadata": {
+            "label": "Username",
+            "description": "The username for the MySQL Server connection"
+          },
+          "source": {
+            "argument": {
+              "kind": "LISTENER_PARAM_INCLUDED_FIELD"
+            },
+            "path": "database.username"
+          }
+        },
+        "password": {
+          "key": "password",
+          "metadata": {
+            "label": "Password",
+            "description": "The password for the MySQL Server connection"
+          },
+          "source": {
+            "argument": {
+              "kind": "LISTENER_PARAM_INCLUDED_FIELD"
+            },
+            "path": "database.password"
+          }
+        },
+        "databases": {
+          "key": "databases",
+          "metadata": {
+            "label": "Databases",
+            "description": "List of databases to capture changes from. If not specified, events from all databases will be captured."
+          },
+          "state": {
+            "optional": true
+          },
+          "widget": {
+            "widgetKind": "TEXT_SET",
+            "selected": false,
+            "ballerinaType": "string"
+          },
+          "source": {
+            "argument": {
+              "kind": "LISTENER_PARAM_INCLUDED_FIELD"
+            },
+            "path": "database.includedDatabases"
+          }
+        },
+        "enableCreate": {
+          "key": "enableCreate",
+          "default": "true",
+          "widget": {
+            "widgetKind": "FLAG",
+            "selected": true
+          },
+          "source": {
+            "argument": {
+              "kind": "CDC_OPERATION_ENABLE",
+              "originalName": "c"
+            },
+            "path": "options.skippedOperations"
+          },
+          "metadata": {
+            "label": "Insert events",
+            "description": "When enabled, the CDC listener will capture INSERT events"
+          }
+        },
+        "enableUpdate": {
+          "key": "enableUpdate",
+          "default": "true",
+          "widget": {
+            "widgetKind": "FLAG",
+            "selected": true
+          },
+          "source": {
+            "argument": {
+              "kind": "CDC_OPERATION_ENABLE",
+              "originalName": "u"
+            },
+            "path": "options.skippedOperations"
+          },
+          "metadata": {
+            "label": "Update events",
+            "description": "When enabled, the CDC listener will capture UPDATE events"
+          }
+        },
+        "enableDelete": {
+          "key": "enableDelete",
+          "default": "true",
+          "widget": {
+            "widgetKind": "FLAG",
+            "selected": true
+          },
+          "source": {
+            "argument": {
+              "kind": "CDC_OPERATION_ENABLE",
+              "originalName": "d"
+            },
+            "path": "options.skippedOperations"
+          },
+          "metadata": {
+            "label": "Delete events",
+            "description": "When enabled, the CDC listener will capture DELETE events"
+          }
+        },
+        "secureSocket": {
+          "key": "secureSocket",
+          "default": "",
+          "metadata": {
+            "label": "Secure Socket",
+            "description": "Configure SSL/TLS configuration for secure connection"
+          },
+          "state": {
+            "advanced": true,
+            "optional": true
+          },
+          "widget": {
+            "alternatives": [
+              {
+                "widgetKind": "RECORD_MAP_EXPRESSION",
+                "ballerinaType": "cdc:SecureDatabaseConnection",
+                "typeMembers": [
+                  {
+                    "type": "SecureDatabaseConnection",
+                    "packageInfo": "ballerinax:cdc:1.3.0",
+                    "packageName": "cdc",
+                    "kind": "RECORD_TYPE",
+                    "selected": false
+                  }
+                ]
+              },
+              {
+                "widgetKind": "EXPRESSION",
+                "ballerinaType": "cdc:SecureDatabaseConnection"
+              }
+            ],
+            "selectedIndex": 0
+          },
+          "source": {
+            "argument": {
+              "kind": "LISTENER_PARAM_INCLUDED_FIELD"
+            },
+            "path": "database.secure"
+          }
+        },
+        "options": {
+          "key": "options",
+          "default": "",
+          "metadata": {
+            "label": "Options",
+            "description": "Additional options for the CDC engine"
+          },
+          "state": {
+            "advanced": true,
+            "optional": true
+          },
+          "widget": {
+            "alternatives": [
+              {
+                "widgetKind": "RECORD_MAP_EXPRESSION",
+                "ballerinaType": "cdc:Options",
+                "typeMembers": [
+                  {
+                    "type": "Options",
+                    "packageInfo": "ballerinax:cdc:1.3.0",
+                    "packageName": "cdc",
+                    "kind": "RECORD_TYPE",
+                    "selected": true
+                  }
+                ]
+              },
+              {
+                "widgetKind": "EXPRESSION",
+                "ballerinaType": "cdc:Options"
+              }
+            ],
+            "selectedIndex": 0
+          }
+        },
+        "livenessInterval": {
+          "key": "livenessInterval",
+          "placeholder": "60.0",
+          "default": "",
+          "metadata": {
+            "label": "Liveness Interval",
+            "description": "Interval in seconds for the CDC engine liveness check"
+          },
+          "state": {
+            "advanced": true
+          }
+        },
+        "internalSchemaStorage": {
+          "key": "internalSchemaStorage",
+          "default": "",
+          "metadata": {
+            "label": "Internal Schema Storage",
+            "description": "Storage configuration for the internal schema history"
+          },
+          "state": {
+            "advanced": true,
+            "optional": true
+          },
+          "widget": {
+            "alternatives": [
+              {
+                "widgetKind": "RECORD_MAP_EXPRESSION",
+                "ballerinaType": "cdc:InternalSchemaStorage",
+                "typeMembers": [
+                  {
+                    "type": "FileInternalSchemaStorage",
+                    "packageInfo": "ballerinax:cdc:1.3.0",
+                    "packageName": "cdc",
+                    "kind": "RECORD_TYPE",
+                    "selected": true
+                  },
+                  {
+                    "type": "KafkaInternalSchemaStorage",
+                    "packageInfo": "ballerinax:cdc:1.3.0",
+                    "packageName": "cdc",
+                    "kind": "RECORD_TYPE",
+                    "selected": false
+                  },
+                  {
+                    "type": "MemoryInternalSchemaStorage",
+                    "packageInfo": "ballerinax:cdc:1.3.0",
+                    "packageName": "cdc",
+                    "kind": "RECORD_TYPE",
+                    "selected": false
+                  },
+                  {
+                    "type": "JdbcInternalSchemaStorage",
+                    "packageInfo": "ballerinax:cdc:1.3.0",
+                    "packageName": "cdc",
+                    "kind": "RECORD_TYPE",
+                    "selected": false
+                  },
+                  {
+                    "type": "RedisInternalSchemaStorage",
+                    "packageInfo": "ballerinax:cdc:1.3.0",
+                    "packageName": "cdc",
+                    "kind": "RECORD_TYPE",
+                    "selected": false
+                  },
+                  {
+                    "type": "AmazonS3InternalSchemaStorage",
+                    "packageInfo": "ballerinax:cdc:1.3.0",
+                    "packageName": "cdc",
+                    "kind": "RECORD_TYPE",
+                    "selected": false
+                  },
+                  {
+                    "type": "AzureBlobInternalSchemaStorage",
+                    "packageInfo": "ballerinax:cdc:1.3.0",
+                    "packageName": "cdc",
+                    "kind": "RECORD_TYPE",
+                    "selected": false
+                  },
+                  {
+                    "type": "RocketMQInternalSchemaStorage",
+                    "packageInfo": "ballerinax:cdc:1.3.0",
+                    "packageName": "cdc",
+                    "kind": "RECORD_TYPE",
+                    "selected": false
+                  }
+                ]
+              },
+              {
+                "widgetKind": "EXPRESSION",
+                "ballerinaType": "cdc:InternalSchemaStorage"
+              }
+            ],
+            "selectedIndex": 0
+          }
+        },
+        "offsetStorage": {
+          "key": "offsetStorage",
+          "default": "",
+          "metadata": {
+            "label": "Offset Storage",
+            "description": "Storage configuration for CDC offsets"
+          },
+          "state": {
+            "advanced": true,
+            "optional": true
+          },
+          "widget": {
+            "alternatives": [
+              {
+                "widgetKind": "RECORD_MAP_EXPRESSION",
+                "ballerinaType": "cdc:OffsetStorage",
+                "typeMembers": [
+                  {
+                    "type": "FileOffsetStorage",
+                    "packageInfo": "ballerinax:cdc:1.3.0",
+                    "packageName": "cdc",
+                    "kind": "RECORD_TYPE",
+                    "selected": true
+                  },
+                  {
+                    "type": "KafkaOffsetStorage",
+                    "packageInfo": "ballerinax:cdc:1.3.0",
+                    "packageName": "cdc",
+                    "kind": "RECORD_TYPE",
+                    "selected": false
+                  },
+                  {
+                    "type": "MemoryOffsetStorage",
+                    "packageInfo": "ballerinax:cdc:1.3.0",
+                    "packageName": "cdc",
+                    "kind": "RECORD_TYPE",
+                    "selected": false
+                  },
+                  {
+                    "type": "JdbcOffsetStorage",
+                    "packageInfo": "ballerinax:cdc:1.3.0",
+                    "packageName": "cdc",
+                    "kind": "RECORD_TYPE",
+                    "selected": false
+                  },
+                  {
+                    "type": "RedisOffsetStorage",
+                    "packageInfo": "ballerinax:cdc:1.3.0",
+                    "packageName": "cdc",
+                    "kind": "RECORD_TYPE",
+                    "selected": false
+                  }
+                ]
+              },
+              {
+                "widgetKind": "EXPRESSION",
+                "ballerinaType": "cdc:OffsetStorage"
+              }
+            ],
+            "selectedIndex": 0
+          }
+        }
+      }
+    }
+  ],
+  "serviceTypes": [
+    {
+      "target": "$service",
+      "metadata": {
+        "label": "CDC Service",
+        "description": "Handles MySQL change-data-capture events (row reads, inserts, updates, deletes) delivered by the attached MySQL CDC listener."
+      },
+      "state": {
+        "editable": false,
+        "enabled": true
+      },
+      "fields": [
+        {
+          "target": {
+            "kind": "recordField",
+            "owner": "cdc:Service.properties",
+            "path": "serviceConfig"
+          },
+          "metadata": {
+            "label": "Service Config",
+            "description": "Advanced CDC configuration"
+          },
+          "source": {
+            "construct": {
+              "kind": "SERVICE_ANNOTATION"
+            },
+            "argument": {
+              "originalName": "ServiceConfig"
+            },
+            "module": {
+              "name": "cdc"
+            },
+            "path": ""
+          },
+          "state": {
+            "enabled": true,
+            "editable": true,
+            "optional": false,
+            "advanced": false
+          },
+          "key": "serviceConfig",
+          "default": ""
+        }
+      ],
+      "handlers": [
+        {
+          "target": "$service.onRead",
+          "metadata": {
+            "label": "onRead",
+            "description": "Triggered for each row present in the table when the initial snapshot is taken (and, for tables using function-based CDC query mode, for rows read outside of change events)."
+          },
+          "parameters": [
+            {
+              "target": {
+                "kind": "concreteParam",
+                "serviceType": "$service",
+                "handler": "onRead",
+                "name": "after"
+              },
+              "metadata": {
+                "label": "Database Entry",
+                "description": "The row data after the read."
+              },
+              "fields": [
+                {
+                  "target": {
+                    "kind": "recordField",
+                    "owner": "after.parameter",
+                    "path": "type"
+                  },
+                  "metadata": {
+                    "label": "Parameter Type",
+                    "description": "The type of the parameter"
+                  },
+                  "state": {
+                    "enabled": true,
+                    "editable": true,
+                    "optional": true,
+                    "advanced": false
+                  },
+                  "key": "type",
+                  "default": "",
+                  "properties": {
+                    "payload": {
+                      "key": "payload",
+                      "default": "record {}",
+                      "metadata": {
+                        "label": "Database Entry",
+                        "description": "Define the shape of the database row bound to this parameter."
+                      },
+                      "source": {
+                        "construct": {
+                          "kind": "PAYLOAD_TYPE"
+                        },
+                        "payload": {
+                          "boundType": "",
+                          "typeConstraint": "anydata",
+                          "defaultType": "record {}",
+                          "template": "{{type}}"
+                        },
+                        "bindable": true,
+                        "nameEditable": false,
+                        "bindingKind": "USER_SELECTED"
+                      },
+                      "state": {
+                        "enabled": true,
+                        "editable": true,
+                        "optional": false,
+                        "advanced": false
+                      },
+                      "widget": {
+                        "widgetKind": "PAYLOAD_TYPE",
+                        "selected": true,
+                        "ballerinaType": "record {}",
+                        "template": "{{type}}",
+                        "formats": [
+                          {
+                            "supported": [
+                              "schema",
+                              "browse",
+                              "json",
+                              "xml"
+                            ],
+                            "defaultFormat": "json"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "widget": {
+                    "widgetKind": "DATA_BINDING",
+                    "selected": true
+                  }
+                },
+                {
+                  "target": {
+                    "kind": "recordField",
+                    "owner": "after.parameter",
+                    "path": "name"
+                  },
+                  "metadata": {
+                    "label": "after",
+                    "description": "The row data after the read."
+                  },
+                  "state": {
+                    "enabled": true,
+                    "editable": true,
+                    "optional": false,
+                    "advanced": false
+                  },
+                  "key": "name",
+                  "placeholder": "after",
+                  "default": "after"
+                }
+              ],
+              "source": {
+                "construct": {
+                  "kind": "FUNCTION_PARAM"
+                }
+              },
+              "state": {
+                "enabled": true,
+                "editable": true,
+                "optional": false,
+                "advanced": false,
+                "hidden": false
+              }
+            },
+            {
+              "target": "$service.onRead.tableName",
+              "metadata": {
+                "label": "Table Name",
+                "description": "Restrict this handler to a single table when the listener watches more than one (fully-qualified table name)."
+              },
+              "state": {
+                "advanced": true,
+                "enabled": false,
+                "editable": true,
+                "optional": true,
+                "hidden": false
+              },
+              "fields": [
+                {
+                  "target": {
+                    "kind": "recordField",
+                    "owner": "tableName.parameter",
+                    "path": "type"
+                  },
+                  "metadata": {
+                    "label": "Include Table Name",
+                    "description": "Tick to include the table-name parameter in the handler signature."
+                  },
+                  "state": {
+                    "enabled": true,
+                    "editable": true,
+                    "optional": false,
+                    "advanced": false
+                  },
+                  "key": "type",
+                  "default": false,
+                  "widget": {
+                    "widgetKind": "FLAG",
+                    "selected": true,
+                    "ballerinaType": "string"
+                  }
+                },
+                {
+                  "target": {
+                    "kind": "recordField",
+                    "owner": "tableName.parameter",
+                    "path": "name"
+                  },
+                  "metadata": {
+                    "label": "tableName",
+                    "description": "Restrict this handler to a single table."
+                  },
+                  "state": {
+                    "editable": false,
+                    "enabled": true,
+                    "optional": false,
+                    "advanced": false
+                  },
+                  "key": "name",
+                  "placeholder": "tableName",
+                  "default": "tableName"
+                }
+              ],
+              "source": {
+                "construct": {
+                  "kind": "FUNCTION_PARAM"
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "target": "$service.onRead.returns",
+            "metadata": {
+              "label": "Return Type",
+              "description": "The return type of the function."
+            },
+            "state": {
+              "editable": false,
+              "enabled": true,
+              "optional": true
+            },
+            "source": {
+              "construct": {
+                "kind": "FUNCTION_RETURN"
+              }
+            }
+          },
+          "source": {
+            "construct": {
+              "kind": "FUNCTION"
+            },
+            "argument": {
+              "originalName": "onRead"
+            },
+            "module": {
+              "name": "cdc"
+            }
+          },
+          "state": {
+            "enabled": false,
+            "editable": true,
+            "optional": true
+          },
+          "nameEditable": false,
+          "repeatable": "FALSE",
+          "canAddParameters": false
+        },
+        {
+          "target": "$service.onCreate",
+          "metadata": {
+            "label": "onCreate",
+            "description": "Triggered when a new row is inserted into a captured table."
+          },
+          "parameters": [
+            {
+              "target": {
+                "kind": "concreteParam",
+                "serviceType": "$service",
+                "handler": "onCreate",
+                "name": "after"
+              },
+              "metadata": {
+                "label": "Database Entry",
+                "description": "The row data after the insert."
+              },
+              "fields": [
+                {
+                  "target": {
+                    "kind": "recordField",
+                    "owner": "after.parameter",
+                    "path": "type"
+                  },
+                  "metadata": {
+                    "label": "Parameter Type",
+                    "description": "The type of the parameter"
+                  },
+                  "state": {
+                    "enabled": true,
+                    "editable": true,
+                    "optional": true,
+                    "advanced": false
+                  },
+                  "key": "type",
+                  "default": "",
+                  "properties": {
+                    "payload": {
+                      "key": "payload",
+                      "default": "record {}",
+                      "metadata": {
+                        "label": "Database Entry",
+                        "description": "Define the shape of the database row bound to this parameter."
+                      },
+                      "source": {
+                        "construct": {
+                          "kind": "PAYLOAD_TYPE"
+                        },
+                        "payload": {
+                          "boundType": "",
+                          "typeConstraint": "anydata",
+                          "defaultType": "record {}",
+                          "template": "{{type}}"
+                        },
+                        "bindable": true,
+                        "nameEditable": false,
+                        "bindingKind": "USER_SELECTED"
+                      },
+                      "state": {
+                        "enabled": true,
+                        "editable": true,
+                        "optional": false,
+                        "advanced": false
+                      },
+                      "widget": {
+                        "widgetKind": "PAYLOAD_TYPE",
+                        "selected": true,
+                        "ballerinaType": "record {}",
+                        "template": "{{type}}",
+                        "formats": [
+                          {
+                            "supported": [
+                              "schema",
+                              "browse",
+                              "json",
+                              "xml"
+                            ],
+                            "defaultFormat": "json"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "widget": {
+                    "widgetKind": "DATA_BINDING",
+                    "selected": true
+                  }
+                },
+                {
+                  "target": {
+                    "kind": "recordField",
+                    "owner": "after.parameter",
+                    "path": "name"
+                  },
+                  "metadata": {
+                    "label": "after",
+                    "description": "The row data after the insert."
+                  },
+                  "state": {
+                    "enabled": true,
+                    "editable": true,
+                    "optional": false,
+                    "advanced": false
+                  },
+                  "key": "name",
+                  "placeholder": "after",
+                  "default": "after"
+                }
+              ],
+              "source": {
+                "construct": {
+                  "kind": "FUNCTION_PARAM"
+                }
+              },
+              "state": {
+                "enabled": true,
+                "editable": true,
+                "optional": false,
+                "advanced": false,
+                "hidden": false
+              }
+            },
+            {
+              "target": "$service.onCreate.tableName",
+              "metadata": {
+                "label": "Table Name",
+                "description": "Restrict this handler to a single table when the listener watches more than one (fully-qualified table name)."
+              },
+              "state": {
+                "advanced": true,
+                "enabled": false,
+                "editable": true,
+                "optional": true,
+                "hidden": false
+              },
+              "fields": [
+                {
+                  "target": {
+                    "kind": "recordField",
+                    "owner": "tableName.parameter",
+                    "path": "type"
+                  },
+                  "metadata": {
+                    "label": "Include Table Name",
+                    "description": "Tick to include the table-name parameter in the handler signature."
+                  },
+                  "state": {
+                    "enabled": true,
+                    "editable": true,
+                    "optional": false,
+                    "advanced": false
+                  },
+                  "key": "type",
+                  "default": false,
+                  "widget": {
+                    "widgetKind": "FLAG",
+                    "selected": true,
+                    "ballerinaType": "string"
+                  }
+                },
+                {
+                  "target": {
+                    "kind": "recordField",
+                    "owner": "tableName.parameter",
+                    "path": "name"
+                  },
+                  "metadata": {
+                    "label": "tableName",
+                    "description": "Restrict this handler to a single table."
+                  },
+                  "state": {
+                    "editable": false,
+                    "enabled": true,
+                    "optional": false,
+                    "advanced": false
+                  },
+                  "key": "name",
+                  "placeholder": "tableName",
+                  "default": "tableName"
+                }
+              ],
+              "source": {
+                "construct": {
+                  "kind": "FUNCTION_PARAM"
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "target": "$service.onCreate.returns",
+            "metadata": {
+              "label": "Return Type",
+              "description": "The return type of the function."
+            },
+            "state": {
+              "editable": false,
+              "enabled": true,
+              "optional": true
+            },
+            "source": {
+              "construct": {
+                "kind": "FUNCTION_RETURN"
+              }
+            }
+          },
+          "source": {
+            "construct": {
+              "kind": "FUNCTION"
+            },
+            "argument": {
+              "originalName": "onCreate"
+            },
+            "module": {
+              "name": "cdc"
+            }
+          },
+          "state": {
+            "enabled": false,
+            "editable": true,
+            "optional": true
+          },
+          "nameEditable": false,
+          "repeatable": "FALSE",
+          "canAddParameters": false
+        },
+        {
+          "target": "$service.onUpdate",
+          "metadata": {
+            "label": "onUpdate",
+            "description": "Triggered when a row in a captured table is updated."
+          },
+          "parameters": [
+            {
+              "target": {
+                "kind": "concreteParam",
+                "serviceType": "$service",
+                "handler": "onUpdate",
+                "name": "before"
+              },
+              "metadata": {
+                "label": "Database Entry",
+                "description": "The row data before the update."
+              },
+              "fields": [
+                {
+                  "target": {
+                    "kind": "recordField",
+                    "owner": "before.parameter",
+                    "path": "type"
+                  },
+                  "metadata": {
+                    "label": "Parameter Type",
+                    "description": "The type of the parameter"
+                  },
+                  "state": {
+                    "enabled": true,
+                    "editable": true,
+                    "optional": true,
+                    "advanced": false
+                  },
+                  "key": "type",
+                  "default": "",
+                  "properties": {
+                    "payload": {
+                      "key": "payload",
+                      "default": "record {}",
+                      "metadata": {
+                        "label": "Database Entry",
+                        "description": "Define the shape of the database row bound to this parameter."
+                      },
+                      "source": {
+                        "construct": {
+                          "kind": "PAYLOAD_TYPE"
+                        },
+                        "payload": {
+                          "boundType": "",
+                          "typeConstraint": "anydata",
+                          "defaultType": "record {}",
+                          "template": "{{type}}"
+                        },
+                        "bindable": true,
+                        "nameEditable": false,
+                        "bindingKind": "USER_SELECTED"
+                      },
+                      "state": {
+                        "enabled": true,
+                        "editable": true,
+                        "optional": false,
+                        "advanced": false
+                      },
+                      "widget": {
+                        "widgetKind": "PAYLOAD_TYPE",
+                        "selected": true,
+                        "ballerinaType": "record {}",
+                        "template": "{{type}}",
+                        "formats": [
+                          {
+                            "supported": [
+                              "schema",
+                              "browse",
+                              "json",
+                              "xml"
+                            ],
+                            "defaultFormat": "json"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "widget": {
+                    "widgetKind": "DATA_BINDING",
+                    "selected": true
+                  }
+                },
+                {
+                  "target": {
+                    "kind": "recordField",
+                    "owner": "before.parameter",
+                    "path": "name"
+                  },
+                  "metadata": {
+                    "label": "before",
+                    "description": "The row data before the update."
+                  },
+                  "state": {
+                    "enabled": true,
+                    "editable": true,
+                    "optional": false,
+                    "advanced": false
+                  },
+                  "key": "name",
+                  "placeholder": "before",
+                  "default": "before"
+                }
+              ],
+              "source": {
+                "construct": {
+                  "kind": "FUNCTION_PARAM"
+                },
+                "bindingGroup": "rowState"
+              },
+              "state": {
+                "enabled": true,
+                "editable": true,
+                "optional": false,
+                "advanced": false,
+                "hidden": false
+              }
+            },
+            {
+              "target": {
+                "kind": "concreteParam",
+                "serviceType": "$service",
+                "handler": "onUpdate",
+                "name": "after"
+              },
+              "metadata": {
+                "label": "Database Entry",
+                "description": "The row data after the update."
+              },
+              "fields": [
+                {
+                  "target": {
+                    "kind": "recordField",
+                    "owner": "after.parameter",
+                    "path": "type"
+                  },
+                  "metadata": {
+                    "label": "Parameter Type",
+                    "description": "The type of the parameter"
+                  },
+                  "state": {
+                    "enabled": true,
+                    "editable": true,
+                    "optional": true,
+                    "advanced": false
+                  },
+                  "key": "type",
+                  "default": "",
+                  "properties": {
+                    "payload": {
+                      "key": "payload",
+                      "default": "record {}",
+                      "metadata": {
+                        "label": "Database Entry",
+                        "description": "Define the shape of the database row bound to this parameter."
+                      },
+                      "source": {
+                        "construct": {
+                          "kind": "PAYLOAD_TYPE"
+                        },
+                        "payload": {
+                          "boundType": "",
+                          "typeConstraint": "anydata",
+                          "defaultType": "record {}",
+                          "template": "{{type}}"
+                        },
+                        "bindable": true,
+                        "nameEditable": false,
+                        "bindingKind": "USER_SELECTED"
+                      },
+                      "state": {
+                        "enabled": true,
+                        "editable": true,
+                        "optional": false,
+                        "advanced": false
+                      },
+                      "widget": {
+                        "widgetKind": "PAYLOAD_TYPE",
+                        "selected": true,
+                        "ballerinaType": "record {}",
+                        "template": "{{type}}",
+                        "formats": [
+                          {
+                            "supported": [
+                              "schema",
+                              "browse",
+                              "json",
+                              "xml"
+                            ],
+                            "defaultFormat": "json"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "widget": {
+                    "widgetKind": "DATA_BINDING",
+                    "selected": true
+                  }
+                },
+                {
+                  "target": {
+                    "kind": "recordField",
+                    "owner": "after.parameter",
+                    "path": "name"
+                  },
+                  "metadata": {
+                    "label": "after",
+                    "description": "The row data after the update."
+                  },
+                  "state": {
+                    "enabled": true,
+                    "editable": true,
+                    "optional": false,
+                    "advanced": false
+                  },
+                  "key": "name",
+                  "placeholder": "after",
+                  "default": "after"
+                }
+              ],
+              "source": {
+                "construct": {
+                  "kind": "FUNCTION_PARAM"
+                },
+                "bindingGroup": "rowState"
+              },
+              "state": {
+                "enabled": true,
+                "editable": true,
+                "optional": false,
+                "advanced": false,
+                "hidden": false
+              }
+            },
+            {
+              "target": "$service.onUpdate.tableName",
+              "metadata": {
+                "label": "Table Name",
+                "description": "Restrict this handler to a single table when the listener watches more than one (fully-qualified table name)."
+              },
+              "state": {
+                "advanced": true,
+                "enabled": false,
+                "editable": true,
+                "optional": true,
+                "hidden": false
+              },
+              "fields": [
+                {
+                  "target": {
+                    "kind": "recordField",
+                    "owner": "tableName.parameter",
+                    "path": "type"
+                  },
+                  "metadata": {
+                    "label": "Include Table Name",
+                    "description": "Tick to include the table-name parameter in the handler signature."
+                  },
+                  "state": {
+                    "enabled": true,
+                    "editable": true,
+                    "optional": false,
+                    "advanced": false
+                  },
+                  "key": "type",
+                  "default": false,
+                  "widget": {
+                    "widgetKind": "FLAG",
+                    "selected": true,
+                    "ballerinaType": "string"
+                  }
+                },
+                {
+                  "target": {
+                    "kind": "recordField",
+                    "owner": "tableName.parameter",
+                    "path": "name"
+                  },
+                  "metadata": {
+                    "label": "tableName",
+                    "description": "Restrict this handler to a single table."
+                  },
+                  "state": {
+                    "editable": false,
+                    "enabled": true,
+                    "optional": false,
+                    "advanced": false
+                  },
+                  "key": "name",
+                  "placeholder": "tableName",
+                  "default": "tableName"
+                }
+              ],
+              "source": {
+                "construct": {
+                  "kind": "FUNCTION_PARAM"
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "target": "$service.onUpdate.returns",
+            "metadata": {
+              "label": "Return Type",
+              "description": "The return type of the function."
+            },
+            "state": {
+              "editable": false,
+              "enabled": true,
+              "optional": true
+            },
+            "source": {
+              "construct": {
+                "kind": "FUNCTION_RETURN"
+              }
+            }
+          },
+          "source": {
+            "construct": {
+              "kind": "FUNCTION"
+            },
+            "argument": {
+              "originalName": "onUpdate"
+            },
+            "module": {
+              "name": "cdc"
+            }
+          },
+          "state": {
+            "enabled": false,
+            "editable": true,
+            "optional": true
+          },
+          "nameEditable": false,
+          "repeatable": "FALSE",
+          "canAddParameters": false
+        },
+        {
+          "target": "$service.onDelete",
+          "metadata": {
+            "label": "onDelete",
+            "description": "Triggered when a row is deleted from a captured table."
+          },
+          "parameters": [
+            {
+              "target": {
+                "kind": "concreteParam",
+                "serviceType": "$service",
+                "handler": "onDelete",
+                "name": "before"
+              },
+              "metadata": {
+                "label": "Database Entry",
+                "description": "The row data before the delete."
+              },
+              "fields": [
+                {
+                  "target": {
+                    "kind": "recordField",
+                    "owner": "before.parameter",
+                    "path": "type"
+                  },
+                  "metadata": {
+                    "label": "Parameter Type",
+                    "description": "The type of the parameter"
+                  },
+                  "state": {
+                    "enabled": true,
+                    "editable": true,
+                    "optional": true,
+                    "advanced": false
+                  },
+                  "key": "type",
+                  "default": "",
+                  "properties": {
+                    "payload": {
+                      "key": "payload",
+                      "default": "record {}",
+                      "metadata": {
+                        "label": "Database Entry",
+                        "description": "Define the shape of the database row bound to this parameter."
+                      },
+                      "source": {
+                        "construct": {
+                          "kind": "PAYLOAD_TYPE"
+                        },
+                        "payload": {
+                          "boundType": "",
+                          "typeConstraint": "anydata",
+                          "defaultType": "record {}",
+                          "template": "{{type}}"
+                        },
+                        "bindable": true,
+                        "nameEditable": false,
+                        "bindingKind": "USER_SELECTED"
+                      },
+                      "state": {
+                        "enabled": true,
+                        "editable": true,
+                        "optional": false,
+                        "advanced": false
+                      },
+                      "widget": {
+                        "widgetKind": "PAYLOAD_TYPE",
+                        "selected": true,
+                        "ballerinaType": "record {}",
+                        "template": "{{type}}",
+                        "formats": [
+                          {
+                            "supported": [
+                              "schema",
+                              "browse",
+                              "json",
+                              "xml"
+                            ],
+                            "defaultFormat": "json"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "widget": {
+                    "widgetKind": "DATA_BINDING",
+                    "selected": true
+                  }
+                },
+                {
+                  "target": {
+                    "kind": "recordField",
+                    "owner": "before.parameter",
+                    "path": "name"
+                  },
+                  "metadata": {
+                    "label": "before",
+                    "description": "The row data before the delete."
+                  },
+                  "state": {
+                    "enabled": true,
+                    "editable": true,
+                    "optional": false,
+                    "advanced": false
+                  },
+                  "key": "name",
+                  "placeholder": "before",
+                  "default": "before"
+                }
+              ],
+              "source": {
+                "construct": {
+                  "kind": "FUNCTION_PARAM"
+                }
+              },
+              "state": {
+                "enabled": true,
+                "editable": true,
+                "optional": false,
+                "advanced": false,
+                "hidden": false
+              }
+            },
+            {
+              "target": "$service.onDelete.tableName",
+              "metadata": {
+                "label": "Table Name",
+                "description": "Restrict this handler to a single table when the listener watches more than one (fully-qualified table name)."
+              },
+              "state": {
+                "advanced": true,
+                "enabled": false,
+                "editable": true,
+                "optional": true,
+                "hidden": false
+              },
+              "fields": [
+                {
+                  "target": {
+                    "kind": "recordField",
+                    "owner": "tableName.parameter",
+                    "path": "type"
+                  },
+                  "metadata": {
+                    "label": "Include Table Name",
+                    "description": "Tick to include the table-name parameter in the handler signature."
+                  },
+                  "state": {
+                    "enabled": true,
+                    "editable": true,
+                    "optional": false,
+                    "advanced": false
+                  },
+                  "key": "type",
+                  "default": false,
+                  "widget": {
+                    "widgetKind": "FLAG",
+                    "selected": true,
+                    "ballerinaType": "string"
+                  }
+                },
+                {
+                  "target": {
+                    "kind": "recordField",
+                    "owner": "tableName.parameter",
+                    "path": "name"
+                  },
+                  "metadata": {
+                    "label": "tableName",
+                    "description": "Restrict this handler to a single table."
+                  },
+                  "state": {
+                    "editable": false,
+                    "enabled": true,
+                    "optional": false,
+                    "advanced": false
+                  },
+                  "key": "name",
+                  "placeholder": "tableName",
+                  "default": "tableName"
+                }
+              ],
+              "source": {
+                "construct": {
+                  "kind": "FUNCTION_PARAM"
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "target": "$service.onDelete.returns",
+            "metadata": {
+              "label": "Return Type",
+              "description": "The return type of the function."
+            },
+            "state": {
+              "editable": false,
+              "enabled": true,
+              "optional": true
+            },
+            "source": {
+              "construct": {
+                "kind": "FUNCTION_RETURN"
+              }
+            }
+          },
+          "source": {
+            "construct": {
+              "kind": "FUNCTION"
+            },
+            "argument": {
+              "originalName": "onDelete"
+            },
+            "module": {
+              "name": "cdc"
+            }
+          },
+          "state": {
+            "enabled": false,
+            "editable": true,
+            "optional": true
+          },
+          "nameEditable": false,
+          "repeatable": "FALSE",
+          "canAddParameters": false
+        },
+        {
+          "target": "$service.onError",
+          "metadata": {
+            "label": "onError",
+            "description": "Triggered when an error occurs during CDC event processing."
+          },
+          "parameters": [
+            {
+              "target": "$service.onError.cdcError",
+              "metadata": {
+                "label": "cdcError",
+                "description": "The error that occurred during event processing."
+              },
+              "state": {
+                "editable": false,
+                "enabled": true,
+                "optional": false,
+                "advanced": false,
+                "hidden": false
+              },
+              "fields": [
+                {
+                  "target": {
+                    "kind": "recordField",
+                    "owner": "cdcError.parameter",
+                    "path": "type"
+                  },
+                  "metadata": {
+                    "label": "Parameter Type",
+                    "description": "The type of the parameter"
+                  },
+                  "state": {
+                    "editable": false,
+                    "enabled": true,
+                    "optional": true,
+                    "advanced": false
+                  },
+                  "key": "type",
+                  "default": "cdc:Error",
+                  "widget": {
+                    "widgetKind": "TYPE",
+                    "selected": true
+                  }
+                },
+                {
+                  "target": {
+                    "kind": "recordField",
+                    "owner": "cdcError.parameter",
+                    "path": "name"
+                  },
+                  "metadata": {
+                    "label": "cdcError",
+                    "description": "The error that occurred during event processing."
+                  },
+                  "state": {
+                    "enabled": true,
+                    "editable": true,
+                    "optional": false,
+                    "advanced": false
+                  },
+                  "key": "name",
+                  "placeholder": "cdcError",
+                  "default": "cdcError"
+                }
+              ],
+              "source": {
+                "construct": {
+                  "kind": "FUNCTION_PARAM"
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "target": "$service.onError.returns",
+            "metadata": {
+              "label": "Return Type",
+              "description": "The return type of the function."
+            },
+            "state": {
+              "editable": false,
+              "enabled": true,
+              "optional": true
+            },
+            "source": {
+              "construct": {
+                "kind": "FUNCTION_RETURN"
+              }
+            },
+            "default": "error?"
+          },
+          "source": {
+            "construct": {
+              "kind": "FUNCTION"
+            },
+            "argument": {
+              "originalName": "onError"
+            },
+            "module": {
+              "name": "cdc"
+            }
+          },
+          "state": {
+            "enabled": false,
+            "editable": true,
+            "optional": true
+          },
+          "nameEditable": false,
+          "repeatable": "FALSE",
+          "canAddParameters": false
+        }
+      ],
+      "source": {
+        "construct": {
+          "kind": "SERVICE_TYPE_DESCRIPTOR"
+        },
+        "argument": {
+          "originalName": "Service"
+        },
+        "module": {
+          "name": "cdc",
+          "org": "ballerinax",
+          "packageName": "cdc"
+        }
+      },
+      "description": "A CDC service is a distinct service object that defines remote methods to handle database change events. Handler methods (onRead/onCreate/onUpdate/onDelete/onError) are recognised by convention, not declared on the type.",
+      "properties": {
+        "serviceConfig": {
+          "key": "serviceConfig",
+          "default": "",
+          "widget": {
+            "widgetKind": "RECORD_MAP_EXPRESSION",
+            "selected": true,
+            "ballerinaType": "cdc:CdcServiceConfig",
+            "typeMembers": [
+              {
+                "type": "cdc:CdcServiceConfig",
+                "packageInfo": "ballerinax:cdc:1.3.0",
+                "packageName": "cdc",
+                "kind": "RECORD_TYPE",
+                "selected": true
+              }
+            ]
+          },
+          "metadata": {
+            "label": "Service Config",
+            "description": "Advanced CDC configuration"
+          },
+          "source": {
+            "construct": {
+              "kind": "SERVICE_ANNOTATION"
+            },
+            "argument": {
+              "originalName": "ServiceConfig"
+            },
+            "module": {
+              "name": "cdc"
+            },
+            "path": ""
+          },
+          "state": {
+            "enabled": true,
+            "editable": true,
+            "optional": false,
+            "advanced": false
+          }
+        }
+      }
+    }
+  ],
+  "artifactInfo": {
+    "displayLabel": "CDC MySQL Service",
+    "icon": {
+      "lightPath": "icons/light.svg",
+      "darkPath": "icons/dark.svg",
+      "color": "#00758F"
+    },
+    "identifier": {
+      "separator": " - ",
+      "resolvers": [
+        {
+          "via": "annotationField",
+          "fields": [
+            "tables"
+          ]
+        }
+      ]
+    }
+  }
+}

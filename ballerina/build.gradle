@@ -16,6 +16,13 @@
  */
 
 import org.apache.tools.ant.taskdefs.condition.Os
+import org.gradle.process.ExecOperations
+
+import javax.inject.Inject
+
+abstract class BallerinaExecHelper {
+    @Inject abstract ExecOperations getExecOperations()
+}
 
 buildscript {
     repositories {
@@ -88,8 +95,9 @@ task updateTomlFiles {
 }
 
 task commitTomlFiles {
+    def execHelper = project.objects.newInstance(BallerinaExecHelper)
     doLast {
-        project.exec {
+        execHelper.execOperations.exec {
             ignoreExitValue true
             if (Os.isFamily(Os.FAMILY_WINDOWS)) {
                 commandLine 'cmd', '/c', "git commit -m \"[Automated] Update the native jar versions\" Ballerina.toml Dependencies.toml CompilerPlugin.toml"
@@ -119,16 +127,17 @@ publishing {
 }
 
 tasks.register('startMySQLServers') {
+    def execHelper = project.objects.newInstance(BallerinaExecHelper)
     doLast {
         def stdOut = new ByteArrayOutputStream()
         def cmd = Os.isFamily(Os.FAMILY_WINDOWS) ? ['cmd', '/c'] : ['sh', '-c']
-        exec {
+        execHelper.execOperations.exec {
             commandLine cmd + ["docker compose -f tests/resources/compose.yaml ps --services --filter status=running"]
             standardOutput = stdOut
         }
         if (stdOut.toString().trim().isEmpty()) {
             println "Starting MySQL server."
-            exec {
+            execHelper.execOperations.exec {
                 commandLine cmd + ["docker compose -f tests/resources/compose.yaml up -d"]
                 standardOutput = stdOut
             }
@@ -141,16 +150,17 @@ tasks.register('startMySQLServers') {
 }
 
 tasks.register('stopMySQLServers') {
+    def execHelper = project.objects.newInstance(BallerinaExecHelper)
     doLast {
         def stdOut = new ByteArrayOutputStream()
         def cmd = Os.isFamily(Os.FAMILY_WINDOWS) ? ['cmd', '/c'] : ['sh', '-c']
-        exec {
+        execHelper.execOperations.exec {
             commandLine cmd + ["docker compose -f tests/resources/compose.yaml ps --services --filter status=running"]
             standardOutput = stdOut
         }
         if (!stdOut.toString().trim().isEmpty()) {
             println "Stopping MySQL server."
-            exec {
+            execHelper.execOperations.exec {
                 commandLine cmd + ["docker compose -f tests/resources/compose.yaml rm -svf"]
                 standardOutput = stdOut
             }

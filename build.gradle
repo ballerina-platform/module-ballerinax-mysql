@@ -17,7 +17,7 @@
 
 plugins {
     id "com.github.spotbugs-base"
-    id "com.github.johnrengelman.shadow"
+    id "com.gradleup.shadow"
     id "de.undercouch.download"
     id "net.researchgate.release"
 }
@@ -122,12 +122,24 @@ release {
     }
 }
 
-task build {
-    dependsOn("${packageName}-native:build")
-    dependsOn("${packageName}-compiler-plugin:build")
-    dependsOn("${packageName}-ballerina:build")
-    dependsOn("${packageName}-compiler-plugin-tests:build")
-    dependsOn("${packageName}-examples:build")
+if (tasks.names.contains('build')) {
+    tasks.named('build') {
+        dependsOn("${packageName}-native:build")
+        dependsOn("${packageName}-compiler-plugin:build")
+        dependsOn("${packageName}-ballerina:build")
+        dependsOn("${packageName}-compiler-plugin-tests:build")
+        dependsOn("${packageName}-examples:build")
+
+    }
+} else {
+    tasks.register('build') {
+        dependsOn("${packageName}-native:build")
+        dependsOn("${packageName}-compiler-plugin:build")
+        dependsOn("${packageName}-ballerina:build")
+        dependsOn("${packageName}-compiler-plugin-tests:build")
+        dependsOn("${packageName}-examples:build")
+
+    }
 }
 
 publishToMavenLocal.dependsOn build

@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Upgrade CDC dependencies to the Debezium 3.5.1-compatible release line.
 
+### Fixed
+- [Bump `ballerinax/cdc` to 1.4.1 to resolve CVE-2026-91776 and related `jackson-databind` vulnerabilities](https://github.com/ballerina-platform/ballerina-library/issues/9249)
+
 ## [1.18.0] - 2026-04-03
 
 ### Added

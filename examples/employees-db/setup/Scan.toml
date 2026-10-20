@@ -1,0 +1,6 @@
+# bal scan rules excluded for this example (false positives):
+# - ballerinax/mysql:1 ("a secure password should be used") is reported on the calls in `main`, but the
+#   client password is the required configurable `PASSWORD` (`configurable string PASSWORD = ?;`), so no
+#   weak or hardcoded password is used.
+[rule]
+exclude = ["ballerinax/mysql:1"]

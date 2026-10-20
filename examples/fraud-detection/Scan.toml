@@ -1,0 +1,8 @@
+# bal scan rules excluded for this example (false positives):
+# - ballerina:14: the credentials are configurable values read from environment variables
+#   (`os:getEnv(...)`), so nothing is hardcoded.
+# - ballerinax/mysql:1 ("a secure password should be used") is reported on unrelated lines (other
+#   configurables and log statements); the database password comes from the `DB_PASSWORD` environment
+#   variable.
+[rule]
+exclude = ["ballerina:14", "ballerinax/mysql:1"]

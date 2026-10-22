@@ -1,5 +1,8 @@
 # bal scan rules excluded for this package (false positives):
 # - ballerina:14 flags the public `Client.init` parameter `string? password = ()`. The default is nil
 #   (no password), not a secret value, and changing the signature would break the public API.
+# TODO: replace this rule exclusion with a targeted scan suppression (with a reason) once `bal scan` supports it
+# (planned for v0.13.0), and fix the false positives on the scan tool side: a secret-named identifier should only be
+# reported when it is assigned a fixed value.
 [rule]
 exclude = ["ballerina:14"]

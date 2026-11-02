@@ -2,5 +2,8 @@
 # - ballerinax/mysql:1 ("a secure password should be used") is reported on the calls in `main`, but the
 #   client password is the required configurable `PASSWORD` (`configurable string PASSWORD = ?;`), so no
 #   weak or hardcoded password is used.
+# TODO: replace this rule exclusion with a targeted scan suppression (with a reason) once `bal scan` supports it
+# (planned for v0.13.0), and fix the false positives on the scan tool side: a secret-named identifier should only be
+# reported when it is assigned a fixed value.
 [rule]
 exclude = ["ballerinax/mysql:1"]

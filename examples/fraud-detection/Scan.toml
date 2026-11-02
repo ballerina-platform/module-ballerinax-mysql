@@ -4,5 +4,8 @@
 # - ballerinax/mysql:1 ("a secure password should be used") is reported on unrelated lines (other
 #   configurables and log statements); the database password comes from the `DB_PASSWORD` environment
 #   variable.
+# TODO: replace this rule exclusion with a targeted scan suppression (with a reason) once `bal scan` supports it
+# (planned for v0.13.0), and fix the false positives on the scan tool side: a secret-named identifier should only be
+# reported when it is assigned a fixed value.
 [rule]
 exclude = ["ballerina:14", "ballerinax/mysql:1"]
